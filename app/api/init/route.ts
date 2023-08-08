@@ -11,9 +11,7 @@ export async function GET(req: NextRequest) {
   const cookieStore = cookies();
 
   try {
-    const accessToken = cookieStore.get(`${subdomain}-access-token`);
-
-    if (!accessToken) {
+    if (!cookieStore.has(`${subdomain}-access-token`)) {
       const { data, error } = await supabase
         .from("Customer")
         .select()
@@ -30,16 +28,9 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      const token = jwt.sign(
-        {
-          data: data[0].publicKey,
-        },
-        process.env.JWT_SECRET as string
-      );
-
       cookies().set({
         name: `${subdomain}-access-token`,
-        value: token,
+        value: data[0].publicKey,
         path: "/",
         httpOnly: true,
       });
@@ -47,16 +38,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ data: data[0] });
     }
 
-    const publicKey = jwt.verify(
-      accessToken?.value as string,
-      process.env.JWT_SECRET as string
-    );
+    const accessToken = cookieStore.get(`${subdomain}-access-token`);
 
     const { data, error } = await supabase
       .from("Customer")
       .select("id, businessName, subdomain, logo")
       .eq("subdomain", subdomain)
-      .eq("publicKey", publicKey.data);
+      .eq("publicKey", accessToken);
 
     if (error) throw error;
 
