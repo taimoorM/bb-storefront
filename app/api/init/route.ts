@@ -30,13 +30,9 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      const expiry = new Date();
-      expiry.setDate(expiry.getDate() + 7);
-
       const token = jwt.sign(
         {
-          exp: Math.floor(expiry.getTime() / 1000),
-          data: data.publicKey,
+          data: data[0].publicKey,
         },
         process.env.JWT_SECRET as string
       );
@@ -46,15 +42,21 @@ export async function GET(req: NextRequest) {
         value: token,
         path: "/",
         httpOnly: true,
-        expires: expiry,
       });
+
+      return NextResponse.json({ data: data[0] });
     }
 
+    const publicKey = jwt.verify(
+      accessToken?.value as string,
+      process.env.JWT_SECRET as string
+    );
+    console.log("publicKey", publicKey);
     const { data, error } = await supabase
       .from("Customer")
       .select()
       .eq("subdomain", subdomain)
-      .eq("publicKey", accessToken);
+      .eq("publicKey", publicKey?.data);
 
     if (error) throw error;
 
@@ -64,6 +66,7 @@ export async function GET(req: NextRequest) {
         { status: 400, statusText: "Bad Request" }
       );
     }
+    console.log(data[0]);
 
     return NextResponse.json({ data: data[0] });
   } catch (e) {
