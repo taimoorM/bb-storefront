@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import getSubdomain from "./utils/get-subdomain";
 
 export async function middleware(req: NextRequest) {
-  const referer = req.headers.get("referer");
-  console.log(referer);
+  const host = req.headers.get("host");
+  console.log(host);
 
-  const subdomain = getSubdomain(referer as string);
+  const subdomain = getSubdomain(host as string);
   console.log(subdomain);
 
   if (subdomain) {
