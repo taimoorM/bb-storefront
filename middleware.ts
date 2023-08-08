@@ -3,13 +3,10 @@ import getSubdomain from "./utils/get-subdomain";
 
 export async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
-  console.log(host);
 
   const subdomain = getSubdomain(host as string);
-  console.log(subdomain);
 
   if (subdomain) {
-    console.log("subdomain", subdomain);
     const requestHeaders = new Headers(req.headers);
 
     requestHeaders.set("bb-subdomain", subdomain);

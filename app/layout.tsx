@@ -1,7 +1,9 @@
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
+import { StorefrontProvider } from "@/contexts/storefront";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body>
-        {/* <Navbar /> */}
-        <p>HELOSAD</p>
-        <main>{children}</main>
+        <Suspense fallback={<p>Loading...</p>}>
+          <StorefrontProvider>
+            <Navbar />
+            <p>HELOSAD</p>
+            <main>{children}</main>
+          </StorefrontProvider>
+        </Suspense>
       </body>
     </html>
   );

@@ -51,12 +51,12 @@ export async function GET(req: NextRequest) {
       accessToken?.value as string,
       process.env.JWT_SECRET as string
     );
-    console.log("publicKey", publicKey);
+
     const { data, error } = await supabase
       .from("Customer")
-      .select()
+      .select("id, businessName, subdomain, logo")
       .eq("subdomain", subdomain)
-      .eq("publicKey", publicKey?.data);
+      .eq("publicKey", publicKey.data);
 
     if (error) throw error;
 
