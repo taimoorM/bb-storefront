@@ -11,7 +11,8 @@ export async function GET(req: NextRequest) {
   const cookieStore = cookies();
 
   try {
-    if (!cookieStore.has(`${subdomain}-access-token`)) {
+    const accessToken = cookieStore.get(`access-token`);
+    if (!accessToken) {
       const { data, error } = await supabase
         .from("Customer")
         .select()
@@ -29,16 +30,14 @@ export async function GET(req: NextRequest) {
       }
 
       cookies().set({
-        name: `${subdomain}-access-token`,
+        name: `bb-access-token`,
         value: data[0].publicKey,
         path: "/",
         httpOnly: true,
       });
 
-      return NextResponse.json({ data: data[0] });
+      return NextResponse.json(data[0]);
     }
-
-    const accessToken = cookieStore.get(`${subdomain}-access-token`);
 
     const { data, error } = await supabase
       .from("Customer")
@@ -56,7 +55,7 @@ export async function GET(req: NextRequest) {
     }
     console.log(data[0]);
 
-    return NextResponse.json({ data: data[0] });
+    return NextResponse.json(data[0]);
   } catch (e) {
     console.log(e);
     return NextResponse.json({ error: e }, { status: 500 });
