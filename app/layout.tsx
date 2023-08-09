@@ -19,33 +19,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const publicKey = headers().get("bb-api-key") as string;
-  console.log("publicKey", publicKey);
-  const typesRes = await fetch("http://localhost:3001/api/storefront/types", {
-    headers: {
-      "x-public-key": publicKey,
-      Accept: "application/json",
-    },
-  });
-  const types = await typesRes.json();
-  const categoriesRes = await fetch(
-    "http://localhost:3001/api/storefront/categories",
-    {
-      headers: {
-        "x-public-key": publicKey || "",
-        Accept: "application/json",
-      },
-    }
-  );
-  const categories = await categoriesRes.json();
-  console.log("categories", categories);
-
   return (
     <html lang="en" className={inter.className}>
       <body>
         <Suspense fallback={<p>Loading...</p>}>
           <StorefrontProvider>
-            <Navbar types={types} />
+            <Navbar />
 
             <main>{children}</main>
           </StorefrontProvider>

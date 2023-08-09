@@ -3,15 +3,8 @@ import { useStorefront } from "@/contexts/storefront";
 import Link from "next/link";
 import Logo from "./logo";
 
-interface IProps {
-  types: {
-    id: string;
-    label: string;
-  }[];
-}
-
-export default function Navbar({ types }: IProps) {
-  const { storefront, isLoading } = useStorefront();
+export default function Navbar() {
+  const { storefront, isLoading, categories, types } = useStorefront();
   console.log(storefront);
 
   return (
