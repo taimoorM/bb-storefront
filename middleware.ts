@@ -5,10 +5,16 @@ export async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
 
   const subdomain = getSubdomain(host as string);
+  const requestHeaders = new Headers(req.headers);
+
+  if (req.cookies.get("bb-access-token")) {
+    requestHeaders.set(
+      "bb-api-key",
+      req.cookies.get("bb-access-token")?.value as string
+    );
+  }
 
   if (subdomain) {
-    const requestHeaders = new Headers(req.headers);
-
     requestHeaders.set("bb-subdomain", subdomain);
 
     return NextResponse.next({

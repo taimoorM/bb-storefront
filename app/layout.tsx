@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { Suspense } from "react";
 import { StorefrontProvider } from "@/contexts/storefront";
 import { headers } from "next/headers";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +19,27 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const res = await fetch("http://localhost:3001/api/types");
-  const types = await res.json();
-  console.log(types);
+  const publicKey = headers().get("bb-api-key") as string;
+  console.log("publicKey", publicKey);
+  const typesRes = await fetch("http://localhost:3001/api/storefront/types", {
+    headers: {
+      "x-public-key": publicKey,
+      Accept: "application/json",
+    },
+  });
+  const types = await typesRes.json();
+  const categoriesRes = await fetch(
+    "http://localhost:3001/api/storefront/categories",
+    {
+      headers: {
+        "x-public-key": publicKey || "",
+        Accept: "application/json",
+      },
+    }
+  );
+  const categories = await categoriesRes.json();
+  console.log("categories", categories);
+
   return (
     <html lang="en" className={inter.className}>
       <body>
