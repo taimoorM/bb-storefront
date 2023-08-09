@@ -1,6 +1,7 @@
 "use client";
 import { useStorefront } from "@/contexts/storefront";
 import Link from "next/link";
+import Logo from "./logo";
 
 interface IProps {
   types: {
@@ -28,7 +29,11 @@ export default function Navbar({ types }: IProps) {
                 aria-label="Go back home"
                 className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
               >
-                <div className="ml-2 flex-none text-sm font-medium uppercase text-white lg:block">
+                <Logo
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}${storefront?.logo}`}
+                  alt={storefront?.businessName as string}
+                />
+                <div className="ml-2 flex-none text-sm font-medium uppercase lg:block">
                   {storefront?.businessName}
                 </div>
               </Link>
