@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
 
     const { data, error } = await supabase
       .from("Customer")
-      .select("id, businessName, subdomain, logo")
+      .select("id, businessName, subdomain, logo, publicKey")
       .eq("publicKey", accessToken.value)
       .eq("subdomain", subdomain);
 
