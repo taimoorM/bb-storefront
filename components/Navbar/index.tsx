@@ -2,9 +2,16 @@
 import { useStorefront } from "@/contexts/storefront";
 import Link from "next/link";
 
-export default function Navbar() {
+interface IProps {
+  types: {
+    id: string;
+    label: string;
+  }[];
+}
+
+export default function Navbar({ types }: IProps) {
   const { storefront, isLoading } = useStorefront();
-  console.log(storefront, isLoading);
+
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       {isLoading && !storefront ? (
@@ -25,20 +32,20 @@ export default function Navbar() {
                   {storefront?.businessName}
                 </div>
               </Link>
-              {/* {menu.length ? (
-            <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {menu.map((item: Menu) => (
-                <li key={item.title}>
-                  <Link
-                    href={item.path}
-                    className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : null} */}
+              {types.length ? (
+                <ul className="hidden gap-6 text-sm md:flex md:items-center">
+                  {types.map((type) => (
+                    <li key={type.id}>
+                      <Link
+                        href={type.id}
+                        className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
+                      >
+                        {type.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
             {/* <div className="hidden justify-center md:flex md:w-1/3">
           <Search />
