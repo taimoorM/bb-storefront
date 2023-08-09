@@ -12,6 +12,7 @@ interface IProps {
 
 export default function Navbar({ types }: IProps) {
   const { storefront, isLoading } = useStorefront();
+  console.log(storefront);
 
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
@@ -33,7 +34,7 @@ export default function Navbar({ types }: IProps) {
                   src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}${storefront?.logo}`}
                   alt={storefront?.businessName as string}
                 />
-                <div className="ml-2 flex-none text-sm font-medium uppercase lg:block">
+                <div className="ml-2 mr-4 flex-none text-sm font-medium uppercase lg:block">
                   {storefront?.businessName}
                 </div>
               </Link>

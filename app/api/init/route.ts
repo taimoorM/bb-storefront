@@ -11,11 +11,11 @@ export async function GET(req: NextRequest) {
   const cookieStore = cookies();
 
   try {
-    const accessToken = cookieStore.get(`access-token`);
+    const accessToken = cookieStore.get(`bb-access-token`);
     if (!accessToken) {
       const { data, error } = await supabase
         .from("Customer")
-        .select()
+        .select("id, businessName, subdomain, logo, publicKey")
         .eq("subdomain", subdomain);
 
       if (error) {
