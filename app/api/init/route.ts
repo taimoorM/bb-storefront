@@ -12,63 +12,47 @@ export async function GET(req: NextRequest) {
 
   try {
     const accessToken = cookieStore.get(`bb-access-token`);
-    if (!accessToken) {
-      const { data, error } = await supabase
-        .from("Customer")
-        .select("id, businessName, subdomain, logo, publicKey")
-        .eq("subdomain", subdomain);
-
-      if (error) {
-        throw error;
-      }
-
-      if (!data.length) {
-        return NextResponse.json(
-          { error: "No subdomain found" },
-          { status: 400 }
-        );
-      }
-
-      const { data: stores, error: storeError } = await supabase
-        .from("Store")
-        .select("id")
-        .eq("customerId", data[0].id);
-
-      if (!stores || !stores.length) {
-        return NextResponse.redirect("/404");
-      }
-
-      if (storeError) {
-        throw storeError;
-      }
-
-      cookies().set({
-        name: `bb-access-token`,
-        value: data[0].publicKey,
-        path: "/",
-        httpOnly: true,
-      });
-
-      return NextResponse.json({ storefront: data[0] });
-    }
 
     const { data, error } = await supabase
       .from("Customer")
       .select("id, businessName, subdomain, logo, publicKey")
-      .eq("publicKey", accessToken.value)
-      .eq("subdomain", subdomain);
+      .eq("publicKey", accessToken?.value)
+      .eq("subdomain", subdomain)
+      .single();
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
-    if (!data.length) {
+    if (!data) {
       return NextResponse.json(
-        { error: "Bad Request" },
-        { status: 400, statusText: "Bad Request" }
+        { error: "No subdomain found" },
+        { status: 400 }
       );
     }
-    console.log(data[0]);
 
-    return NextResponse.json(data[0]);
+    const { data: stores, error: storeError } = await supabase
+      .from("Store")
+      .select("id, name, address, phone, currency")
+      .eq("customerId", data.id);
+
+    if (!stores || !stores.length) {
+      return NextResponse.redirect("/404");
+    }
+
+    if (storeError) {
+      throw storeError;
+    }
+
+    if (!accessToken) {
+      cookies().set({
+        name: `bb-access-token`,
+        value: data.publicKey,
+        path: "/",
+        httpOnly: true,
+      });
+    }
+    return NextResponse.json({ stores, metadata: data });
   } catch (e) {
     console.log(e);
     return NextResponse.json({ error: e }, { status: 500 });

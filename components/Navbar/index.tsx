@@ -5,11 +5,11 @@ import Logo from "./logo";
 import Search from "./search";
 
 export default function Navbar() {
-  const { storefront, isLoading, categories, types } = useStorefront();
+  const { metadata, isLoading, categories, types } = useStorefront();
 
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
-      {isLoading && !storefront ? (
+      {isLoading && !metadata ? (
         <p>Loading...</p>
       ) : (
         <>
@@ -24,11 +24,11 @@ export default function Navbar() {
                 className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
               >
                 <Logo
-                  src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}${storefront?.logo}`}
-                  alt={storefront?.businessName as string}
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}${metadata?.logo}`}
+                  alt={metadata?.businessName as string}
                 />
                 <div className="ml-2 mr-4 flex-none text-sm font-medium uppercase lg:block">
-                  {storefront?.businessName}
+                  {metadata?.businessName}
                 </div>
               </Link>
               <div className="flex">
