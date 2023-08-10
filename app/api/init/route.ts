@@ -29,6 +29,19 @@ export async function GET(req: NextRequest) {
         );
       }
 
+      const { data: stores, error: storeError } = await supabase
+        .from("Store")
+        .select("id")
+        .eq("customerId", data[0].id);
+
+      if (!stores || !stores.length) {
+        return NextResponse.redirect("/404");
+      }
+
+      if (storeError) {
+        throw storeError;
+      }
+
       cookies().set({
         name: `bb-access-token`,
         value: data[0].publicKey,
@@ -36,7 +49,7 @@ export async function GET(req: NextRequest) {
         httpOnly: true,
       });
 
-      return NextResponse.json(data[0]);
+      return NextResponse.json({ storefront: data[0] });
     }
 
     const { data, error } = await supabase
