@@ -5,7 +5,6 @@ import Logo from "./logo";
 
 export default function Navbar() {
   const { storefront, isLoading, categories, types } = useStorefront();
-  console.log(storefront);
 
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
@@ -32,18 +31,26 @@ export default function Navbar() {
                 </div>
               </Link>
               {types.length ? (
-                <ul className="hidden gap-6 text-sm md:flex md:items-center">
-                  {types.map((type) => (
-                    <li key={type.id}>
-                      <Link
-                        href={type.id}
-                        className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
-                      >
-                        {type.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <div className="relative group">
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                    Hover me
+                  </button>
+
+                  <div className="absolute left-0 mt-2 w-48 bg-white p-4 rounded border shadow-lg opacity-0 group-hover:opacity-100 transition ease-in-out duration-150">
+                    <ul className="hidden gap-6 text-sm md:flex md:items-center">
+                      {types.map((type) => (
+                        <li key={type.id}>
+                          <Link
+                            href={type.id}
+                            className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
+                          >
+                            {type.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               ) : null}
             </div>
             {/* <div className="hidden justify-center md:flex md:w-1/3">

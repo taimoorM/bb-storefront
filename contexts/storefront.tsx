@@ -36,19 +36,21 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
         const response = await fetch("/api/init");
         const storefront: Storefront = await response.json();
 
+        console.log("storefront", storefront);
+
         const headers = {
           "x-public-key": storefront.publicKey,
           Accept: "application/json",
         };
 
-        const [types, categories] = await Promise.all([
-          fetch("http://localhost:3001/api/storefront/types", { headers }).then(
-            (res) => res.json()
-          ),
-          fetch("http://localhost:3001/api/storefront/categories", {
+        const [categories] = await Promise.all([
+          fetch("/api/storefront/categories", {
             headers,
           }).then((res) => res.json()),
         ]);
+
+        console.log("types", types);
+        console.log("categories", categories);
 
         setStorefront(storefront);
         setTypes(types);
