@@ -43,7 +43,8 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
           Accept: "application/json",
         };
 
-        const [categories] = await Promise.all([
+        const [types, categories] = await Promise.all([
+          fetch("/api/storefront/types", { headers }).then((res) => res.json()),
           fetch("/api/storefront/categories", {
             headers,
           }).then((res) => res.json()),
