@@ -1,5 +1,6 @@
 "use client";
-import { Category, Type } from "@/types/types";
+import StoreSelect from "@/components/StoreSelect";
+import { Cart, Category, Session, Store, Type } from "@/types/types";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface Storefront {
@@ -18,7 +19,10 @@ interface StorefrontContextValue {
   isLoading: boolean;
   categories: Category[];
   types: Type[];
-  stores: any[];
+  stores: Store[];
+  session: Session;
+  cart: Cart;
+  selectedStore: string | null;
   //   setStorefront: React.Dispatch<React.SetStateAction<Storefront | null>>;
 }
 export const StorefrontContext = createContext<StorefrontContextValue | null>(
@@ -34,9 +38,12 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
   const [cart, setCart] = useState<any>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
-  const [stores, setStores] = useState<Storefront["stores"]>([]);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [selectedStore, setSelectedStore] = useState<string | null>(null);
 
   useEffect(() => {
+    const store = localStorage?.getItem("bb-selected-store");
+    setSelectedStore(store);
     const fetchStorefront = async () => {
       setIsLoading(true);
       try {
@@ -82,9 +89,33 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
 
   return (
     <StorefrontContext.Provider
-      value={{ metadata, isLoading, categories, types, stores }}
+      value={{
+        metadata,
+        isLoading,
+        categories,
+        types,
+        stores,
+        cart,
+        session,
+        selectedStore,
+      }}
     >
-      {props.children}
+      {isLoading || !metadata ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          {!selectedStore ? (
+            <StoreSelect
+              onSelect={(id) => {
+                localStorage.setItem("bb-selected-store", id);
+                setSelectedStore(id);
+              }}
+            />
+          ) : (
+            props.children
+          )}
+        </>
+      )}
     </StorefrontContext.Provider>
   );
 };

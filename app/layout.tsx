@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { StorefrontProvider } from "@/contexts/storefront";
 import { headers } from "next/headers";
 import Script from "next/script";
+import StoreSelect from "@/components/StoreSelect";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +26,6 @@ export default async function RootLayout({
         <Suspense fallback={<p>Loading...</p>}>
           <StorefrontProvider>
             <Navbar />
-
             <main>{children}</main>
           </StorefrontProvider>
         </Suspense>
