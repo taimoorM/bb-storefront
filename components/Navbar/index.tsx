@@ -1,11 +1,11 @@
 "use client";
-import { useStorefront } from "@/contexts/storefront";
+import { useApp } from "@/contexts/app";
 import Link from "next/link";
 import Logo from "./logo";
 import Search from "./search";
 
 export default function Navbar() {
-  const { metadata, isLoading, categories, types } = useStorefront();
+  const { metadata, isLoading, categories, types } = useApp();
 
   return (
     <nav className="flex items-center justify-between p-4 lg:px-6 z-10">

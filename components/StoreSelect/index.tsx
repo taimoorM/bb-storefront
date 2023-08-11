@@ -1,5 +1,5 @@
 "use client";
-import { useStorefront } from "@/contexts/storefront";
+import { useApp } from "@/contexts/app";
 import clsx from "clsx";
 
 export default function StoreSelect({
@@ -7,7 +7,7 @@ export default function StoreSelect({
 }: {
   onSelect: (store: string) => void;
 }) {
-  const { stores, selectedStore } = useStorefront();
+  const { stores, selectedStore } = useApp();
   console.log("stores", stores);
   return (
     <div

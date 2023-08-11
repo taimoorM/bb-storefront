@@ -3,7 +3,7 @@ import StoreSelect from "@/components/StoreSelect";
 import { Cart, Category, Session, Store, Type } from "@/types/types";
 import { createContext, useContext, useEffect, useState } from "react";
 
-interface Storefront {
+interface App {
   metadata: {
     id: string;
     businessName: string;
@@ -14,30 +14,18 @@ interface Storefront {
   stores: any[];
 }
 
-interface StorefrontContextValue {
-  metadata: Storefront["metadata"] | null;
+interface AppContextValue {
+  metadata: App["metadata"] | null;
   isLoading: boolean;
-  categories: Category[];
-  types: Type[];
   stores: Store[];
-  session: Session;
-  cart: Cart;
   selectedStore: string | null;
-  //   setStorefront: React.Dispatch<React.SetStateAction<Storefront | null>>;
+  //   setApp: React.Dispatch<React.SetStateAction<App | null>>;
 }
-export const StorefrontContext = createContext<StorefrontContextValue | null>(
-  null
-);
+export const AppContext = createContext<AppContextValue | null>(null);
 
-export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
-  props
-) => {
-  const [metadata, setMetadata] = useState<Storefront["metadata"] | null>(null);
+export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
+  const [metadata, setMetadata] = useState<App["metadata"] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [session, setSession] = useState<any>(null);
-  const [cart, setCart] = useState<any>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [types, setTypes] = useState<Type[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<string | null>(null);
 
@@ -48,12 +36,10 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
       setIsLoading(true);
       try {
         const response = await fetch("/api/init");
-        const storefront: Storefront = await response.json();
-
-        console.log("storefront", storefront);
+        const data: App = await response.json();
 
         const headers = {
-          "x-public-key": storefront.metadata.publicKey,
+          "x-public-key": data.metadata.publicKey,
           Accept: "application/json",
         };
 
@@ -72,12 +58,8 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
         console.log("session", session);
         console.log("cart", cart);
 
-        setMetadata(storefront.metadata);
-        setStores(storefront.stores);
-        setSession(session);
-        setCart(cart);
-        setTypes(types);
-        setCategories(categories);
+        setMetadata(data.metadata);
+        setStores(data.stores);
       } catch (e) {
         console.error("Failed to fetch storefront:", e);
       }
@@ -88,15 +70,11 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
   }, []);
 
   return (
-    <StorefrontContext.Provider
+    <AppContext.Provider
       value={{
         metadata,
         isLoading,
-        categories,
-        types,
         stores,
-        cart,
-        session,
         selectedStore,
       }}
     >
@@ -116,12 +94,12 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = (
           )}
         </>
       )}
-    </StorefrontContext.Provider>
+    </AppContext.Provider>
   );
 };
 
-export const useStorefront = (): StorefrontContextValue => {
-  const context = useContext(StorefrontContext);
+export const useApp = (): AppContextValue => {
+  const context = useContext(AppContext);
   if (!context) {
     throw new Error("useStorefront must be used within an StoreProvider");
   }

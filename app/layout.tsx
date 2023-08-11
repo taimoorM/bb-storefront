@@ -3,10 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
-import { StorefrontProvider } from "@/contexts/storefront";
-import { headers } from "next/headers";
-import Script from "next/script";
-import StoreSelect from "@/components/StoreSelect";
+import { AppProvider } from "@/contexts/app";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +21,10 @@ export default async function RootLayout({
     <html lang="en" className={inter.className}>
       <body>
         <Suspense fallback={<p>Loading...</p>}>
-          <StorefrontProvider>
+          <AppProvider>
             <Navbar />
             <main>{children}</main>
-          </StorefrontProvider>
+          </AppProvider>
         </Suspense>
       </body>
     </html>
