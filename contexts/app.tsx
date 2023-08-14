@@ -2,6 +2,7 @@
 import StoreSelect from "@/components/StoreSelect";
 import { Cart, Category, Session, Store, Type } from "@/types/types";
 import { createContext, useContext, useEffect, useState } from "react";
+import { StoreProvider } from "./store";
 
 interface App {
   metadata: {
@@ -38,26 +39,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
         const response = await fetch("/api/init");
         const data: App = await response.json();
 
-        const headers = {
-          "x-public-key": data.metadata.publicKey,
-          Accept: "application/json",
-        };
-
-        const [types, categories, { session, cart }] = await Promise.all([
-          fetch("/api/storefront/types", { headers }).then((res) => res.json()),
-          fetch("/api/storefront/categories", {
-            headers,
-          }).then((res) => res.json()),
-          fetch("/api/storefront/session", {
-            headers,
-          }).then((res) => res.json()),
-        ]);
-
-        console.log("types", types);
-        console.log("categories", categories);
-        console.log("session", session);
-        console.log("cart", cart);
-
         setMetadata(data.metadata);
         setStores(data.stores);
       } catch (e) {
@@ -90,7 +71,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
               }}
             />
           ) : (
-            props.children
+            <StoreProvider selectedStore={selectedStore}>
+              {props.children}
+            </StoreProvider>
           )}
         </>
       )}

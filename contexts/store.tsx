@@ -28,45 +28,61 @@ export const StoreProvider: React.FC<{
 
   useEffect(() => {
     const fetchStoreData = async () => {
-      if (metadata) {
-        const headers = {
-          "x-public-key": metadata.publicKey,
-          Accept: "application/json",
-        };
-        const [types, categories, { session, cart }, inventory] =
-          await Promise.all([
-            fetch("/api/storefront/types", { headers }).then((res) =>
-              res.json()
-            ),
-            fetch("/api/storefront/categories", {
-              headers,
-            }).then((res) => res.json()),
-            fetch("/api/storefront/session", {
-              headers,
-            }).then((res) => res.json()),
-            fetch("/api/storefront/inventory", {
-              headers,
-            }).then((res) => res.json()),
-          ]);
+      if (!metadata) return;
+
+      const headers = {
+        "x-public-key": metadata.publicKey,
+        Accept: "application/json",
+      };
+
+      const fetchData = async (endpoint: string) => {
+        const response = await fetch(endpoint, {
+          headers,
+          signal: abortController.signal,
+        });
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch ${endpoint}: ${response.statusText}`
+          );
+        }
+        return response.json();
+      };
+
+      try {
+        const [types, categories, sessionData] = await Promise.all([
+          fetchData("/api/storefront/types"),
+          fetchData("/api/storefront/categories"),
+          fetchData("/api/storefront/session"),
+          // fetchData("/api/storefront/inventory"),
+        ]);
+
+        setSession(sessionData.session);
+        setCart(sessionData.cart);
+        setTypes(types);
+        setCategories(categories);
+      } catch (error) {
+        console.error("Error fetching store data:", error);
       }
-
-      setSession(session);
-      setCart(cart);
-      setTypes(types);
-      setCategories(categories);
     };
-    fetchStoreData();
-  }, [metadata, categories, types, session, cart]);
 
-    return (
-        <StoreContext.Provider
-            value={{
-                categories,
-                types,
-                session,
-                cart,
-            }}
-        >
-            {props.children}
-        </StoreContext.Provider>
+    const abortController = new AbortController();
+    fetchStoreData();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [metadata]);
+
+  return (
+    <StoreContext.Provider
+      value={{
+        categories,
+        types,
+        session,
+        cart,
+      }}
+    >
+      {props.children}
+    </StoreContext.Provider>
+  );
 };

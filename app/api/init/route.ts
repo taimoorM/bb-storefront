@@ -13,12 +13,15 @@ export async function GET(req: NextRequest) {
   try {
     const accessToken = cookieStore.get(`bb-access-token`);
 
-    const { data, error } = await supabase
+    const query = supabase
       .from("Customer")
-      .select("id, businessName, subdomain, logo, publicKey")
-      .eq("publicKey", accessToken?.value)
-      .eq("subdomain", subdomain)
-      .single();
+      .select("id, businessName, subdomain, logo, publicKey");
+
+    if (accessToken?.value) {
+      query.eq("publicKey", accessToken.value);
+    }
+
+    const { data, error } = await query.eq("subdomain", subdomain).single();
 
     if (error) {
       throw error;
