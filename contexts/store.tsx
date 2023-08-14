@@ -10,6 +10,7 @@ interface StoreContextValue {
   types: Type[];
   session: Session;
   cart: Cart;
+  inventory: any[];
 }
 
 export const StoreContext = createContext<StoreContextValue | null>(null);
@@ -21,6 +22,7 @@ export const StoreProvider: React.FC<{
   const [cart, setCart] = useState<any>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
+  const [inventory, setInventory] = useState<any[]>([]);
 
   const { metadata, selectedStore, setIsLoading } = useApp();
 
@@ -31,6 +33,7 @@ export const StoreProvider: React.FC<{
       const headers = {
         "x-public-key": metadata.publicKey,
         Accept: "application/json",
+        "x-store-id": selectedStore || "",
       };
 
       const fetchData = async (endpoint: string) => {
@@ -47,17 +50,19 @@ export const StoreProvider: React.FC<{
       };
 
       try {
-        const [types, categories, sessionData] = await Promise.all([
+        const [types, categories, sessionData, inventory] = await Promise.all([
           fetchData("/api/storefront/types"),
           fetchData("/api/storefront/categories"),
           fetchData("/api/storefront/session"),
-          // fetchData("/api/storefront/inventory"),
+          fetchData("/api/storefront/inventory"),
         ]);
 
         setSession(sessionData.session);
         setCart(sessionData.cart);
         setTypes(types);
         setCategories(categories);
+        setInventory(inventory);
+        console.log("inventory", inventory);
       } catch (error) {
         console.error("Error fetching store data:", error);
       }
@@ -71,7 +76,7 @@ export const StoreProvider: React.FC<{
     return () => {
       abortController.abort();
     };
-  }, [metadata, setIsLoading]);
+  }, [metadata, setIsLoading, selectedStore]);
 
   return (
     <StoreContext.Provider
@@ -80,6 +85,7 @@ export const StoreProvider: React.FC<{
         types,
         session,
         cart,
+        inventory,
       }}
     >
       {props.children}
