@@ -3,9 +3,11 @@ import { useApp } from "@/contexts/app";
 import Link from "next/link";
 import Logo from "./logo";
 import Search from "./search";
+import { useStore } from "@/contexts/store";
 
 export default function Navbar() {
-  const { metadata, isLoading, categories, types } = useApp();
+  const { metadata } = useApp();
+  const { types, categories } = useStore();
 
   return (
     <nav className="flex items-center justify-between p-4 lg:px-6 z-10">

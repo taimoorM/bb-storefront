@@ -18,6 +18,7 @@ interface App {
 interface AppContextValue {
   metadata: App["metadata"] | null;
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   stores: Store[];
   selectedStore: string | null;
   //   setApp: React.Dispatch<React.SetStateAction<App | null>>;
@@ -44,7 +45,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
       } catch (e) {
         console.error("Failed to fetch storefront:", e);
       }
-      setIsLoading(false);
     };
 
     fetchStorefront();
@@ -55,11 +55,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
       value={{
         metadata,
         isLoading,
+        setIsLoading,
         stores,
         selectedStore,
       }}
     >
-      {isLoading || !metadata ? (
+      {!metadata ? (
         <p>Loading...</p>
       ) : (
         <>
@@ -71,8 +72,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
               }}
             />
           ) : (
-            <StoreProvider selectedStore={selectedStore}>
-              {props.children}
+            <StoreProvider>
+              {isLoading ? <p>Loading...</p> : <>{props.children}</>}
             </StoreProvider>
           )}
         </>

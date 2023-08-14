@@ -1,9 +1,8 @@
 "use client";
 
-import { Cart, Category, Store } from "@/types/types";
+import { Cart, Category, Store, Type } from "@/types/types";
 import { Session } from "inspector";
 import { createContext, useContext, useEffect, useState } from "react";
-import { Type } from "typescript";
 import { useApp } from "./app";
 
 interface StoreContextValue {
@@ -16,7 +15,6 @@ interface StoreContextValue {
 export const StoreContext = createContext<StoreContextValue | null>(null);
 
 export const StoreProvider: React.FC<{
-  selectedStore: string | null;
   children: React.ReactNode;
 }> = (props) => {
   const [session, setSession] = useState<any>(null);
@@ -24,7 +22,7 @@ export const StoreProvider: React.FC<{
   const [categories, setCategories] = useState<Category[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
 
-  const { metadata } = useApp();
+  const { metadata, selectedStore, setIsLoading } = useApp();
 
   useEffect(() => {
     const fetchStoreData = async () => {
@@ -63,6 +61,8 @@ export const StoreProvider: React.FC<{
       } catch (error) {
         console.error("Error fetching store data:", error);
       }
+
+      setIsLoading(false);
     };
 
     const abortController = new AbortController();
@@ -71,7 +71,7 @@ export const StoreProvider: React.FC<{
     return () => {
       abortController.abort();
     };
-  }, [metadata]);
+  }, [metadata, setIsLoading]);
 
   return (
     <StoreContext.Provider
@@ -85,4 +85,12 @@ export const StoreProvider: React.FC<{
       {props.children}
     </StoreContext.Provider>
   );
+};
+
+export const useStore = (): StoreContextValue => {
+  const context = useContext(StoreContext);
+  if (!context) {
+    throw new Error("useStorefront must be used within an StoreProvider");
+  }
+  return context;
 };
