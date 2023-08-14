@@ -8,7 +8,7 @@ const Label = ({
   position = "bottom",
 }: {
   title: string;
-  amount: string;
+  amount: number;
   currencyCode: string;
   position?: "bottom" | "center";
 }) => {

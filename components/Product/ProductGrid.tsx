@@ -1,30 +1,40 @@
+"use client";
 import Link from "next/link";
 import { GridTileImage } from "../Grid/tile";
 import Grid from "../Grid";
 import { useStore } from "@/contexts/store";
+import { useApp } from "@/contexts/app";
+import clsx from "clsx";
 
 export function ProductGrid() {
-  const { inventory } = useStore();
+  const { stores } = useApp();
+  const { inventory, selectedStore } = useStore();
+  const store = stores.find((store) => store.id === selectedStore);
+
+  if (!inventory) {
+    return null;
+  }
+
+  console.log(inventory.items);
+
   return (
-    <Grid>
-      {items.map((item) => (
-        <Grid.Item key={item.id} className="animate-fadeIn">
-          <Link
-            className="relative inline-block h-full w-full"
-            href={`/item/${item.name}`}
-          >
-            <GridTileImage
-              alt={item.title}
-              label={{
-                title: item.name,
-                amount: item.price,
-                currencyCode: item.priceRange.maxVariantPrice.currencyCode,
-              }}
-              src={item.featuredImage?.url}
-              fill
-              sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-            />
-          </Link>
+    <Grid className="grid-cols-4">
+      {Object.values(inventory.items).map((item) => (
+        <Grid.Item key={item[0].id} className="animate-fadeIn">
+          <GridTileImage
+            alt={item[0].name}
+            variants={item}
+            label={{
+              title: item[0].name,
+              amount: item[0].price,
+              currencyCode: store?.currency || "USD",
+            }}
+            src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/${
+              item[0].images[0]?.path || ""
+            }`}
+            fill
+            sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+          />
         </Grid.Item>
       ))}
     </Grid>

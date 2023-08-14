@@ -1,6 +1,6 @@
 "use client";
 
-import { Cart, Category, Inventory, Store, Type } from "@/types/types";
+import { Cart, Category, Inventory, Type } from "@/types/types";
 import { Session } from "inspector";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
@@ -8,9 +8,10 @@ import { useApp } from "./app";
 interface StoreContextValue {
   categories: Category[];
   types: Type[];
-  session: Session;
-  cart: Cart;
-  inventory: any[];
+  session: Session | null;
+  cart: Cart | null;
+  inventory: Inventory | null;
+  selectedStore: string | null;
 }
 
 export const StoreContext = createContext<StoreContextValue | null>(null);
@@ -19,11 +20,11 @@ export const StoreProvider: React.FC<{
   children: React.ReactNode;
   selectedStore: string | null;
 }> = (props) => {
-  const [session, setSession] = useState<any>(null);
-  const [cart, setCart] = useState<Session | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [cart, setCart] = useState<Cart | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
-  const [inventory, setInventory] = useState<Inventory[]>([]);
+  const [inventory, setInventory] = useState<Inventory | null>(null);
 
   const { metadata, setIsLoading } = useApp();
 
@@ -51,7 +52,7 @@ export const StoreProvider: React.FC<{
       };
 
       try {
-        const [types, categories, sessionData, inventory] = await Promise.all([
+        const [types, categories, sessionData, data] = await Promise.all([
           fetchData("/api/storefront/types"),
           fetchData("/api/storefront/categories"),
           fetchData("/api/storefront/session"),
@@ -62,8 +63,7 @@ export const StoreProvider: React.FC<{
         setCart(sessionData.cart);
         setTypes(types);
         setCategories(categories);
-        setInventory(inventory);
-        console.log("inventory", inventory);
+        setInventory(data.inventory);
       } catch (error) {
         console.error("Error fetching store data:", error);
       }
@@ -87,6 +87,7 @@ export const StoreProvider: React.FC<{
         session,
         cart,
         inventory,
+        selectedStore: props.selectedStore,
       }}
     >
       {props.children}

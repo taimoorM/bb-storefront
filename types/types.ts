@@ -14,7 +14,7 @@ export interface Inventory {
   };
 }
 
-interface InventoryItem {
+export interface InventoryItem {
   active: boolean;
   id: string;
   name: string;
