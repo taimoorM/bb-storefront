@@ -4,10 +4,12 @@ import clsx from "clsx";
 
 export default function StoreSelect({
   onSelect,
+  selectedStore,
 }: {
   onSelect: (store: string) => void;
+  selectedStore: string | null;
 }) {
-  const { stores, selectedStore } = useApp();
+  const { stores } = useApp();
   console.log("stores", stores);
   return (
     <div

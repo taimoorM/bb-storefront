@@ -20,8 +20,6 @@ interface AppContextValue {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   stores: Store[];
-  selectedStore: string | null;
-  //   setApp: React.Dispatch<React.SetStateAction<App | null>>;
 }
 export const AppContext = createContext<AppContextValue | null>(null);
 
@@ -57,7 +55,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
         isLoading,
         setIsLoading,
         stores,
-        selectedStore,
       }}
     >
       {!metadata ? (
@@ -66,13 +63,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
         <>
           {!selectedStore ? (
             <StoreSelect
+              selectedStore={selectedStore}
               onSelect={(id) => {
                 localStorage.setItem("bb-selected-store", id);
                 setSelectedStore(id);
               }}
             />
           ) : (
-            <StoreProvider>
+            <StoreProvider selectedStore={selectedStore}>
               {isLoading ? <p>Loading...</p> : <>{props.children}</>}
             </StoreProvider>
           )}

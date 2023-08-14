@@ -1,6 +1,6 @@
 "use client";
 
-import { Cart, Category, Store, Type } from "@/types/types";
+import { Cart, Category, Inventory, Store, Type } from "@/types/types";
 import { Session } from "inspector";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
@@ -17,14 +17,15 @@ export const StoreContext = createContext<StoreContextValue | null>(null);
 
 export const StoreProvider: React.FC<{
   children: React.ReactNode;
+  selectedStore: string | null;
 }> = (props) => {
   const [session, setSession] = useState<any>(null);
-  const [cart, setCart] = useState<any>(null);
+  const [cart, setCart] = useState<Session | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
-  const [inventory, setInventory] = useState<any[]>([]);
+  const [inventory, setInventory] = useState<Inventory[]>([]);
 
-  const { metadata, selectedStore, setIsLoading } = useApp();
+  const { metadata, setIsLoading } = useApp();
 
   useEffect(() => {
     const fetchStoreData = async () => {
@@ -33,7 +34,7 @@ export const StoreProvider: React.FC<{
       const headers = {
         "x-public-key": metadata.publicKey,
         Accept: "application/json",
-        "x-store-id": selectedStore || "",
+        "x-store-id": props.selectedStore || "",
       };
 
       const fetchData = async (endpoint: string) => {
@@ -76,7 +77,7 @@ export const StoreProvider: React.FC<{
     return () => {
       abortController.abort();
     };
-  }, [metadata, setIsLoading, selectedStore]);
+  }, [metadata, setIsLoading, props.selectedStore]);
 
   return (
     <StoreContext.Provider
