@@ -7,6 +7,14 @@ export interface Category {
   subCategories?: Category[] | null;
 }
 
+export interface Brand {
+  id: string;
+  name: string;
+  description?: string;
+  image?: string | null;
+  active: boolean;
+}
+
 export interface Inventory {
   id: string;
   items: {

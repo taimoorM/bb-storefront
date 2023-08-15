@@ -1,12 +1,13 @@
 "use client";
 
-import { Cart, Category, Inventory, Type } from "@/types/types";
+import { Brand, Cart, Category, Inventory, Type } from "@/types/types";
 import { Session } from "inspector";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
 
 interface StoreContextValue {
   categories: Category[];
+  brands: Brand[];
   types: Type[];
   session: Session | null;
   cart: Cart | null;
@@ -23,6 +24,7 @@ export const StoreProvider: React.FC<{
   const [session, setSession] = useState<Session | null>(null);
   const [cart, setCart] = useState<Cart | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
   const [inventory, setInventory] = useState<Inventory | null>(null);
 
@@ -52,17 +54,20 @@ export const StoreProvider: React.FC<{
       };
 
       try {
-        const [types, categories, sessionData, data] = await Promise.all([
-          fetchData("/api/storefront/types"),
-          fetchData("/api/storefront/categories"),
-          fetchData("/api/storefront/session"),
-          fetchData("/api/storefront/inventory"),
-        ]);
+        const [types, categories, brands, sessionData, data] =
+          await Promise.all([
+            fetchData("/api/storefront/types"),
+            fetchData("/api/storefront/categories"),
+            fetchData("/api/storefront/brands"),
+            fetchData("/api/storefront/session"),
+            fetchData("/api/storefront/inventory"),
+          ]);
 
         setSession(sessionData.session);
         setCart(sessionData.cart);
         setTypes(types);
         setCategories(categories);
+        setBrands(brands);
         setInventory(data.inventory);
       } catch (error) {
         console.error("Error fetching store data:", error);
@@ -88,6 +93,7 @@ export const StoreProvider: React.FC<{
         cart,
         inventory,
         selectedStore: props.selectedStore,
+        brands,
       }}
     >
       {props.children}
