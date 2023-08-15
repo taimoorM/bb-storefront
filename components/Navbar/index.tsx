@@ -4,6 +4,9 @@ import Link from "next/link";
 import Logo from "./logo";
 import Search from "./search";
 import { useStore } from "@/contexts/store";
+import { Suspense } from "react";
+import OpenCart from "../Cart/OpenCart";
+import Cart from "../Cart";
 
 export default function Navbar() {
   const { metadata } = useApp();
@@ -80,12 +83,12 @@ export default function Navbar() {
         <div className="hidden justify-center md:flex md:w-1/3">
           <Search />
         </div>
-        {/*
+
         <div className="flex justify-end md:w-1/3">
           <Suspense fallback={<OpenCart />}>
             <Cart />
           </Suspense>
-        </div> */}
+        </div>
       </div>
     </nav>
   );
