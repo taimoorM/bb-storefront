@@ -13,7 +13,7 @@ export default function Navbar() {
   const { types, categories } = useStore();
 
   return (
-    <nav className="flex items-center justify-between p-4 lg:px-6 z-10">
+    <nav className="flex items-center justify-between p-4 lg:px-6 ">
       <div className="block flex-none md:hidden">
         {/* <MobileMenu menu={menu} /> */}
       </div>
@@ -39,7 +39,7 @@ export default function Navbar() {
                   Shop by Type
                 </button>
 
-                <div className="absolute left-0 mt-2 w-48 bg-white p-4 rounded border shadow-lg opacity-0 group-hover:opacity-100 transition ease-in-out duration-150">
+                <div className="absolute left-0 mt-2 w-48 bg-white p-4 rounded border shadow-lg opacity-0 group-hover:opacity-100 transition ease-in-out duration-150 z-50">
                   <ul className="hidden gap-6 text-sm md:block">
                     {types.map((type) => (
                       <li key={type.id}>
@@ -61,12 +61,12 @@ export default function Navbar() {
                   Shop by Category
                 </button>
 
-                <div className="absolute left-0 mt-2 w-48 bg-white p-4 rounded border shadow-lg opacity-0 group-hover:opacity-100 transition ease-in-out duration-150">
-                  <ul className="hidden gap-6 text-sm md:block">
+                <div className="absolute left-0 mt-2 w-48 bg-white p-4 rounded border shadow-lg opacity-0 group-hover:opacity-100 transition ease-in-out duration-150 z-50">
+                  <ul className="hidden gap-6 text-sm md:block ">
                     {categories.map((category) => (
                       <li key={category.id}>
                         <Link
-                          href={`type/${category.name}`}
+                          href={`categories/${category.name}`}
                           className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
                         >
                           {category.name}
@@ -85,7 +85,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex justify-end md:w-1/3">
-          <Suspense fallback={<OpenCart />}>{/* <Cart /> */}</Suspense>
+          <Suspense fallback={<OpenCart />}>
+            <Cart />
+          </Suspense>
         </div>
       </div>
     </nav>

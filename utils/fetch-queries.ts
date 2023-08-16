@@ -5,38 +5,6 @@ export const fetchData = async (key: string, headers: {}) => {
   return res.json();
 };
 
-export const getInitialQueries = (headers: {}) => {
-  return [
-    {
-      queryKey: ["storefrontData"],
-      queryFn: async () =>
-        Promise.all([
-          fetchData("types", headers),
-          fetchData("categories", headers),
-          fetchData("bradnds", headers),
-          fetchData("session", headers),
-          fetchData("inventory", headers),
-        ]),
-    },
-    {
-      queryKey: ["categories"],
-      queryFn: async () => fetchData("categories", headers),
-    },
-    {
-      queryKey: ["brands"],
-      queryFn: async () => fetchData("brands", headers),
-    },
-    {
-      queryKey: ["session"],
-      queryFn: async () => fetchData("session", headers),
-    },
-    {
-      queryKey: ["inventory"],
-      queryFn: async () => fetchData("inventory", headers),
-    },
-  ];
-};
-
 export const useTypes = (headers: {}) => {
   return useQuery({
     queryKey: ["types"],

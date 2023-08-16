@@ -5,7 +5,7 @@ import { Session } from "inspector";
 import { createContext, use, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { fetchData, getInitialQueries } from "@/utils/fetch-queries";
+import { fetchData } from "@/utils/fetch-queries";
 
 interface StoreContextValue {
   categories: Category[];
@@ -30,7 +30,7 @@ export const StoreProvider: React.FC<{
   const [types, setTypes] = useState<Type[]>([]);
   const [inventory, setInventory] = useState<Inventory | null>(null);
 
-  const { metadata, setIsLoading } = useApp();
+  const { metadata } = useApp();
 
   // useEffect(() => {
   //   const fetchStoreData = async () => {
@@ -91,8 +91,6 @@ export const StoreProvider: React.FC<{
     Accept: "application/json",
     "x-store-id": props.selectedStore || "",
   };
-
-  const queries = getInitialQueries(headers);
 
   const {
     data: storefrontData,

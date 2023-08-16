@@ -52,7 +52,7 @@ export function GridTileImage({
           position={label.position}
         />
       ) : null}
-      <div className="z-50 flex gap-2 flex-wrap">
+      <div className="z-10 flex gap-2 flex-wrap">
         {variants.map((variant, i) => (
           <button
             key={variant.id}
