@@ -121,16 +121,7 @@ export const StoreProvider: React.FC<{
       setCategories(categories);
       setBrands(brands);
       setInventory(data.inventory);
-      setIsLoading(false);
     }
-
-    // setSession(sessionData.data.session);
-    // setCart(sessionData.data.cart);
-    // setTypes(types.data);
-    // setCategories(categories.data);
-    // setBrands(brands.data);
-    // setInventory(data.data.inventory);
-    // setIsLoading(false);
   }, [storefrontData, error, isError]);
 
   return (
@@ -145,7 +136,7 @@ export const StoreProvider: React.FC<{
         brands,
       }}
     >
-      {props.children}
+      {isLoading ? <div>Loading...</div> : props.children}
     </StoreContext.Provider>
   );
 };

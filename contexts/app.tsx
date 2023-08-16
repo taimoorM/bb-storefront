@@ -17,15 +17,13 @@ interface App {
 
 interface AppContextValue {
   metadata: App["metadata"] | null;
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   stores: Store[];
 }
 export const AppContext = createContext<AppContextValue | null>(null);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const [metadata, setMetadata] = useState<App["metadata"] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const [stores, setStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<string | null>(null);
 
@@ -33,7 +31,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
     const store = localStorage?.getItem("bb-selected-store");
     setSelectedStore(store);
     const fetchStorefront = async () => {
-      setIsLoading(true);
       try {
         const response = await fetch("/api/init");
         const data: App = await response.json();
@@ -52,8 +49,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
     <AppContext.Provider
       value={{
         metadata,
-        isLoading,
-        setIsLoading,
+
         stores,
       }}
     >
@@ -71,7 +67,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
             />
           ) : (
             <StoreProvider selectedStore={selectedStore}>
-              {isLoading ? <p>Loading...</p> : <>{props.children}</>}
+              {props.children}
             </StoreProvider>
           )}
         </>
