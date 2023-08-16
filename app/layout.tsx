@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
 import { AppProvider } from "@/contexts/app";
+import Providers from "@/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +22,12 @@ export default async function RootLayout({
     <html lang="en" className={inter.className}>
       <body>
         <Suspense fallback={<p>Loading...</p>}>
-          <AppProvider>
-            <Navbar />
-            <main>{children}</main>
-          </AppProvider>
+          <Providers>
+            <AppProvider>
+              <Navbar />
+              <main>{children}</main>
+            </AppProvider>
+          </Providers>
         </Suspense>
       </body>
     </html>
