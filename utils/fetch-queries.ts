@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
 export const fetchData = async (key: string, headers: {}) => {
-  console.log("inside fetch data", headers);
   const res = await fetch(`/api/storefront/${key}`, { headers });
   return res.json();
 };
@@ -9,8 +8,15 @@ export const fetchData = async (key: string, headers: {}) => {
 export const getInitialQueries = (headers: {}) => {
   return [
     {
-      queryKey: ["types"],
-      queryFn: async () => fetchData("types", headers),
+      queryKey: ["storefrontData"],
+      queryFn: async () =>
+        Promise.all([
+          fetchData("types", headers),
+          fetchData("categories", headers),
+          fetchData("bradnds", headers),
+          fetchData("session", headers),
+          fetchData("inventory", headers),
+        ]),
     },
     {
       queryKey: ["categories"],

@@ -4,9 +4,8 @@ import { Brand, Cart, Category, Inventory, Type } from "@/types/types";
 import { Session } from "inspector";
 import { createContext, use, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
-import { useQueries } from "@tanstack/react-query";
-import { fetchData, getInitialQueries, useTypes } from "@/utils/fetch-queries";
-import { headers } from "next/headers";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { fetchData, getInitialQueries } from "@/utils/fetch-queries";
 
 interface StoreContextValue {
   categories: Category[];
@@ -95,24 +94,44 @@ export const StoreProvider: React.FC<{
 
   const queries = getInitialQueries(headers);
 
-  const results = useQueries({ queries });
+  const {
+    data: storefrontData,
+    isError,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["storefrontData"],
+    queryFn: async () =>
+      Promise.all([
+        fetchData("types", headers),
+        fetchData("categories", headers),
+        fetchData("brands", headers),
+        fetchData("session", headers),
+        fetchData("inventory", headers),
+      ]),
+  });
 
   useEffect(() => {
-    if (results.some((result) => !result.isLoading)) {
+    console.log(storefrontData, error, isError);
+    if (storefrontData) {
+      const [types, categories, brands, sessionData, data] = storefrontData;
+      setSession(sessionData.session);
+      setCart(sessionData.cart);
+      setTypes(types);
+      setCategories(categories);
+      setBrands(brands);
+      setInventory(data.inventory);
       setIsLoading(false);
     }
-    if (results.some((result) => !result.isSuccess)) return;
 
-    const [types, categories, brands, sessionData, data] = results;
-
-    setSession(sessionData.data.session);
-    setCart(sessionData.data.cart);
-    setTypes(types.data);
-    setCategories(categories.data);
-    setBrands(brands.data);
-    setInventory(data.data.inventory);
-    setIsLoading(false);
-  }, [results, setIsLoading]);
+    // setSession(sessionData.data.session);
+    // setCart(sessionData.data.cart);
+    // setTypes(types.data);
+    // setCategories(categories.data);
+    // setBrands(brands.data);
+    // setInventory(data.data.inventory);
+    // setIsLoading(false);
+  }, [storefrontData, error, isError]);
 
   return (
     <StoreContext.Provider
