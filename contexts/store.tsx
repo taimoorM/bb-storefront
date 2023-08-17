@@ -110,7 +110,6 @@ export const StoreProvider: React.FC<{
   });
 
   useEffect(() => {
-    console.log(storefrontData, error, isError);
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
       setSession(sessionData.session);
@@ -120,7 +119,7 @@ export const StoreProvider: React.FC<{
       setBrands(brands);
       setInventory(data.inventory);
     }
-  }, [storefrontData, error, isError]);
+  }, [storefrontData]);
 
   return (
     <StoreContext.Provider

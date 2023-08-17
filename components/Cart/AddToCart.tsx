@@ -3,8 +3,7 @@
 import { AiOutlinePlus } from "react-icons/Ai";
 import clsx from "clsx";
 import { addItem } from "components/cart/actions";
-import LoadingDots from "components/loading-dots";
-import { ProductVariant } from "lib/shopify/types";
+import LoadingDots from "../LoadingDots";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 
@@ -19,12 +18,7 @@ export function AddToCart({
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
-  const variant = variants.find((variant: ProductVariant) =>
-    variant.selectedOptions.every(
-      (option) => option.value === searchParams.get(option.name.toLowerCase())
-    )
-  );
-  const selectedVariantId = variant?.id || defaultVariantId;
+
   const title = !availableForSale
     ? "Out of stock"
     : !selectedVariantId
