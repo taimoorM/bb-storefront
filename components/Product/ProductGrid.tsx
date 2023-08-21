@@ -5,10 +5,13 @@ import Grid from "../Grid";
 import { useStore } from "@/contexts/store";
 import { useApp } from "@/contexts/app";
 import clsx from "clsx";
+import { AddToCart } from "../Cart/AddToCart";
+import { useState } from "react";
 
 export function ProductGrid() {
   const { stores } = useApp();
   const { inventory, selectedStore } = useStore();
+  const [selectedVariant, setSelectedVariant] = useState(0);
   const store = stores.find((store) => store.id === selectedStore);
 
   if (!inventory) {
@@ -23,7 +26,9 @@ export function ProductGrid() {
         <Grid.Item key={item[0].id} className="animate-fadeIn">
           <GridTileImage
             alt={item[0].name}
+            selectedVariant={selectedVariant}
             variants={item}
+            setSelectedVariant={setSelectedVariant}
             label={{
               title: item[0].name,
               amount: item[0].price,
@@ -35,6 +40,7 @@ export function ProductGrid() {
             fill
             sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
           />
+          <AddToCart item={item[selectedVariant]} />
         </Grid.Item>
       ))}
     </Grid>

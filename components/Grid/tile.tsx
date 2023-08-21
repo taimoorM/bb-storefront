@@ -10,9 +10,14 @@ export function GridTileImage({
   active,
   label,
   variants,
+  setSelectedVariant,
+  selectedVariant,
+
   ...props
 }: {
   isInteractive?: boolean;
+  setSelectedVariant: (index: number) => void;
+  selectedVariant: number;
   active?: boolean;
   variants: InventoryItem[];
   label?: {
@@ -22,7 +27,6 @@ export function GridTileImage({
     position?: "bottom" | "center";
   };
 } & React.ComponentProps<typeof Image>) {
-  const [isActive, setIsActive] = useState(0);
   return (
     <div
       className={clsx(
@@ -47,7 +51,7 @@ export function GridTileImage({
       {label ? (
         <Label
           title={label.title}
-          amount={variants[isActive].price}
+          amount={variants[selectedVariant].price}
           currencyCode={label.currencyCode}
           position={label.position}
         />
@@ -59,7 +63,7 @@ export function GridTileImage({
             aria-disabled={!variant.quantity}
             disabled={!variant.quantity}
             onClick={() => {
-              setIsActive(i);
+              setSelectedVariant(i);
             }}
             title={`${variant.sizeLabel} ${variant.size}${
               !variant.quantity ? "(Out of Stock)" : ""
@@ -67,7 +71,7 @@ export function GridTileImage({
             className={clsx(
               "flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900",
               {
-                "ring-1 ring-blue-600": isActive === i,
+                "ring-1 ring-blue-600": selectedVariant === i,
                 "transition duration-300 ease-in-out hover:scale-110 hover:ring-blue-600 ":
                   variant.quantity,
                 "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 before:dark:bg-neutral-700":

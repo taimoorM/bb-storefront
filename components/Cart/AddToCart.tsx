@@ -19,19 +19,22 @@ export function AddToCart({ item }: { item: InventoryItem }) {
   const { session } = useStore();
   const [isPending, startTransition] = useTransition();
 
+  console.log(item);
+
   const title = !item.quantity ? "Out of stock" : item.name;
+  console.log(metadata?.publicKey);
   const updateCart = useMutation({
     mutationFn: () => {
       return fetch(`/api/storefront/cart/`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
+          Accept: "application/json",
           "x-public-key": metadata?.publicKey || "",
         },
         body: JSON.stringify({
           sessionId: session?.id,
-          inventoryItemId: item.id,
-          quantity: item.quantity,
+          id: item.id,
+          quantity: 1,
         }),
       });
     },
@@ -64,7 +67,7 @@ export function AddToCart({ item }: { item: InventoryItem }) {
           <LoadingDots className="mb-3 bg-white" />
         )}
       </div>
-      <span>{!item.quantity ? "Add To Cart" : "Out Of Stock"}</span>
+      <span>{item.quantity ? "Add To Cart" : "Out Of Stock"}</span>
     </button>
   );
 }
