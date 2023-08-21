@@ -35,7 +35,7 @@ export default function Navbar() {
           <div className="flex">
             {types.length ? (
               <div className="relative group">
-                <button className=" text-white px-4 py-2 text-sm">
+                <button className="text-black px-4 py-2 text-sm">
                   Shop by Type
                 </button>
 
@@ -85,9 +85,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex justify-end md:w-1/3">
-          <Suspense fallback={<OpenCart />}>
-            <Cart />
-          </Suspense>
+          <Suspense fallback={<OpenCart />}>{/* <Cart /> */}</Suspense>
         </div>
       </div>
     </nav>

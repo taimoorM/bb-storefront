@@ -5,7 +5,7 @@ import { Session } from "inspector";
 import { createContext, use, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { fetchData } from "@/utils/fetch-queries";
+import { fetchData, fetchInventory } from "@/utils/fetch-queries";
 
 interface StoreContextValue {
   categories: Category[];
@@ -21,7 +21,7 @@ export const StoreContext = createContext<StoreContextValue | null>(null);
 
 export const StoreProvider: React.FC<{
   children: React.ReactNode;
-  selectedStore: string | null;
+  selectedStore: string;
 }> = (props) => {
   const [session, setSession] = useState<Session | null>(null);
   const [cart, setCart] = useState<Cart | null>(null);
@@ -89,7 +89,6 @@ export const StoreProvider: React.FC<{
   const headers = {
     "x-public-key": metadata?.publicKey,
     Accept: "application/json",
-    "x-store-id": props.selectedStore || "",
   };
 
   const {
@@ -105,7 +104,7 @@ export const StoreProvider: React.FC<{
         fetchData("categories", headers),
         fetchData("brands", headers),
         fetchData("session", headers),
-        fetchData("inventory", headers),
+        fetchInventory(headers, props.selectedStore),
       ]),
   });
 

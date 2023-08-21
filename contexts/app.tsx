@@ -49,7 +49,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
     <AppContext.Provider
       value={{
         metadata,
-
         stores,
       }}
     >
