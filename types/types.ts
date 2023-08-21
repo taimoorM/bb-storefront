@@ -22,6 +22,14 @@ export interface Inventory {
   };
 }
 
+export interface Session {
+  id: string;
+  createdAt: string;
+  expiresAt: string;
+  token: string;
+  customerId: string;
+}
+
 export interface InventoryItem {
   active: boolean;
   id: string;
@@ -74,11 +82,12 @@ export interface Cart {
   sessionId?: string;
   storeId: string;
   user?: string;
+  subTotal: number;
 }
 [];
 
 export interface CartItem {
-  product: string;
+  id: string;
   quantity: number;
   price: number;
 }

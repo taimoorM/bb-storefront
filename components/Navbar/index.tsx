@@ -85,7 +85,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex justify-end md:w-1/3">
-          <Suspense fallback={<OpenCart />}>{/* <Cart /> */}</Suspense>
+          <Suspense fallback={<OpenCart />}>
+            <Cart />
+          </Suspense>
         </div>
       </div>
     </nav>

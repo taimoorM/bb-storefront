@@ -18,7 +18,7 @@ export function getItemDetailsById(inventory: Inventory, itemId: string) {
       if (item.id === itemId) {
         return {
           name: item.name,
-          size: item.size,
+          sizeLabel: item.sizeLabel,
           image: item.images[0]?.path,
         };
       }

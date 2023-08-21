@@ -16,7 +16,7 @@ const Price = ({
       style: "currency",
       currency: currencyCode,
       currencyDisplay: "narrowSymbol",
-    }).format(amount)}`}
+    }).format(amount / 100)}`}
     <span
       className={clsx("ml-1 inline", currencyCodeClassName)}
     >{`${currencyCode}`}</span>

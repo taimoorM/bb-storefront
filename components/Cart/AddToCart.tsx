@@ -2,54 +2,57 @@
 
 import { AiOutlinePlus } from "react-icons/Ai";
 import clsx from "clsx";
-import { addItem } from "components/cart/actions";
+
 import LoadingDots from "../LoadingDots";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
+import { InventoryItem } from "@/types/types";
+import { useUpdateCart } from "@/utils/fetch-queries";
+import { useMutation } from "@tanstack/react-query";
+import { useApp } from "@/contexts/app";
+import { useStore } from "@/contexts/store";
 
-export function AddToCart({
-  variants,
-  availableForSale,
-}: {
-  variants: ProductVariant[];
-  availableForSale: boolean;
-}) {
+export function AddToCart({ item }: { item: InventoryItem }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { metadata } = useApp();
+  const { session } = useStore();
   const [isPending, startTransition] = useTransition();
-  const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
 
-  const title = !availableForSale
-    ? "Out of stock"
-    : !selectedVariantId
-    ? "Please select options"
-    : undefined;
+  const title = !item.quantity ? "Out of stock" : item.name;
+  const updateCart = useMutation({
+    mutationFn: () => {
+      return fetch(`/api/storefront/cart/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-public-key": metadata?.publicKey || "",
+        },
+        body: JSON.stringify({
+          sessionId: session?.id,
+          inventoryItemId: item.id,
+          quantity: item.quantity,
+        }),
+      });
+    },
+  });
 
   return (
     <button
       aria-label="Add item to cart"
-      disabled={isPending || !availableForSale || !selectedVariantId}
+      disabled={isPending || !item.quantity}
       title={title}
       onClick={() => {
         // Safeguard in case someone messes with `disabled` in devtools.
-        if (!availableForSale || !selectedVariantId) return;
+        if (!item.quantity) return;
 
-        startTransition(async () => {
-          const error = await addItem(selectedVariantId);
-
-          if (error) {
-            // Trigger the error boundary in the root error.js
-            throw new Error(error.toString());
-          }
-
-          router.refresh();
-        });
+        updateCart.mutate();
       }}
       className={clsx(
         "relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90",
         {
           "cursor-not-allowed opacity-60 hover:opacity-60":
-            !availableForSale || !selectedVariantId,
+            !item.quantity || isPending,
           "cursor-not-allowed": isPending,
         }
       )}
@@ -61,7 +64,7 @@ export function AddToCart({
           <LoadingDots className="mb-3 bg-white" />
         )}
       </div>
-      <span>{availableForSale ? "Add To Cart" : "Out Of Stock"}</span>
+      <span>{!item.quantity ? "Add To Cart" : "Out Of Stock"}</span>
     </button>
   );
 }

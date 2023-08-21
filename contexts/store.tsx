@@ -1,7 +1,7 @@
 "use client";
 
-import { Brand, Cart, Category, Inventory, Type } from "@/types/types";
-import { Session } from "inspector";
+import { Brand, Cart, Category, Inventory, Session, Type } from "@/types/types";
+
 import { createContext, use, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
 import { useQueries, useQuery } from "@tanstack/react-query";

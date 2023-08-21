@@ -87,10 +87,10 @@ export default function CartModal() {
                 <div className="flex h-full flex-col justify-between overflow-hidden p-1">
                   <ul className="flex-grow overflow-auto py-4">
                     {cart.items.map((item, i) => {
-                      // const { name, size, image } = getItemDetailsById(
-                      //   inventory,
-                      //   item.product
-                      // );
+                      let data;
+                      if (inventory) {
+                        data = getItemDetailsById(inventory, item.id);
+                      }
 
                       return (
                         <li
@@ -111,19 +111,19 @@ export default function CartModal() {
                                   className="h-full w-full object-cover"
                                   width={64}
                                   height={64}
-                                  alt={
-                                    item.merchandise.product.featuredImage
-                                      .altText || item.merchandise.product.title
-                                  }
-                                  src={
-                                    item.merchandise.product.featuredImage.url
-                                  }
+                                  alt={data?.name as string}
+                                  src={`${
+                                    process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
+                                  }/${data?.image as string}`}
                                 />
                               </div>
 
                               <div className="flex flex-1 flex-col text-base">
                                 <span className="leading-tight">
-                                  {item.title}
+                                  {data?.name}
+                                </span>
+                                <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                                  {data?.sizeLabel}
                                 </span>
                               </div>
                             </Link>
@@ -131,7 +131,7 @@ export default function CartModal() {
                               <Price
                                 className="flex justify-end space-y-2 text-right text-sm"
                                 amount={item.price}
-                                currencyCode={}
+                                currencyCode={currencyCode}
                               />
                               <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
                                 <EditItemQuantityButton
@@ -159,8 +159,8 @@ export default function CartModal() {
                       <p>Taxes</p>
                       <Price
                         className="text-right text-base text-black dark:text-white"
-                        amount={cart.cost.totalTaxAmount.amount}
-                        currencyCode={cart.cost.totalTaxAmount.currencyCode}
+                        amount={cart.subTotal * 0.13}
+                        currencyCode={currencyCode}
                       />
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
@@ -171,13 +171,13 @@ export default function CartModal() {
                       <p>Total</p>
                       <Price
                         className="text-right text-base text-black dark:text-white"
-                        amount={cart.cost.totalAmount.amount}
-                        currencyCode={cart.cost.totalAmount.currencyCode}
+                        amount={cart.subTotal}
+                        currencyCode={currencyCode}
                       />
                     </div>
                   </div>
                   <a
-                    href={cart.checkoutUrl}
+                    href={cart.checkoutUrl || "#"}
                     className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
                   >
                     Proceed to Checkout
