@@ -19,6 +19,8 @@ export function AddToCart({ item }: { item: InventoryItem }) {
   const { session } = useStore();
   const [isPending, startTransition] = useTransition();
 
+  console.log(session?.id);
+
   console.log(item);
 
   const title = !item.quantity ? "Out of stock" : item.name;

@@ -5,7 +5,7 @@ import { Brand, Cart, Category, Inventory, Session, Type } from "@/types/types";
 import { createContext, use, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { fetchData, fetchInventory } from "@/utils/fetch-queries";
+import { fetchData, fetchInventory, fetchSession } from "@/utils/fetch-queries";
 
 interface StoreContextValue {
   categories: Category[];
@@ -103,7 +103,7 @@ export const StoreProvider: React.FC<{
         fetchData("types", headers),
         fetchData("categories", headers),
         fetchData("brands", headers),
-        fetchData("session", headers),
+        fetchSession(headers),
         fetchInventory(headers, props.selectedStore),
       ]),
   });
