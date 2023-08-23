@@ -17,6 +17,7 @@ import { Cart } from "@/types/types";
 import { useStore } from "@/contexts/store";
 import { getCartQuantityTotal, getItemDetailsById } from "@/lib/utils";
 import { useApp } from "@/contexts/app";
+import { useQueryClient } from "@tanstack/react-query";
 
 type MerchandiseSearchParams = {
   [key: string]: string;
@@ -28,6 +29,7 @@ export default function CartModal() {
   const closeCart = () => setIsOpen(false);
 
   const { cart, inventory } = useStore();
+
   const { stores } = useApp();
 
   let totalQuantity = 0;
@@ -39,6 +41,8 @@ export default function CartModal() {
     const selectedStore = stores.find((s) => s.id === store);
     if (selectedStore) currencyCode = selectedStore.currency;
   }
+
+  console.log("cart", cart);
 
   return (
     <>
@@ -177,7 +181,7 @@ export default function CartModal() {
                     </div>
                   </div>
                   <a
-                    href={cart.checkoutUrl || "#"}
+                    href={"#"}
                     className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
                   >
                     Proceed to Checkout

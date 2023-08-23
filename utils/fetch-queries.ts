@@ -43,9 +43,9 @@ export const useUpdateCart = (
   headers: any
 ) => {
   return useMutation({
-    mutationKey: ["cart"],
+    mutationKey: ["cart, id"],
     mutationFn: async () => {
-      return fetch(`/api/storefront/cart/`, {
+      fetch(`/api/storefront/cart/`, {
         method: "PATCH",
         headers,
         body: JSON.stringify({

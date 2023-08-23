@@ -1,10 +1,23 @@
 "use client";
 
-import { Brand, Cart, Category, Inventory, Session, Type } from "@/types/types";
+import {
+  Brand,
+  Cart,
+  CartItem,
+  Category,
+  Inventory,
+  Session,
+  Type,
+} from "@/types/types";
 
 import { createContext, use, useContext, useEffect, useState } from "react";
 import { useApp } from "./app";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import {
+  UseMutationResult,
+  useMutation,
+  useQueries,
+  useQuery,
+} from "@tanstack/react-query";
 import { fetchData, fetchInventory, fetchSession } from "@/utils/fetch-queries";
 
 interface StoreContextValue {
@@ -15,6 +28,18 @@ interface StoreContextValue {
   cart: Cart | null;
   inventory: Inventory | null;
   selectedStore: string | null;
+  useUpdateCart: (
+    sessionId: string,
+    item: {
+      id: string;
+      quantity: number;
+    },
+    headers: HeadersInit
+  ) => UseMutationResult<Cart, unknown, void, unknown>;
+  headers: {
+    "x-public-key": string;
+    Accept: string;
+  };
 }
 
 export const StoreContext = createContext<StoreContextValue | null>(null);
@@ -32,7 +57,6 @@ export const StoreProvider: React.FC<{
 
   const { metadata } = useApp();
 
-  // useEffect(() => {
   //   const fetchStoreData = async () => {
   //     if (!metadata) return;
 
@@ -87,7 +111,7 @@ export const StoreProvider: React.FC<{
   // }, [metadata, setIsLoading, props.selectedStore]);
 
   const headers = {
-    "x-public-key": metadata?.publicKey,
+    "x-public-key": (metadata?.publicKey as string) || "",
     Accept: "application/json",
   };
 
@@ -107,6 +131,36 @@ export const StoreProvider: React.FC<{
         fetchInventory(headers, props.selectedStore),
       ]),
   });
+
+  const useUpdateCart = (
+    sessionId: string,
+    item: {
+      id: string;
+      quantity: number;
+    },
+    headers: any
+  ) => {
+    return useMutation({
+      mutationFn: async () => {
+        const res = await fetch(`/api/storefront/cart/`, {
+          headers,
+          method: "PATCH",
+
+          body: JSON.stringify({
+            sessionId,
+            id: item.id,
+            quantity: item.quantity,
+          }),
+        });
+        const data = await res.json();
+        console.log("data", data);
+        return data;
+      },
+      onSuccess(data) {
+        setCart(data);
+      },
+    });
+  };
 
   useEffect(() => {
     if (storefrontData) {
@@ -130,6 +184,8 @@ export const StoreProvider: React.FC<{
         inventory,
         selectedStore: props.selectedStore,
         brands,
+        useUpdateCart,
+        headers,
       }}
     >
       {isLoading ? <div>Loading...</div> : props.children}
