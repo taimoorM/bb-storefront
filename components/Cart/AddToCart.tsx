@@ -16,12 +16,14 @@ export function AddToCart({ item }: { item: InventoryItem }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { metadata } = useApp();
-  const { session } = useStore();
+  const { session, cart } = useStore();
   const [isPending, startTransition] = useTransition();
 
   console.log(session?.id);
 
   console.log(item);
+
+  const cartItem = cart?.items.find((i) => i.id === item.id);
 
   const title = !item.quantity ? "Out of stock" : item.name;
   console.log(metadata?.publicKey);
@@ -36,7 +38,7 @@ export function AddToCart({ item }: { item: InventoryItem }) {
         body: JSON.stringify({
           sessionId: session?.id,
           id: item.id,
-          quantity: 1,
+          quantity: cartItem?.quantity ? cartItem.quantity + 1 : 1,
         }),
       });
     },
