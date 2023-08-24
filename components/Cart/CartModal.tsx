@@ -12,12 +12,10 @@ import CloseCart from "./CloseCart";
 import DeleteItemButton from "./DeleteItemButton";
 import EditItemQuantityButton from "./EditItemButton";
 import OpenCart from "./OpenCart";
-import { Cart } from "@/types/types";
 
 import { useStore } from "@/contexts/store";
 import { getCartQuantityTotal, getItemDetailsById } from "@/lib/utils";
 import { useApp } from "@/contexts/app";
-import { useQueryClient } from "@tanstack/react-query";
 
 type MerchandiseSearchParams = {
   [key: string]: string;
@@ -28,7 +26,7 @@ export default function CartModal() {
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
 
-  const { cart, inventory } = useStore();
+  const { cart, inventoryMap } = useStore();
 
   const { stores } = useApp();
 
@@ -92,10 +90,9 @@ export default function CartModal() {
                   <ul className="flex-grow overflow-auto py-4">
                     {cart.items.map((item, i) => {
                       let data;
-                      if (inventory) {
-                        data = getItemDetailsById(inventory, item.id);
+                      if (inventoryMap) {
+                        data = getItemDetailsById(inventoryMap, item.id);
                       }
-
                       return (
                         <li
                           key={i}

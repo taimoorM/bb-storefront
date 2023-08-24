@@ -6,8 +6,10 @@ import {
   CartItem,
   Category,
   Inventory,
+  InventoryItem,
   Session,
   Type,
+  InventoryMap,
 } from "@/types/types";
 
 import { createContext, use, useContext, useEffect, useState } from "react";
@@ -19,6 +21,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { fetchData, fetchInventory, fetchSession } from "@/utils/fetch-queries";
+import { useToast } from "@/components/ui/use-toast";
 
 interface StoreContextValue {
   categories: Category[];
@@ -38,6 +41,7 @@ interface StoreContextValue {
     "x-public-key": string;
     Accept: string;
   };
+  inventoryMap: InventoryMap;
 }
 
 export const StoreContext = createContext<StoreContextValue | null>(null);
@@ -52,61 +56,10 @@ export const StoreProvider: React.FC<{
   const [brands, setBrands] = useState<Brand[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
   const [inventory, setInventory] = useState<Inventory | null>(null);
+  const [inventoryMap, setInventoryMap] = useState<InventoryMap>({});
 
   const { metadata } = useApp();
-
-  //   const fetchStoreData = async () => {
-  //     if (!metadata) return;
-
-  //     const headers = {
-  //       "x-public-key": metadata.publicKey,
-  //       Accept: "application/json",
-  //       "x-store-id": props.selectedStore || "",
-  //     };
-
-  //     const fetchData = async (endpoint: string) => {
-  //       const response = await fetch(endpoint, {
-  //         headers,
-  //         signal: abortController.signal,
-  //       });
-  //       if (!response.ok) {
-  //         throw new Error(
-  //           `Failed to fetch ${endpoint}: ${response.statusText}`
-  //         );
-  //       }
-  //       return response.json();
-  //     };
-
-  //     try {
-  //       const [types, categories, brands, sessionData, data] =
-  //         await Promise.all([
-  //           fetchData("/api/storefront/types"),
-  //           fetchData("/api/storefront/categories"),
-  //           fetchData("/api/storefront/brands"),
-  //           fetchData("/api/storefront/session"),
-  //           fetchData("/api/storefront/inventory"),
-  //         ]);
-
-  //       setSession(sessionData.session);
-  //       setCart(sessionData.cart);
-  //       setTypes(types);
-  //       setCategories(categories);
-  //       setBrands(brands);
-  //       setInventory(data.inventory);
-  //     } catch (error) {
-  //       console.error("Error fetching store data:", error);
-  //     }
-
-  //     setIsLoading(false);
-  //   };
-
-  //   const abortController = new AbortController();
-  //   fetchStoreData();
-
-  //   return () => {
-  //     abortController.abort();
-  //   };
-  // }, [metadata, setIsLoading, props.selectedStore]);
+  const { toast } = useToast();
 
   const headers = {
     "x-public-key": (metadata?.publicKey as string) || "",
@@ -163,6 +116,7 @@ export const StoreProvider: React.FC<{
             quantity,
           }),
         });
+        if (!res.ok) throw new Error(res.statusText);
         const data = await res.json();
         console.log("data", data);
         return data;
@@ -170,18 +124,33 @@ export const StoreProvider: React.FC<{
       onSuccess(data) {
         setCart(data);
       },
+      onError(error: Error) {
+        toast({
+          title: "Error",
+          description: error.message,
+        });
+      },
     });
   };
 
   useEffect(() => {
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
+      const inventoryMap: InventoryMap = {};
+
+      for (let key in data.inventory.items) {
+        for (let item of data.inventory.items[key]) {
+          inventoryMap[item.id] = item;
+        }
+      }
+
       setSession(sessionData.session);
       setCart(sessionData.cart);
       setTypes(types);
       setCategories(categories);
       setBrands(brands);
       setInventory(data.inventory);
+      setInventoryMap(inventoryMap);
     }
   }, [storefrontData]);
 
@@ -197,6 +166,7 @@ export const StoreProvider: React.FC<{
         brands,
         useUpdateCart,
         headers,
+        inventoryMap,
       }}
     >
       {isLoading ? <div>Loading...</div> : props.children}

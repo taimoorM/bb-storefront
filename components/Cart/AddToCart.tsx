@@ -19,6 +19,7 @@ export function AddToCart({ item }: { item: InventoryItem }) {
   const [isPending, startTransition] = useTransition();
 
   const cartItem = cart?.items.find((i) => i.id === item.id);
+  const quantity = cartItem?.quantity || 0;
 
   const title = !item.quantity ? "Out of stock" : item.name;
 
@@ -30,7 +31,9 @@ export function AddToCart({ item }: { item: InventoryItem }) {
   return (
     <button
       aria-label="Add item to cart"
-      disabled={updateCart.isLoading || !item.quantity}
+      disabled={
+        updateCart.isLoading || !item.quantity || quantity >= item.quantity
+      }
       title={title}
       onClick={() => {
         // Safeguard in case someone messes with `disabled` in devtools.

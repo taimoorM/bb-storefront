@@ -1,4 +1,4 @@
-import { Cart, Inventory } from "@/types/types";
+import { Cart, Inventory, InventoryMap } from "@/types/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -12,18 +12,16 @@ export function getCartQuantityTotal(cart: Cart) {
   }, 0);
 }
 
-export function getItemDetailsById(inventory: Inventory, itemId: string) {
-  for (let key in inventory.items) {
-    for (let item of inventory.items[key]) {
-      if (item.id === itemId) {
-        return {
-          name: item.name,
-          sizeLabel: item.sizeLabel,
-          image: item.images[0]?.path,
-        };
-      }
-    }
+export function getItemDetailsById(inventoryMap: InventoryMap, itemId: string) {
+  const item = inventoryMap[itemId];
+  console.log("item", item);
+  if (item) {
+    return {
+      name: item.name,
+      sizeLabel: item.sizeLabel,
+      image: item.images[0]?.path,
+      quantity: item.quantity,
+    };
   }
-
   return null;
 }

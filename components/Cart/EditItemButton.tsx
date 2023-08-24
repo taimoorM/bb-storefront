@@ -9,6 +9,7 @@ import { CartItem } from "@/types/types";
 import { useUpdateCart } from "@/utils/fetch-queries";
 import { useApp } from "@/contexts/app";
 import { useStore } from "@/contexts/store";
+import { getItemDetailsById } from "@/lib/utils";
 
 export default function EditItemQuantityButton({
   item,
@@ -17,9 +18,9 @@ export default function EditItemQuantityButton({
   item: CartItem;
   type: "add" | "subtract";
 }) {
-  const { metadata } = useApp();
-  const { session, cart, useUpdateCart, headers } = useStore();
-  const cartItem = cart?.items.find((i) => i.id === item.id);
+  const { session, cart, useUpdateCart, headers, inventoryMap } = useStore();
+  const inventoryItem = getItemDetailsById(inventoryMap, item.id);
+  const quantity = inventoryItem?.quantity || 0;
 
   const AddOrSubtractItemFromCart = useUpdateCart(
     session?.id as string,
@@ -39,7 +40,7 @@ export default function EditItemQuantityButton({
         if (!item.quantity) return;
         AddOrSubtractItemFromCart.mutate();
       }}
-      disabled={isLoading}
+      disabled={isLoading || (type === "add" && item.quantity >= quantity)}
       className={clsx(
         "ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80",
         {

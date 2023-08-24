@@ -21,6 +21,9 @@ export interface Inventory {
     [key: string]: InventoryItem[];
   };
 }
+export interface InventoryMap {
+  [itemId: string]: InventoryItem;
+}
 
 export interface Session {
   id: string;

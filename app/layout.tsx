@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
 import { AppProvider } from "@/contexts/app";
+import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/providers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,6 +27,7 @@ export default async function RootLayout({
             <AppProvider>
               <Navbar />
               <main>{children}</main>
+              <Toaster />
             </AppProvider>
           </Providers>
         </Suspense>
