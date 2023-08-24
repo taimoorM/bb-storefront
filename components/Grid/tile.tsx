@@ -31,7 +31,7 @@ export function GridTileImage({
     <div className="h-full">
       <div
         className={clsx(
-          "group flex flex-col h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 dark:bg-black",
+          "group flex flex-col h-full w-full items-center justify-center overflow-hidden rounded-lg border border-b-0 rounded-b-none bg-white hover:border-blue-600 dark:bg-black",
           {
             relative: label,
             "border-2 border-blue-600": active,
@@ -85,7 +85,10 @@ export function GridTileImage({
           ))}
         </div>
       </div>
-      <AddToCart item={variants[selectedVariant]} />
+      <AddToCart
+        item={variants[selectedVariant]}
+        className="rounded-lg rounded-t-none border border-b-0"
+      />
     </div>
   );
 }

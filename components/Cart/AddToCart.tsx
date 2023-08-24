@@ -13,7 +13,13 @@ import { useApp } from "@/contexts/app";
 import { useStore } from "@/contexts/store";
 import { headers } from "next/headers";
 
-export function AddToCart({ item }: { item: InventoryItem }) {
+export function AddToCart({
+  item,
+  className,
+}: {
+  item: InventoryItem;
+  className?: string;
+}) {
   const { metadata } = useApp();
   const { session, cart, useUpdateCart } = useStore();
   const [isPending, startTransition] = useTransition();
@@ -41,7 +47,7 @@ export function AddToCart({ item }: { item: InventoryItem }) {
         updateCart.mutate();
       }}
       className={clsx(
-        "relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90",
+        `relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 ${className}`,
         {
           "cursor-not-allowed opacity-60 hover:opacity-60":
             !item.quantity || updateCart.isLoading,
