@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/Ai";
 
 import clsx from "clsx";
@@ -14,9 +14,13 @@ import { getItemDetailsById } from "@/lib/utils";
 export default function EditItemQuantityButton({
   item,
   type,
+  isLoading,
+  setIsLoading,
 }: {
   item: CartItem;
   type: "add" | "subtract";
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
 }) {
   const { session, cart, useUpdateCart, headers, inventoryMap } = useStore();
   const inventoryItem = getItemDetailsById(inventoryMap, item.id);
@@ -28,8 +32,10 @@ export default function EditItemQuantityButton({
     type,
     headers
   );
+  useEffect(() => {
+    setIsLoading(AddOrSubtractItemFromCart.isLoading);
+  }, [AddOrSubtractItemFromCart.isLoading, setIsLoading]);
 
-  const isLoading = AddOrSubtractItemFromCart.isLoading;
   return (
     <button
       aria-label={
@@ -45,13 +51,10 @@ export default function EditItemQuantityButton({
         "ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80",
         {
           "cursor-not-allowed": isLoading,
-          "ml-auto": type === "subtract",
         }
       )}
     >
-      {isLoading ? (
-        <LoadingDots className="bg-black dark:bg-white" />
-      ) : type === "add" ? (
+      {type === "add" ? (
         <AiOutlinePlus className="h-4 w-4 dark:text-neutral-500" />
       ) : (
         <AiOutlineMinus className="h-4 w-4 dark:text-neutral-500" />

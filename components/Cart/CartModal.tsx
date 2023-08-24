@@ -16,6 +16,7 @@ import OpenCart from "./OpenCart";
 import { useStore } from "@/contexts/store";
 import { getCartQuantityTotal, getItemDetailsById } from "@/lib/utils";
 import { useApp } from "@/contexts/app";
+import EditQuantity from "./EditQuantity";
 
 type MerchandiseSearchParams = {
   [key: string]: string;
@@ -135,19 +136,7 @@ export default function CartModal() {
                                 currencyCode={currencyCode}
                               />
                               <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
-                                <EditItemQuantityButton
-                                  item={item}
-                                  type="subtract"
-                                />
-                                <p className="w-6 text-center">
-                                  <span className="w-full text-sm">
-                                    {item.quantity}
-                                  </span>
-                                </p>
-                                <EditItemQuantityButton
-                                  item={item}
-                                  type="add"
-                                />
+                                <EditQuantity item={item} />
                               </div>
                             </div>
                           </div>
