@@ -15,55 +15,42 @@ export default function EditItemQuantityButton({
   type,
 }: {
   item: CartItem;
-  type: "plus" | "minus";
+  type: "add" | "subtract";
 }) {
   const { metadata } = useApp();
   const { session, cart, useUpdateCart, headers } = useStore();
   const cartItem = cart?.items.find((i) => i.id === item.id);
 
-  const AddItemToCart = useUpdateCart(
+  const AddOrSubtractItemFromCart = useUpdateCart(
     session?.id as string,
-    {
-      id: item.id,
-      quantity: cartItem?.quantity ? cartItem.quantity + 1 : 1,
-    },
+    item.id,
+    type,
     headers
   );
-  const SubtractItemFromCart = useUpdateCart(
-    session?.id as string,
-    {
-      id: item.id,
-      quantity: cartItem?.quantity ? cartItem.quantity - 1 : 0,
-    },
-    headers
-  );
+
+  const isLoading = AddOrSubtractItemFromCart.isLoading;
   return (
     <button
       aria-label={
-        type === "plus" ? "Increase item quantity" : "Reduce item quantity"
+        type === "add" ? "Increase item quantity" : "Reduce item quantity"
       }
       onClick={() => {
         // Safeguard in case someone messes with `disabled` in devtools.
         if (!item.quantity) return;
-        if (type === "plus") {
-          AddItemToCart.mutate();
-        } else if (type === "minus") {
-          SubtractItemFromCart.mutate();
-        }
+        AddOrSubtractItemFromCart.mutate();
       }}
-      disabled={AddItemToCart.isLoading || SubtractItemFromCart.isLoading}
+      disabled={isLoading}
       className={clsx(
         "ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80",
         {
-          "cursor-not-allowed":
-            AddItemToCart.isLoading || SubtractItemFromCart.isLoading,
-          "ml-auto": type === "minus",
+          "cursor-not-allowed": isLoading,
+          "ml-auto": type === "subtract",
         }
       )}
     >
-      {AddItemToCart.isLoading || SubtractItemFromCart.isLoading ? (
+      {isLoading ? (
         <LoadingDots className="bg-black dark:bg-white" />
-      ) : type === "plus" ? (
+      ) : type === "add" ? (
         <AiOutlinePlus className="h-4 w-4 dark:text-neutral-500" />
       ) : (
         <AiOutlineMinus className="h-4 w-4 dark:text-neutral-500" />

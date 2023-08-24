@@ -22,17 +22,10 @@ export function AddToCart({ item }: { item: InventoryItem }) {
 
   const title = !item.quantity ? "Out of stock" : item.name;
 
-  const updateCart = useUpdateCart(
-    session?.id as string,
-    {
-      id: item.id,
-      quantity: cartItem?.quantity ? cartItem.quantity + 1 : 1,
-    },
-    {
-      "x-public-key": metadata?.publicKey || "",
-      Accept: "application/json",
-    }
-  );
+  const updateCart = useUpdateCart(session?.id as string, item.id, "add", {
+    "x-public-key": metadata?.publicKey || "",
+    Accept: "application/json",
+  });
 
   return (
     <button

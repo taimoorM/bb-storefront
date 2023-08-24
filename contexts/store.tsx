@@ -30,10 +30,8 @@ interface StoreContextValue {
   selectedStore: string | null;
   useUpdateCart: (
     sessionId: string,
-    item: {
-      id: string;
-      quantity: number;
-    },
+    id: string,
+    action: "add" | "subtract" | "remove",
     headers: HeadersInit
   ) => UseMutationResult<Cart, unknown, void, unknown>;
   headers: {
@@ -134,12 +132,25 @@ export const StoreProvider: React.FC<{
 
   const useUpdateCart = (
     sessionId: string,
-    item: {
-      id: string;
-      quantity: number;
-    },
+    id: string,
+    action: "add" | "subtract" | "remove",
     headers: any
   ) => {
+    const cartItem = cart?.items.find((i) => i.id === id);
+    let quantity = cartItem?.quantity || 0;
+    switch (action) {
+      case "add":
+        quantity = quantity + 1;
+        break;
+      case "subtract":
+        quantity = quantity !== 0 ? quantity - 1 : 0;
+        break;
+      case "remove":
+        quantity = 0;
+        break;
+      default:
+        break;
+    }
     return useMutation({
       mutationFn: async () => {
         const res = await fetch(`/api/storefront/cart/`, {
@@ -148,8 +159,8 @@ export const StoreProvider: React.FC<{
 
           body: JSON.stringify({
             sessionId,
-            id: item.id,
-            quantity: item.quantity,
+            id,
+            quantity,
           }),
         });
         const data = await res.json();
