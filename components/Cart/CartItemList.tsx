@@ -43,7 +43,6 @@ export default function CartItemList({
               if (inventoryMap) {
                 data = getItemDetailsById(inventoryMap, item.id);
               }
-
               return (
                 <li
                   key={i}

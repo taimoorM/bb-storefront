@@ -7,10 +7,12 @@ import { useStore } from "@/contexts/store";
 import { Suspense } from "react";
 import OpenCart from "../Cart/OpenCart";
 import Cart from "../Cart";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const { metadata } = useApp();
   const { types, categories } = useStore();
+  const pathname = usePathname();
 
   return (
     <nav className="flex items-center justify-between py-4">
@@ -86,9 +88,13 @@ export default function Navbar() {
           </div>
 
           <div className="flex justify-end md:w-1/3">
-            <Suspense fallback={<OpenCart />}>
-              <Cart />
-            </Suspense>
+            {pathname !== "/cart" ? (
+              <Suspense fallback={<OpenCart />}>
+                <Cart />
+              </Suspense>
+            ) : (
+              <Link href="/">Back to Shop</Link>
+            )}
           </div>
         </div>
       </div>

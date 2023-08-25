@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.16",
     "@radix-ui/react-toast": "^1.1.4",
+    "@stripe/react-stripe-js": "^2.1.2",
     "@supabase/supabase-js": "^2.31.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.9",
