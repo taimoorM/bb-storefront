@@ -43,7 +43,6 @@ export default function CartItemList({
               if (inventoryMap) {
                 data = getItemDetailsById(inventoryMap, item.id);
               }
-              console.log("data", data);
 
               return (
                 <li
@@ -93,34 +92,6 @@ export default function CartItemList({
               );
             })}
           </ul>
-          <div className="py-4 text-sm text-neutral-500 dark:text-neutral-400">
-            {/* <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 dark:border-neutral-700">
-              <p>Taxes</p>
-              <Price
-                className="text-right text-base text-black dark:text-white"
-                amount={cart?.subTotal ? cart.subTotal * 0.1 : 0}
-                currencyCode={currencyCode}
-              />
-            </div> */}
-            <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
-              <p>Shipping</p>
-              <p className="text-right">Calculated at checkout</p>
-            </div>
-            <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
-              <p>Total</p>
-              <Price
-                className="text-right text-base text-black dark:text-white"
-                amount={cart?.subTotal || 0}
-                currencyCode={currencyCode}
-              />
-            </div>
-          </div>
-          <a
-            href={"#"}
-            className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
-          >
-            Proceed to Checkout
-          </a>
         </div>
       )}
     </>
