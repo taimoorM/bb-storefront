@@ -1,17 +1,12 @@
 import { AiOutlineClose } from "react-icons/Ai";
 import LoadingDots from "../LoadingDots";
-import { useRouter } from "next/navigation";
 
 import clsx from "clsx";
 
-import { useTransition } from "react";
-import { CartItem } from "@/types/types";
-import { useUpdateCart } from "@/utils/fetch-queries";
 import { useStore } from "@/contexts/store";
+import { CartItem } from "@/types/types";
 
 export default function DeleteItemButton({ item }: { item: CartItem }) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
   const { session, cart, useUpdateCart, headers } = useStore();
   const removeItemFromCart = useUpdateCart(
     session?.id as string,
@@ -28,7 +23,7 @@ export default function DeleteItemButton({ item }: { item: CartItem }) {
         if (!item.quantity) return;
         removeItemFromCart.mutate();
       }}
-      disabled={isPending}
+      disabled={removeItemFromCart.isLoading}
       className={clsx(
         "ease flex h-[17px] w-[17px] items-center justify-center rounded-full bg-neutral-500 transition-all duration-200",
         {

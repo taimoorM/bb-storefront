@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
     const query = supabase
       .from("Customer")
-      .select("id, businessName, subdomain, logo, publicKey");
+      .select("id, businessName, subdomain, logo, publicKey, stripeId");
 
     if (accessToken?.value) {
       query.eq("publicKey", accessToken.value);

@@ -26,7 +26,7 @@ export default async function RootLayout({
           <Providers>
             <AppProvider>
               <Navbar />
-              <main>{children}</main>
+              <main className="max-w-[1280px] mx-auto w-[95%]">{children}</main>
               <Toaster />
             </AppProvider>
           </Providers>

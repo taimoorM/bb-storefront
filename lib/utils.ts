@@ -14,7 +14,7 @@ export function getCartQuantityTotal(cart: Cart) {
 
 export function getItemDetailsById(inventoryMap: InventoryMap, itemId: string) {
   const item = inventoryMap[itemId];
-  console.log("item", item);
+
   if (item) {
     return {
       name: item.name,
