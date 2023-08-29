@@ -14,13 +14,13 @@ export const fetchInventory = async (headers: {}, storeId: string) => {
   return res.json();
 };
 
-export const fetchSession = async (headers: {}) => {
+export const fetchSession = async (storeId: string, headers: {}) => {
   const token = getCookie("session");
 
   const res = await fetch(`/api/storefront/session`, {
     headers,
     method: "POST",
-    body: JSON.stringify({ token }),
+    body: JSON.stringify({ token, storeId }),
   });
   if (!token) {
     const data = await res.json();

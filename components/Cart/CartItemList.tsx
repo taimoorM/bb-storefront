@@ -9,6 +9,7 @@ import { useApp } from "@/contexts/app";
 import { getItemDetailsById } from "@/lib/utils";
 import Link from "next/link";
 import { LiaShoppingBagSolid } from "react-icons/Lia";
+import CartTotal from "./CartTotal";
 
 export default function CartItemList({
   closeCart,
@@ -91,6 +92,7 @@ export default function CartItemList({
               );
             })}
           </ul>
+          <CartTotal />
         </div>
       )}
     </>

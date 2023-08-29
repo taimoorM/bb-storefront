@@ -57,7 +57,6 @@ export default function CartModal() {
               </div>
 
               <CartItemList closeCart={closeCart} />
-              <CartTotal />
             </Dialog.Panel>
           </Transition.Child>
         </Dialog>

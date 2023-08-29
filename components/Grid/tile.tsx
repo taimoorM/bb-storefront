@@ -28,10 +28,10 @@ export function GridTileImage({
   const [selectedVariant, setSelectedVariant] = useState(0);
 
   return (
-    <div className="h-full group">
+    <div className="h-full group flex flex-col">
       <div
         className={clsx(
-          "flex flex-col h-full w-full items-center justify-center overflow-hidden rounded-lg border border-b-0 rounded-b-none bg-white hover:border-blue-600 dark:bg-black",
+          "flex flex-col h-full w-full items-center justify-center overflow-hidden rounded-lg border border-b-0 rounded-b-none bg-white hover:border-blue-600 dark:bg-black aspect-square",
           {
             relative: label,
             "border-2 border-blue-600": active,
@@ -87,7 +87,7 @@ export function GridTileImage({
       </div>
       <AddToCart
         item={variants[selectedVariant]}
-        className="rounded-lg rounded-t-none border border-b-0 mb-5"
+        className="rounded-lg rounded-t-none border border-b-0"
       />
     </div>
   );

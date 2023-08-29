@@ -78,7 +78,7 @@ export const StoreProvider: React.FC<{
         fetchData("types", headers),
         fetchData("categories", headers),
         fetchData("brands", headers),
-        fetchSession(headers),
+        fetchSession(props.selectedStore, headers),
         fetchInventory(headers, props.selectedStore),
       ]),
   });
