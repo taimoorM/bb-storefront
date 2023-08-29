@@ -1,17 +1,14 @@
 "use client";
-import Link from "next/link";
+
 import { GridTileImage } from "../Grid/tile";
 import Grid from "../Grid";
 import { useStore } from "@/contexts/store";
 import { useApp } from "@/contexts/app";
-import clsx from "clsx";
-import { AddToCart } from "../Cart/AddToCart";
-import { useState } from "react";
 
 export function ProductGrid() {
   const { stores } = useApp();
   const { inventory, selectedStore } = useStore();
-  const [selectedVariant, setSelectedVariant] = useState(0);
+
   const store = stores.find((store) => store.id === selectedStore);
 
   if (!inventory) {

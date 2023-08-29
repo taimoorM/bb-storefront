@@ -1,17 +1,13 @@
 "use client";
 
-import { AiOutlinePlus } from "react-icons/Ai";
 import clsx from "clsx";
+import { AiOutlinePlus } from "react-icons/Ai";
 
-import LoadingDots from "../LoadingDots";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
-import { InventoryItem } from "@/types/types";
-import { useUpdateCart } from "@/utils/fetch-queries";
-import { useMutation } from "@tanstack/react-query";
 import { useApp } from "@/contexts/app";
 import { useStore } from "@/contexts/store";
-import { headers } from "next/headers";
+import { InventoryItem } from "@/types/types";
+import { useTransition } from "react";
+import LoadingDots from "../LoadingDots";
 
 export function AddToCart({
   item,
@@ -47,7 +43,7 @@ export function AddToCart({
         updateCart.mutate();
       }}
       className={clsx(
-        `relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 ${className}`,
+        `flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 ${className}`,
         {
           "cursor-not-allowed opacity-60 hover:opacity-60":
             !item.quantity || updateCart.isLoading,

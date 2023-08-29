@@ -152,7 +152,7 @@ export const StoreProvider: React.FC<{
       setInventory(data.inventory);
       setInventoryMap(inventoryMap);
     }
-  }, [storefrontData]);
+  }, [storefrontData, isError, error, toast]);
 
   return (
     <StoreContext.Provider

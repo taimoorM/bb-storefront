@@ -27,6 +27,8 @@ export async function GET(req: NextRequest) {
       throw error;
     }
 
+    console.log(data);
+
     if (!data) {
       return NextResponse.json(
         { error: "No subdomain found" },
