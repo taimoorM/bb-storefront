@@ -4,6 +4,7 @@ import { useStore } from "@/contexts/store";
 import { useQuery } from "@tanstack/react-query";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "@/components/Checkout/CheckoutForm";
 
 export default function CheckoutPage() {
   const stripePromise = loadStripe(
