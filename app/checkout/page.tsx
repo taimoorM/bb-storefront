@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "@/components/Checkout/CheckoutForm";
+import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
   const stripePromise = loadStripe(
@@ -12,17 +13,27 @@ export default function CheckoutPage() {
   );
 
   const { headers } = useStore();
+  const [clientSecret, setClientSecret] = useState("");
+
+  useEffect(() => {
+    // Create PaymentIntent as soon as the page loads
+    fetch("api/storefront/checkout", {
+      headers,
+    })
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret));
+  }, []);
   const { data } = useQuery({
     queryKey: ["checkout"],
     queryFn: () => {
       return fetch("api/storefront/checkout", {
         headers,
-      }).then((res) => res.json());
+      });
     },
   });
 
   const options = {
-    clientSecret: data?.clientSecret as string,
+    clientSecret,
   };
 
   return (
