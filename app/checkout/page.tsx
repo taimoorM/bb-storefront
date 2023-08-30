@@ -2,8 +2,8 @@
 
 import { useStore } from "@/contexts/store";
 import { useQuery } from "@tanstack/react-query";
-import loadConfig from "next/dist/server/config";
-import { useEffect } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 export default function CheckoutPage() {
   const { headers } = useStore();
