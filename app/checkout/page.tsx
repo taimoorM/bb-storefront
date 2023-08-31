@@ -12,21 +12,23 @@ export default function CheckoutPage() {
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
   );
 
-  const { headers } = useStore();
+  const { headers, session } = useStore();
   const [clientSecret, setClientSecret] = useState("");
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
     fetch("api/storefront/checkout", {
       headers,
+      method: "POST",
+      body: JSON.stringify({ sessionId: session?.id }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, []);
+  }, [headers, session?.id]);
   const { data } = useQuery({
     queryKey: ["checkout"],
     queryFn: () => {
-      return fetch("api/storefront/checkout", {
+      return fetch(`api/storefront/checkout?sessionId=`, {
         headers,
       });
     },

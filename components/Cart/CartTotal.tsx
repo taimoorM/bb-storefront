@@ -2,11 +2,14 @@
 import { useStore } from "@/contexts/store";
 import Price from "../Price";
 import { useApp } from "@/contexts/app";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CartTotal() {
-  const { cart } = useStore();
+  const { cart, session } = useStore();
   const { stores } = useApp();
+  const router = useRouter();
 
   const pathname = usePathname();
 
@@ -17,6 +20,19 @@ export default function CartTotal() {
     const selectedStore = stores.find((s) => s.id === store);
     if (selectedStore) currencyCode = selectedStore.currency;
   }
+
+  const checkoutMutation = useMutation({
+    mutationFn: (sessionId: string) => {
+      return fetch("api/storefront/checkout", {
+        method: "POST",
+        body: JSON.stringify({ sessionId }),
+      });
+    },
+    onSuccess: (data) => {
+      router.push(`/checkout`);
+    },
+  });
+
   return (
     <>
       <div className="py-4 text-sm text-neutral-500 dark:text-neutral-400">
@@ -43,20 +59,20 @@ export default function CartTotal() {
       </div>
 
       {pathname !== "/cart" && (
-        <a
+        <Link
           href={"/cart"}
           className="block w-full rounded-full bg-slate-800 p-3  mb-2 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
         >
           Go to Cart
-        </a>
+        </Link>
       )}
 
-      <a
-        href={"/checkout"}
+      <button
+        onClick={() => checkoutMutation.mutate(session?.id as string)}
         className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
       >
         Proceed to Checkout
-      </a>
+      </button>
     </>
   );
 }
