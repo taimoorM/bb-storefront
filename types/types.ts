@@ -120,6 +120,7 @@ export interface OrderItem {
   quantity: number;
   productId: string;
   sizeLabel: string;
+  price: number;
 }
 
 export interface Address {
