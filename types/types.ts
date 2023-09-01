@@ -94,3 +94,42 @@ export interface CartItem {
   quantity: number;
   price: number;
 }
+
+export interface Order {
+  id: string;
+  createdAt: string;
+  customerId: string;
+  storeId: string;
+  items: OrderItem[];
+  paymentIntentId: string;
+  address: Address;
+  currency: string;
+  totals: Totals;
+  user?: string | null;
+  sessionId?: string;
+  expiresAt: string;
+  status: string;
+}
+
+export interface OrderItem {
+  id: string;
+  sku: string | null;
+  name: string;
+  size: number;
+  images: Image[];
+  quantity: number;
+  productId: string;
+  sizeLabel: string;
+}
+
+export interface Address {
+  state: string;
+  country: string;
+  postalCode: string;
+}
+
+export interface Totals {
+  total: number;
+  subtotal: number;
+  taxAmount: number;
+}
