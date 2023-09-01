@@ -5,14 +5,17 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { Toast } from "../ui/toast";
+import { useStore } from "@/contexts/store";
 
-function CheckoutForm() {
+function CheckoutForm({ orderId }: { orderId: string }) {
   const stripe = useStripe();
   const elements = useElements();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { headers } = useStore();
 
   useEffect(() => {
     if (!stripe) {
@@ -28,9 +31,9 @@ function CheckoutForm() {
     }
 
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+      console.log(paymentIntent, "paymentIntent");
       switch (paymentIntent?.status) {
         case "succeeded":
-          setMessage("Payment succeeded!");
           break;
         case "processing":
           setMessage("Your payment is processing.");
@@ -45,7 +48,7 @@ function CheckoutForm() {
     });
   }, [stripe]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
@@ -60,7 +63,7 @@ function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000",
+        return_url: "http://jhoom.localhost:4000/checkout/success",
       },
     });
 
@@ -75,6 +78,7 @@ function CheckoutForm() {
       setMessage("An unexpected error occurred.");
     }
 
+    console.log(error);
     setIsLoading(false);
   };
 
@@ -87,6 +91,7 @@ function CheckoutForm() {
       <LinkAuthenticationElement
         id="link-authentication-element"
         onChange={(e) => setEmail(e.value)}
+        className="mb-2"
       />
       <PaymentElement id="payment-element" />
       <button

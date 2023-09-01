@@ -31,7 +31,7 @@ function StripeElementsWrapper({
   return (
     <Elements options={options} stripe={stripePromise}>
       <p className="text-lg font-bold mb-3">Payment Details</p>
-      <CheckoutForm />
+      <CheckoutForm orderId={order.id} />
     </Elements>
   );
 }
