@@ -1,49 +1,32 @@
-"use client";
+import StripeElementsWrapper from "@/components/Checkout/StripeElementsWrapper";
+import getQueryClient from "@/getQueryClient";
+import { cookies } from "next/headers";
 
-import { useStore } from "@/contexts/store";
-import { useQuery } from "@tanstack/react-query";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from "@/components/Checkout/CheckoutForm";
-import { useEffect, useState } from "react";
+export default async function CheckoutPage() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("session");
+  const publicKey = cookieStore.get("bb-access-token");
 
-export default function CheckoutPage() {
-  const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+  const queryClient = getQueryClient();
+
+  const res = await fetch(
+    `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
+    {
+      headers: {
+        "x-public-key": publicKey?.value || "",
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }
   );
 
-  const { headers, session } = useStore();
-  const [clientSecret, setClientSecret] = useState("");
-
-  useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
-    fetch("api/storefront/checkout", {
-      headers,
-      method: "POST",
-      body: JSON.stringify({ sessionId: session?.id }),
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, [headers, session?.id]);
-  const { data } = useQuery({
-    queryKey: ["checkout"],
-    queryFn: () => {
-      return fetch(`api/storefront/checkout?sessionId=`, {
-        headers,
-      });
-    },
-  });
-
-  const options = {
-    clientSecret,
-  };
+  const data = await res.json();
+  console.log(data);
 
   return (
     <div>
       <h1>Checkout</h1>
-      <Elements options={options} stripe={stripePromise}>
-        <CheckoutForm />
-      </Elements>
+      <StripeElementsWrapper />
     </div>
   );
 }
