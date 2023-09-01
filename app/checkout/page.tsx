@@ -35,7 +35,7 @@ export default async function CheckoutPage() {
           <div className="col-span-2">
             <ul className="mb-5">
               {data.order.items.map((item: OrderItem) => (
-                <li key={item.id} className="flex items-center pr-5">
+                <li key={item.id} className="flex items-center">
                   <div className="relative h-20 w-20 rounded-xl border shadow-sm">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/${
@@ -86,7 +86,7 @@ export default async function CheckoutPage() {
                 <p className="font-semibold">Total</p>
 
                 <Price
-                  className="text-right text-base text-black dark:text-white"
+                  className="text-right text-base text-black dark:text-white font-semibold"
                   amount={data.order.totals.total}
                   currencyCode={data.order.currency}
                 />

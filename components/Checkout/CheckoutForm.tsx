@@ -89,7 +89,11 @@ function CheckoutForm() {
         onChange={(e) => setEmail(e.value)}
       />
       <PaymentElement id="payment-element" />
-      <button disabled={isLoading || !stripe || !elements} id="submit">
+      <button
+        disabled={isLoading || !stripe || !elements}
+        id="submit"
+        className="`flex w-full items-center justify-center rounded shadow bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 mt-3"
+      >
         <span id="button-text">
           {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
         </span>
