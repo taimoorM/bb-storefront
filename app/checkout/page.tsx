@@ -33,7 +33,7 @@ export default async function CheckoutPage() {
         <div className="grid grid-cols-5 py-4">
           <div className="col-span-3"></div>
           <div className="col-span-2">
-            <ul className="mb-5">
+            <ul className="mb-5 space-y-3">
               {data.order.items.map((item: OrderItem) => (
                 <li key={item.id} className="flex items-center">
                   <div className="relative h-20 w-20 rounded-xl border shadow-sm">
@@ -42,7 +42,7 @@ export default async function CheckoutPage() {
                         item.images[0].path as string
                       }`}
                       fill
-                      className="object-contain"
+                      className="object-contain rounded-xl"
                       alt={item.name}
                     />
                     <div className="absolute flex items-center text-xs justify-center w-4 h-4 rounded-full bg-blue-500 text-white right-0 top-[-5px]">
