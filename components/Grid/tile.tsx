@@ -52,7 +52,7 @@ export function GridTileImage({
         {label ? (
           <Label
             title={label.title}
-            amount={variants[selectedVariant].price}
+            amount={variants[selectedVariant].price * 100}
             currencyCode={label.currencyCode}
             position={label.position}
           />

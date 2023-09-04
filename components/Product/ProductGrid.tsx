@@ -26,7 +26,7 @@ export function ProductGrid() {
             variants={item}
             label={{
               title: item[0].name,
-              amount: item[0].price,
+              amount: item[0].price * 100,
               currencyCode: store?.currency || "USD",
             }}
             src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/${
