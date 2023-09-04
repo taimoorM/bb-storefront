@@ -57,7 +57,7 @@ export default async function CheckoutPage() {
 
                   <Price
                     className="ml-auto text-right"
-                    amount={item.price}
+                    amount={item.price * item.quantity}
                     currencyCode={data.order.currency}
                   />
                 </li>
