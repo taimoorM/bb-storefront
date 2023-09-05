@@ -25,8 +25,7 @@ export default async function RootLayout({
         <Suspense fallback={<p>Loading...</p>}>
           <Providers>
             <AppProvider>
-              <Navbar />
-              <main className="max-w-[1280px] mx-auto w-[95%]">{children}</main>
+              {children}
               <Toaster />
             </AppProvider>
           </Providers>

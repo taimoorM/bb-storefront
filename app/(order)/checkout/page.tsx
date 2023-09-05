@@ -1,3 +1,4 @@
+import OrderProductList from "@/components/Checkout/OrderProductList";
 import StripeElementsWrapper from "@/components/Checkout/StripeElementsWrapper";
 import Price from "@/components/Price";
 import getQueryClient from "@/getQueryClient";
@@ -28,41 +29,12 @@ export default async function CheckoutPage() {
   return (
     <section className="border border-1 rounded">
       <div className="p-4 lg:p-6">
-        <h1 className="md:text-2xl lg:text-3xl pb-5 border-b">Checkout</h1>
+        <h2 className="md:text-2xl lg:text-3xl pb-5 border-b">Checkout</h2>
 
         <div className="grid grid-cols-5 py-4">
           <div className="col-span-3"></div>
           <div className="col-span-2">
-            <ul className="mb-5 space-y-3">
-              {data.order.items.map((item: OrderItem) => (
-                <li key={item.id} className="flex items-center">
-                  <div className="relative h-20 w-20 rounded-xl border shadow-sm">
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/${
-                        item.images[0].path as string
-                      }`}
-                      fill
-                      className="object-contain rounded-xl"
-                      alt={item.name}
-                    />
-                    <div className="absolute flex items-center text-xs justify-center w-4 h-4 rounded-full bg-blue-500 text-white right-0 top-[-5px]">
-                      {item.quantity}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col justify-center ml-2">
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-slate-800 text-sm">{item.sizeLabel}</p>
-                  </div>
-
-                  <Price
-                    className="ml-auto text-right"
-                    amount={item.price * item.quantity}
-                    currencyCode={data.order.currency}
-                  />
-                </li>
-              ))}
-            </ul>
+            <OrderProductList order={data.order} />
 
             <div className="mb-5">
               <div className="flex items-center justify-between">

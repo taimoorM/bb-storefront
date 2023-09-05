@@ -10,7 +10,7 @@ interface StripeElementsWrapperProps {
   stripeAccountId: string;
 }
 
-function StripeElementsWrapper({
+export default function StripeElementsWrapper({
   clientSecret,
   order,
   stripeAccountId,
@@ -35,5 +35,3 @@ function StripeElementsWrapper({
     </Elements>
   );
 }
-
-export default StripeElementsWrapper;
