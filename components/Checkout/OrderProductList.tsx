@@ -29,7 +29,6 @@ function OrderProductList({ order }: OrderProductListProps) {
             <p className="font-semibold">{item.name}</p>
             <p className="text-slate-800 text-sm">{item.sizeLabel}</p>
           </div>
-
           <Price
             className="ml-auto text-right"
             amount={item.price * item.quantity}

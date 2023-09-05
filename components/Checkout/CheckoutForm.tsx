@@ -9,13 +9,18 @@ import { FormEvent, useEffect, useState } from "react";
 import { Toast } from "../ui/toast";
 import { useStore } from "@/contexts/store";
 
-function CheckoutForm({ orderId }: { orderId: string }) {
+function CheckoutForm({
+  orderId,
+  stripeAccountId,
+}: {
+  orderId: string;
+  stripeAccountId: string;
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { headers } = useStore();
 
   useEffect(() => {
     if (!stripe) {

@@ -43,7 +43,7 @@ export function AddToCart({
         updateCart.mutate();
       }}
       className={clsx(
-        `flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 ${className}`,
+        `flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 relative ${className}`,
         {
           "cursor-not-allowed opacity-60 hover:opacity-60":
             !item.quantity || updateCart.isLoading,
