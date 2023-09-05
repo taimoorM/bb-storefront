@@ -5,6 +5,7 @@ import getQueryClient from "@/getQueryClient";
 import { Order, OrderItem } from "@/types/types";
 import { cookies } from "next/headers";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 export default async function CheckoutPage() {
   const cookieStore = cookies();
@@ -21,6 +22,10 @@ export default async function CheckoutPage() {
       },
     }
   );
+
+  if (!res.ok) {
+    redirect("/");
+  }
 
   const data: { order: Order; clientSecret: string; stripeId: string } =
     await res.json();
