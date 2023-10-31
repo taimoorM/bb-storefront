@@ -1,9 +1,6 @@
 import { supabase } from "@/libs/supabase";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
-import Error from "next/error";
 
 export async function GET(req: NextRequest) {
   console.log("GET /api/init");
