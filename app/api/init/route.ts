@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
+import Error from "next/error";
 
 export async function GET(req: NextRequest) {
   console.log("GET /api/init");
@@ -42,7 +43,7 @@ export async function GET(req: NextRequest) {
       .eq("customerId", data.id);
 
     if (!stores || !stores.length) {
-      return NextResponse.redirect("/404");
+      return NextResponse.json("No stores found", { status: 400 });
     }
 
     if (storeError) {
@@ -58,8 +59,12 @@ export async function GET(req: NextRequest) {
       });
     }
     return NextResponse.json({ stores, metadata: data });
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
+
+    if (e.code === "PGRST116") {
+      return NextResponse.json("No subdomain found", { status: 404 });
+    }
     return NextResponse.json({ error: e }, { status: 500 });
   }
 }
