@@ -37,10 +37,9 @@ export interface Variant {
 
 export interface VariantValue {
   id: string;
-  label: string;
   value: string;
+  label: string;
   type: string;
-  variantType: string;
 }
 
 export interface InventoryMap {

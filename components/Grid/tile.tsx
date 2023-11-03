@@ -3,7 +3,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Label from "../Label";
 import { Inventory, InventoryItem, Variant } from "@/types/types";
-import { useState } from "react";
+import React, { useState } from "react";
 import { AddToCart } from "../Cart/AddToCart";
 
 export function GridTileImage({
@@ -51,36 +51,38 @@ export function GridTileImage({
         {label ? (
           <Label
             title={label.title}
-            amount={variants[selectedVariant].price * 100}
+            amount={variants[selectedVariant].price}
             currencyCode={label.currencyCode}
             position={label.position}
           />
         ) : null}
-        <div className="z-10 flex gap-2 flex-wrap">
+        <div className="z-10 flex flex-col gap-2">
           {variants.map((variant, i) => (
-            <button
-              key={variant.id}
-              aria-disabled={!variant.quantity}
-              disabled={!variant.quantity}
-              onClick={() => {
-                setSelectedVariant(i);
-              }}
-              title={`${variant.sizeLabel} ${variant.size}${
-                !variant.quantity ? "(Out of Stock)" : ""
-              }`}
-              className={clsx(
-                "flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900",
-                {
-                  "ring-1 ring-blue-600": selectedVariant === i,
-                  "transition duration-300 ease-in-out hover:scale-110 hover:ring-blue-600 ":
-                    variant.quantity,
-                  "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 before:dark:bg-neutral-700":
-                    !variant.quantity,
-                }
-              )}
-            >
-              {variant.sizeLabel}
-            </button>
+            <React.Fragment key={variant.id}>
+              {" "}
+              <button
+                aria-disabled={!variant.quantity}
+                disabled={!variant.quantity}
+                onClick={() => {
+                  setSelectedVariant(i);
+                }}
+                title={`${variant.values
+                  .map((value) => value.label)
+                  .join(" ")} ${!variant.quantity ? "(Out of Stock)" : ""}`}
+                className={clsx(
+                  "flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900",
+                  {
+                    "ring-1 ring-blue-600": selectedVariant === i,
+                    "transition duration-300 ease-in-out hover:scale-110 hover:ring-blue-600 ":
+                      variant.quantity,
+                    "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 before:dark:bg-neutral-700":
+                      !variant.quantity,
+                  }
+                )}
+              >
+                {variant.values.map((value) => value.label).join(" | ")}
+              </button>
+            </React.Fragment>
           ))}
         </div>
       </div>
