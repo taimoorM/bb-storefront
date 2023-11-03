@@ -1,19 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
 import { getCookie, setCookie } from "cookies-next";
 
-export const fetchData = async (key: string, headers: {}) => {
+export const fetchData = async (key: string, headers: HeadersInit) => {
   const res = await fetch(`/api/storefront/${key}`, { headers });
   return res.json();
 };
 
-export const fetchInventory = async (headers: {}, storeId: string) => {
+export const fetchInventory = async (storeId: string, headers: HeadersInit) => {
   const res = await fetch(`/api/storefront/${storeId}/inventory`, {
     headers,
   });
   return res.json();
 };
 
-export const fetchSession = async (storeId: string, headers: {}) => {
+export const fetchSession = async (storeId: string, headers: HeadersInit) => {
   const token = getCookie("session");
 
   const res = await fetch(`/api/storefront/session`, {

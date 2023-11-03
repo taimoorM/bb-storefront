@@ -15,22 +15,17 @@ export function ProductGrid() {
     return null;
   }
 
-  console.log(inventory.items);
-
   return (
     <Grid className="grid-cols-4">
-      {Object.values(inventory.items).map((item, i) => {
-        const primaryImage = item[0].images.find(
-          (image) => image.isPrimary
-        )?.path;
+      {inventory.map((item, i) => {
+        const primaryImage = item.images.find((image) => image.isPrimary)?.path;
         return (
-          <Grid.Item key={item[0].id} className="animate-fadeIn">
+          <Grid.Item key={item.id} className="animate-fadeIn">
             <GridTileImage
-              alt={item[0].name}
-              variants={item}
+              alt={item.name}
+              variants={item.variants}
               label={{
-                title: item[0].name,
-                amount: item[0].price,
+                title: item.name,
                 currencyCode: store?.currency || "USD",
               }}
               src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/${

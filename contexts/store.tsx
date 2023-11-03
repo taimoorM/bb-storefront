@@ -29,7 +29,7 @@ interface StoreContextValue {
   types: Type[];
   session: Session | null;
   cart: Cart | null;
-  inventory: Inventory | null;
+  inventory: Inventory[] | null;
   selectedStore: string | null;
   useUpdateCart: (
     sessionId: string,
@@ -55,7 +55,7 @@ export const StoreProvider: React.FC<{
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
-  const [inventory, setInventory] = useState<Inventory | null>(null);
+  const [inventory, setInventory] = useState<Inventory[] | null>(null);
   const [inventoryMap, setInventoryMap] = useState<InventoryMap>({});
 
   const { metadata } = useApp();
@@ -79,7 +79,7 @@ export const StoreProvider: React.FC<{
         fetchData("categories", headers),
         fetchData("brands", headers),
         fetchSession(props.selectedStore, headers),
-        fetchInventory(headers, props.selectedStore),
+        fetchInventory(props.selectedStore, headers),
       ]),
   });
 
@@ -87,7 +87,7 @@ export const StoreProvider: React.FC<{
     sessionId: string,
     id: string,
     action: "add" | "subtract" | "remove",
-    headers: any
+    headers: HeadersInit
   ) => {
     const cartItem = cart?.items.find((i) => i.id === id);
     let quantity = cartItem?.quantity || 0;

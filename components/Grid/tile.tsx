@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Label from "../Label";
-import { Inventory, InventoryItem } from "@/types/types";
+import { Inventory, InventoryItem, Variant } from "@/types/types";
 import { useState } from "react";
 import { AddToCart } from "../Cart/AddToCart";
 
@@ -17,10 +17,9 @@ export function GridTileImage({
   isInteractive?: boolean;
 
   active?: boolean;
-  variants: InventoryItem[];
+  variants: Variant[];
   label?: {
     title: string;
-    amount: number;
     currencyCode: string;
     position?: "bottom" | "center";
   };

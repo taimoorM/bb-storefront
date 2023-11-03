@@ -17,10 +17,29 @@ export interface Brand {
 
 export interface Inventory {
   id: string;
-  items: {
-    [key: string]: InventoryItem[];
-  };
+  name: string;
+  description: string;
+  images: Image[];
+  brand: Brand["id"];
+  variants: Variant[];
 }
+
+export interface Variant {
+  id: string;
+  price: number;
+  quantity: number;
+  sku: string | null;
+  values: VariantValue[];
+}
+
+export interface VariantValue {
+  id: string;
+  label: string;
+  value: string;
+  type: string;
+  variantType: string;
+}
+
 export interface InventoryMap {
   [itemId: string]: InventoryItem;
 }
