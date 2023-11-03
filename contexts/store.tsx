@@ -134,6 +134,9 @@ export const StoreProvider: React.FC<{
   };
 
   useEffect(() => {
+    if (isError) {
+      console.log("error", error);
+    }
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
       const inventoryMap: InventoryMap = {};

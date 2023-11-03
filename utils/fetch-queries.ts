@@ -1,6 +1,5 @@
-import { CartItem } from "@/types/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getCookie, getCookies, setCookie } from "cookies-next";
+import { useMutation } from "@tanstack/react-query";
+import { getCookie, setCookie } from "cookies-next";
 
 export const fetchData = async (key: string, headers: {}) => {
   const res = await fetch(`/api/storefront/${key}`, { headers });
@@ -22,6 +21,13 @@ export const fetchSession = async (storeId: string, headers: {}) => {
     method: "POST",
     body: JSON.stringify({ token, storeId }),
   });
+
+  console.log("res", res);
+
+  if (res.status === 400) {
+    localStorage.removeItem("bb-selected-store");
+    throw new Error("No session found");
+  }
   if (!token) {
     const data = await res.json();
     console.log("data", data);

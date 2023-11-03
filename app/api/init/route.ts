@@ -39,6 +39,8 @@ export async function GET(req: NextRequest) {
       .select("id, name, address, phone, currency")
       .eq("customerId", data.id);
 
+    console.log(stores);
+
     if (!stores || !stores.length) {
       return NextResponse.json("No stores found", { status: 400 });
     }
