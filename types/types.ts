@@ -15,14 +15,17 @@ export interface Brand {
   active: boolean;
 }
 
-export interface Inventory {
+export interface InventoryItem {
   id: string;
   name: string;
-  description: string;
-  images: Image[];
-  brand: Brand["id"];
+  description: string | null;
+  images: Image[] | [];
+  brand: Brand["id"] | null;
+  category: Category["id"] | [];
   variants: Variant[];
 }
+
+export type Inventory = InventoryItem[];
 
 export interface Variant {
   id: string;
@@ -50,26 +53,6 @@ export interface Session {
   expiresAt: string;
   token: string;
   customerId: string;
-}
-
-export interface InventoryItem {
-  active: boolean;
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  images: Image[] | [];
-  size: number;
-  sizeLabel: string;
-  type: string;
-  variantGroupId: string;
-  brand: string;
-  categories:
-    | {
-        id: string;
-      }[]
-    | [];
 }
 
 interface Image {
