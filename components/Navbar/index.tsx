@@ -60,7 +60,7 @@ export default function Navbar() {
               ) : null}
               {categories.length ? (
                 <div className="relative group">
-                  <button className=" text-white px-4 py-2 text-sm">
+                  <button className=" text-black px-4 py-2 text-sm">
                     Shop by Category
                   </button>
 

@@ -9,7 +9,7 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ["sverkcrqoqcsoweuifdn.supabase.co"],
+    domains: ["sverkcrqoqcsoweuifdn.supabase.co", "localhost"],
   },
 };
 

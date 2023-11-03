@@ -3,7 +3,6 @@
 import { GridTileImage } from "../Grid/tile";
 import Grid from "../Grid";
 import { useStore } from "@/contexts/store";
-import { useApp } from "@/contexts/app";
 import placeHolderImage from "@/public/product-placeholder.webp";
 
 export function ProductGrid() {
@@ -22,7 +21,7 @@ export function ProductGrid() {
 
         const imagePath = primaryImage
           ? `${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/${primaryImage}`
-          : placeHolderImage;
+          : "http://localhost:4000/product-placeholder.webp";
         return (
           <Grid.Item key={item.id} className="animate-fadeIn">
             <GridTileImage
