@@ -10,6 +10,7 @@ import {
   Session,
   Type,
   InventoryMap,
+  Store,
 } from "@/types/types";
 
 import { createContext, use, useContext, useEffect, useState } from "react";
@@ -30,7 +31,7 @@ interface StoreContextValue {
   session: Session | null;
   cart: Cart | null;
   inventory: Inventory | null;
-  selectedStore: string | null;
+  selectedStore: Store;
   useUpdateCart: (
     sessionId: string,
     id: string,
@@ -58,7 +59,7 @@ export const StoreProvider: React.FC<{
   const [inventory, setInventory] = useState<Inventory | null>(null);
   const [inventoryMap, setInventoryMap] = useState<InventoryMap>({});
 
-  const { metadata } = useApp();
+  const { metadata, stores } = useApp();
   const { toast } = useToast();
 
   const headers = {
@@ -136,6 +137,10 @@ export const StoreProvider: React.FC<{
   useEffect(() => {
     if (isError) {
       console.log("error", error);
+      toast({
+        title: "Error",
+        description: "Something went wrong, please try again",
+      });
     }
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
@@ -165,7 +170,9 @@ export const StoreProvider: React.FC<{
         session,
         cart,
         inventory,
-        selectedStore: props.selectedStore,
+        selectedStore: stores.find(
+          (store) => store.id === props.selectedStore
+        ) as Store,
         brands,
         useUpdateCart,
         headers,

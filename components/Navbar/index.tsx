@@ -28,7 +28,7 @@ export default function Navbar() {
               className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
             >
               <Logo
-                src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}${metadata?.logo}`}
+                src={metadata?.logo}
                 alt={metadata?.businessName as string}
               />
               <div className="ml-2 mr-4 flex-none text-sm font-medium uppercase lg:block">

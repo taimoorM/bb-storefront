@@ -1,3 +1,5 @@
+import { useApp } from "@/contexts/app";
+import { useStore } from "@/contexts/store";
 import clsx from "clsx";
 import Image from "next/image";
 
@@ -6,10 +8,13 @@ export default function Logo({
   src,
   alt,
 }: {
-  src: string;
+  src: string | undefined;
   alt: string;
   size?: "sm" | undefined;
 }) {
+  const { selectedStore } = useStore();
+  console.log("src", src);
+  console.log("selectedStore", selectedStore);
   return (
     <div
       className={clsx(
@@ -20,7 +25,16 @@ export default function Logo({
         }
       )}
     >
-      <Image src={src} alt={alt} fill className="object-contain" />
+      {src ? (
+        <Image
+          src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}${src}`}
+          alt={alt}
+          fill
+          className="object-contain"
+        />
+      ) : (
+        <h1 className="text-2xl font-bold">{selectedStore?.name[0]}</h1>
+      )}
     </div>
   );
 }
