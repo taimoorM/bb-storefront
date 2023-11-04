@@ -5,15 +5,17 @@ import { AiOutlinePlus } from "react-icons/Ai";
 
 import { useApp } from "@/contexts/app";
 import { useStore } from "@/contexts/store";
-import { InventoryItem } from "@/types/types";
+import { InventoryItem, Variant } from "@/types/types";
 import { useTransition } from "react";
 import LoadingDots from "../LoadingDots";
 
 export function AddToCart({
   item,
+  name,
   className,
 }: {
-  item: InventoryItem;
+  item: Variant;
+  name: string;
   className?: string;
 }) {
   const { metadata } = useApp();
@@ -23,7 +25,7 @@ export function AddToCart({
   const cartItem = cart?.items.find((i) => i.id === item.id);
   const quantity = cartItem?.quantity || 0;
 
-  const title = !item.quantity ? "Out of stock" : item.name;
+  const title = !item.quantity ? "Out of stock" : name;
 
   const updateCart = useUpdateCart(session?.id as string, item.id, "add", {
     "x-public-key": metadata?.publicKey || "",

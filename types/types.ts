@@ -92,8 +92,12 @@ export interface Cart {
 
 export interface CartItem {
   id: string;
+  title: string;
+  subtitle: string;
+  image: string;
   quantity: number;
   price: number;
+  availableQuantity: number;
 }
 
 export interface Order {

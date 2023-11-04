@@ -12,16 +12,16 @@ export function getCartQuantityTotal(cart: Cart) {
   }, 0);
 }
 
-export function getItemDetailsById(inventoryMap: InventoryMap, itemId: string) {
-  const item = inventoryMap[itemId];
+// export function getItemDetailsById(inventory: Inventory, itemId: string) {
+//   const item = inventory?.find((item) => item.id === itemId);
 
-  if (item) {
-    return {
-      name: item.name,
-      sizeLabel: item.sizeLabel,
-      image: item.images[0]?.path,
-      quantity: item.quantity,
-    };
-  }
-  return null;
-}
+//   if (item) {
+//     return {
+//       name: item.name,
+//       sizeLabel: item.sizeLabel,
+//       image: item.images[0]?.path,
+//       quantity: item.quantity,
+//     };
+//   }
+//   return null;
+// }

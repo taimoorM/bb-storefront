@@ -9,7 +9,6 @@ import { CartItem } from "@/types/types";
 import { useUpdateCart } from "@/utils/fetch-queries";
 import { useApp } from "@/contexts/app";
 import { useStore } from "@/contexts/store";
-import { getItemDetailsById } from "@/lib/utils";
 
 export default function EditItemQuantityButton({
   item,
@@ -23,8 +22,8 @@ export default function EditItemQuantityButton({
   setIsLoading: (isLoading: boolean) => void;
 }) {
   const { session, cart, useUpdateCart, headers, inventoryMap } = useStore();
-  const inventoryItem = getItemDetailsById(inventoryMap, item.id);
-  const quantity = inventoryItem?.quantity || 0;
+
+  const quantity = item.availableQuantity || 0;
 
   const AddOrSubtractItemFromCart = useUpdateCart(
     session?.id as string,

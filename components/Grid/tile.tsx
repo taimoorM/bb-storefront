@@ -11,7 +11,6 @@ export function GridTileImage({
   active,
   label,
   variants,
-
   ...props
 }: {
   isInteractive?: boolean;
@@ -88,6 +87,7 @@ export function GridTileImage({
       </div>
       <AddToCart
         item={variants[selectedVariant]}
+        name={label?.title as string}
         className="rounded-lg rounded-t-none border border-b-0"
       />
     </div>

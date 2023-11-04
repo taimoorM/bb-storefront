@@ -6,7 +6,6 @@ import Price from "../Price";
 import EditQuantity from "./EditQuantity";
 import { useStore } from "@/contexts/store";
 import { useApp } from "@/contexts/app";
-import { getItemDetailsById } from "@/lib/utils";
 import Link from "next/link";
 import { LiaShoppingBagSolid } from "react-icons/Lia";
 import CartTotal from "./CartTotal";
@@ -16,16 +15,13 @@ export default function CartItemList({
 }: {
   closeCart?: () => void;
 }) {
-  const { cart, inventoryMap } = useStore();
-  const { stores } = useApp();
+  const { cart, inventoryMap, selectedStore } = useStore();
+
+  console.log("cart", cart?.items);
 
   let currencyCode = "USD";
 
-  if (localStorage.getItem("bb-selected-store")) {
-    const store = localStorage.getItem("bb-selected-store");
-    const selectedStore = stores.find((s) => s.id === store);
-    if (selectedStore) currencyCode = selectedStore.currency;
-  }
+  if (selectedStore) currencyCode = selectedStore.currency;
 
   return (
     <>
@@ -40,13 +36,9 @@ export default function CartItemList({
         <div className="flex h-full flex-col justify-between overflow-hidden p-1">
           <ul className="flex-grow overflow-auto py-4">
             {cart?.items.map((item, i) => {
-              let data;
-              if (inventoryMap) {
-                data = getItemDetailsById(inventoryMap, item.id);
-              }
               return (
                 <li
-                  key={i}
+                  key={item.id}
                   className="flex w-full flex-col border-b border-neutral-300 dark:border-neutral-700"
                 >
                   <div className="relative flex w-full flex-row justify-between px-1 py-4">
@@ -63,17 +55,17 @@ export default function CartItemList({
                           className="h-full w-full object-cover"
                           width={64}
                           height={64}
-                          alt={data?.name as string}
+                          alt={item.title as string}
                           src={`${
                             process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
-                          }/${data?.image as string}`}
+                          }/${item?.image as string}`}
                         />
                       </div>
 
                       <div className="flex flex-1 flex-col text-base">
-                        <span className="leading-tight">{data?.name}</span>
+                        <span className="leading-tight">{item.title}</span>
                         <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                          {data?.sizeLabel}
+                          {item.subtitle}
                         </span>
                       </div>
                     </Link>
