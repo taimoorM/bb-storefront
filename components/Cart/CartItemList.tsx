@@ -56,9 +56,13 @@ export default function CartItemList({
                           width={64}
                           height={64}
                           alt={item.title as string}
-                          src={`${
-                            process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
-                          }/${item?.image as string}`}
+                          src={
+                            item?.image
+                              ? `${
+                                  process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL
+                                }/${item?.image as string}`
+                              : "http://localhost:4000/product-placeholder.webp"
+                          }
                         />
                       </div>
 
