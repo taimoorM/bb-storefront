@@ -4,6 +4,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+
 const checkoutDetailFormSchema = z.object({
   name: z
     .string()
@@ -12,23 +32,44 @@ const checkoutDetailFormSchema = z.object({
     })
     .optional(),
   email: z.string().email({
-    message: "Please enter a valid email.",
+    message: "Email is required.",
   }),
-  phone: z.string().min(10, {
-    message: "Please enter a valid phone number.",
-  }),
-  address: z.string().min(2, {
-    message: "Please enter a valid address.",
-  }),
-  city: z.string().min(2, {
-    message: "Please enter a valid city.",
-  }),
-  state: z.string().min(2, {
-    message: "Please enter a valid state.",
-  }),
-  postalCode: z.string().min(5, {
-    message: "Please enter a valid postal code.",
-  }),
+  phone: z
+    .string()
+    .min(10, {
+      message: "Please enter a valid phone number.",
+    })
+    .optional(),
+  address: z
+    .string()
+    .min(2, {
+      message: "Please enter a valid address.",
+    })
+    .optional(),
+  city: z
+    .string()
+    .min(2, {
+      message: "Please enter a valid city.",
+    })
+    .optional(),
+  state: z
+    .string()
+    .min(2, {
+      message: "Please enter a valid state.",
+    })
+    .optional(),
+  postalCode: z
+    .string()
+    .min(5, {
+      message: "Please enter a valid postal code.",
+    })
+    .optional(),
+  country: z
+    .string()
+    .min(2, {
+      message: "Please enter a valid country.",
+    })
+    .optional(),
 });
 
 function CheckoutDetailsForm() {
@@ -42,13 +83,138 @@ function CheckoutDetailsForm() {
       city: "",
       state: "",
       postalCode: "",
+      country: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof checkoutDetailFormSchema>) {
     console.log(values);
   }
-  return <div>CheckoutDetailsForm</div>;
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Personal Details</CardTitle>
+            <CardDescription>
+              Enter your information below to complete the checkout process
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="email" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="phone" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>City</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Province/State</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="postalCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Postal Code</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter>
+            <Button type="submit">Submit</Button>
+          </CardFooter>
+        </Card>
+      </form>
+    </Form>
+  );
 }
 
 export default CheckoutDetailsForm;

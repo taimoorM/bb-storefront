@@ -1,3 +1,4 @@
+import CheckoutDetailsForm from "@/components/Checkout/CheckoutDetailsForm";
 import OrderProductList from "@/components/Checkout/OrderProductList";
 import StripeElementsWrapper from "@/components/Checkout/StripeElementsWrapper";
 import Price from "@/components/Price";
@@ -12,20 +13,40 @@ export default async function CheckoutPage() {
   const token = cookieStore.get("session");
   const publicKey = cookieStore.get("bb-access-token");
 
-  const res = await fetch(
-    `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
-    {
-      headers: {
-        "x-public-key": publicKey?.value || "",
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const headers = {
+    "x-public-key": publicKey?.value || "",
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+  let cart;
+  let order;
+  try {
+    const res = await fetch(
+      `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
+      {
+        headers,
+      }
+    );
 
-  const data: { order: Order; clientSecret: string; stripeId: string } =
-    await res.json();
-  console.log(data);
+    let data;
+    if (!res.ok) {
+      data = await res.json();
+      if (data.status === 404) {
+        const res = await fetch(
+          `http:localhost:3000/api/storefront/cart?token=${token?.value}`,
+          {
+            headers,
+          }
+        );
+        const data = await res.json();
+        cart = data;
+      }
+    } else {
+      order = data;
+    }
+  } catch (e) {
+    console.log(e);
+  }
 
   return (
     <section className="border border-1 rounded">
@@ -33,9 +54,11 @@ export default async function CheckoutPage() {
         <h2 className="md:text-2xl lg:text-3xl pb-5 border-b">Checkout</h2>
 
         <div className="grid grid-cols-5 py-4">
-          <div className="col-span-3"></div>
+          <div className="col-span-3">
+            <CheckoutDetailsForm />
+          </div>
           <div className="col-span-2">
-            <OrderProductList order={data.order} />
+            <OrderProductList order={data.items} />
 
             <div className="mb-5">
               <div className="flex items-center justify-between">

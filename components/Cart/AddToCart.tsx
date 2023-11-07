@@ -27,6 +27,8 @@ export function AddToCart({
 
   const title = !item.quantity ? "Out of stock" : name;
 
+  console.log("seesion", session);
+
   const updateCart = useUpdateCart(session?.id as string, item.id, "add", {
     "x-public-key": metadata?.publicKey || "",
     Accept: "application/json",
