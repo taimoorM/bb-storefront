@@ -3,7 +3,7 @@ import OrderProductList from "@/components/Checkout/OrderProductList";
 import StripeElementsWrapper from "@/components/Checkout/StripeElementsWrapper";
 import Price from "@/components/Price";
 import getQueryClient from "@/getQueryClient";
-import { Order, OrderItem } from "@/types/types";
+import { Cart, Order, OrderItem } from "@/types/types";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -18,8 +18,8 @@ export default async function CheckoutPage() {
     Accept: "application/json",
     "Content-Type": "application/json",
   };
-  let cart;
-  let order;
+  let cart: Cart;
+  let order: Order | undefined;
   try {
     const res = await fetch(
       `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
@@ -32,20 +32,20 @@ export default async function CheckoutPage() {
     if (!res.ok) {
       data = await res.json();
       if (data.status === 404) {
-        const res = await fetch(
+        const cartRes = await fetch(
           `http:localhost:3000/api/storefront/cart?token=${token?.value}`,
           {
             headers,
           }
         );
-        const data = await res.json();
-        cart = data;
+        cart = await res.json();
       }
     } else {
       order = data;
     }
   } catch (e) {
     console.log(e);
+    redirect("/cart");
   }
 
   return (
@@ -58,7 +58,7 @@ export default async function CheckoutPage() {
             <CheckoutDetailsForm />
           </div>
           <div className="col-span-2">
-            <OrderProductList order={data.items} />
+            <OrderProductList order={order.items} />
 
             <div className="mb-5">
               <div className="flex items-center justify-between">
