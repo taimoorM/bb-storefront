@@ -9,7 +9,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Toast } from "../ui/toast";
 import { useStore } from "@/contexts/store";
 
-function CheckoutForm({
+function CheckoutPaymentForm({
   orderId,
   stripeAccountId,
 }: {
@@ -114,4 +114,4 @@ function CheckoutForm({
   );
 }
 
-export default CheckoutForm;
+export default CheckoutPaymentForm;

@@ -1,6 +1,6 @@
 "use client";
 import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from "./CheckoutForm";
+import CheckoutPaymentForm from "./CheckoutPaymentForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { Order } from "@/types/types";
 
@@ -31,7 +31,10 @@ export default function StripeElementsWrapper({
   return (
     <Elements options={options} stripe={stripePromise}>
       <p className="text-lg font-bold mb-3">Payment Details</p>
-      <CheckoutForm orderId={order.id} stripeAccountId={stripeAccountId} />
+      <CheckoutPaymentForm
+        orderId={order.id}
+        stripeAccountId={stripeAccountId}
+      />
     </Elements>
   );
 }

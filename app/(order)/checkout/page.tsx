@@ -23,10 +23,6 @@ export default async function CheckoutPage() {
     }
   );
 
-  if (!res.ok) {
-    redirect("/");
-  }
-
   const data: { order: Order; clientSecret: string; stripeId: string } =
     await res.json();
   console.log(data);
@@ -69,11 +65,11 @@ export default async function CheckoutPage() {
                 />
               </div>
             </div>
-            <StripeElementsWrapper
+            {/* <StripeElementsWrapper
               order={data.order}
               clientSecret={data.clientSecret}
               stripeAccountId={data.stripeId}
-            />
+            /> */}
           </div>
         </div>
       </div>
