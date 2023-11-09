@@ -1,11 +1,8 @@
 import CheckoutDetailsForm from "@/components/Checkout/CheckoutDetailsForm";
 import OrderProductList from "@/components/Checkout/OrderProductList";
-import StripeElementsWrapper from "@/components/Checkout/StripeElementsWrapper";
 import Price from "@/components/Price";
-import getQueryClient from "@/getQueryClient";
 import { Cart, Order, OrderItem } from "@/types/types";
 import { cookies } from "next/headers";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 
 export default async function CheckoutPage() {
@@ -18,7 +15,7 @@ export default async function CheckoutPage() {
     Accept: "application/json",
     "Content-Type": "application/json",
   };
-  let cart: Cart;
+  let cart: Cart | undefined;
   let order: Order | undefined;
   try {
     const res = await fetch(
@@ -28,18 +25,20 @@ export default async function CheckoutPage() {
       }
     );
 
-    let data;
-    if (!res.ok) {
-      data = await res.json();
-      if (data.status === 404) {
-        const cartRes = await fetch(
-          `http:localhost:3000/api/storefront/cart?token=${token?.value}`,
-          {
-            headers,
-          }
-        );
-        cart = await res.json();
+    const data = await res.json();
+    if (!res.ok && data.statusCode === 404) {
+      const cartRes = await fetch(
+        `http:localhost:3000/api/storefront/cart?token=${token?.value}`,
+        {
+          headers,
+        }
+      );
+      console.log(cartRes, "cartRes");
+      if (!cartRes.ok) {
+        throw new Error("Could not fetch cart");
       }
+      cart = await cartRes.json();
+      console.log(cart, "cart");
     } else {
       order = data;
     }
@@ -47,6 +46,9 @@ export default async function CheckoutPage() {
     console.log(e);
     redirect("/cart");
   }
+
+  console.log(order, "order");
+  console.log(cart, "cart");
 
   return (
     <section className="border border-1 rounded">
@@ -58,7 +60,7 @@ export default async function CheckoutPage() {
             <CheckoutDetailsForm />
           </div>
           <div className="col-span-2">
-            <OrderProductList order={order.items} />
+            <OrderProductList order={order ? order.items : cart?.items} />
 
             <div className="mb-5">
               <div className="flex items-center justify-between">
@@ -66,8 +68,8 @@ export default async function CheckoutPage() {
 
                 <Price
                   className="text-right text-base text-black dark:text-white"
-                  amount={data.order.totals.subtotal}
-                  currencyCode={data.order.currency}
+                  amount={order.totals.subtotal}
+                  currencyCode={order.currency}
                 />
               </div>
               <div className="mb-2 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
