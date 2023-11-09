@@ -15,7 +15,7 @@ export default async function CheckoutPage() {
     Accept: "application/json",
     "Content-Type": "application/json",
   };
-  let orderData: Cart | Order | undefined;
+  let orderData;
   try {
     const res = await fetch(
       `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
@@ -24,48 +24,49 @@ export default async function CheckoutPage() {
       }
     );
 
-    const data = await res.json();
-    if (!res.ok && data.statusCode === 404) {
-      const cartRes = await fetch(
-        `http:localhost:3000/api/storefront/cart?token=${token?.value}`,
-        {
-          headers,
-        }
-      );
+    if (!res.ok) {
+      if (res.status === 404) {
+        const cartRes = await fetch(
+          `http:localhost:3000/api/storefront/cart?token=${token?.value}`,
+          {
+            headers,
+          }
+        );
 
-      if (!cartRes.ok) {
-        throw new Error("Could not fetch cart");
+        if (!cartRes.ok) {
+          throw new Error("Could not fetch cart");
+        }
+        orderData = (await cartRes.json()) as Cart;
+      } else {
+        throw new Error(`Unexpected server response: ${res.statusText}`);
       }
-      orderData = await cartRes.json();
     } else {
-      orderData = data;
+      orderData = (await res.json()) as Order;
     }
   } catch (e) {
     console.log(e);
     redirect("/cart");
   }
 
-  console.log(orderData, "orderData");
-
   return (
     <section className="border border-1 rounded">
       <div className="p-4 lg:p-6">
         <h2 className="md:text-2xl lg:text-3xl pb-5 border-b">Checkout</h2>
 
-        <div className="grid grid-cols-5 py-4">
+        <div className="grid grid-cols-5 py-4 gap-5">
           <div className="col-span-3">
             <CheckoutDetailsForm />
           </div>
           <div className="col-span-2">
-            <OrderProductList order={orderData as Order | Cart} />
+            <OrderProductList data={orderData as Order | Cart} />
 
-            <div className="mb-5">
+            {/* <div className="mb-5">
               <div className="flex items-center justify-between">
                 <p>Subtotal</p>
 
                 <Price
                   className="text-right text-base text-black dark:text-white"
-                  amount={order.totals.subtotal}
+                  amount={orderData?.totals ? orderData.totals.subtotal : 0}
                   currencyCode={order.currency}
                 />
               </div>
@@ -86,7 +87,7 @@ export default async function CheckoutPage() {
                   currencyCode={data.order.currency}
                 />
               </div>
-            </div>
+            </div> */}
             {/* <StripeElementsWrapper
               order={data.order}
               clientSecret={data.clientSecret}

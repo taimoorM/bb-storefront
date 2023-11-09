@@ -1,12 +1,16 @@
+"use client";
 import { Cart, CartItem, Order, OrderItem } from "@/types/types";
 import Image from "next/image";
 import Price from "../Price";
+import { useApp } from "@/contexts/app";
+import { useStore } from "@/contexts/store";
 
 interface OrderProductListProps {
   data: Order | Cart;
 }
 
 function OrderProductList({ data }: OrderProductListProps) {
+  const { selectedStore } = useStore();
   return (
     <ul className="mb-5 space-y-3">
       {data.items.map((item: OrderItem | CartItem) => (
@@ -32,7 +36,7 @@ function OrderProductList({ data }: OrderProductListProps) {
           <Price
             className="ml-auto text-right"
             amount={item.price * item.quantity}
-            currencyCode={data.currency}
+            currencyCode={selectedStore?.currency}
           />
         </li>
       ))}

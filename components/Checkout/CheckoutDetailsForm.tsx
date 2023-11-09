@@ -25,51 +25,16 @@ import {
 } from "../ui/card";
 
 const checkoutDetailFormSchema = z.object({
-  name: z
-    .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .optional(),
+  name: z.string().optional(),
   email: z.string().email({
     message: "Email is required.",
   }),
-  phone: z
-    .string()
-    .min(10, {
-      message: "Please enter a valid phone number.",
-    })
-    .optional(),
-  address: z
-    .string()
-    .min(2, {
-      message: "Please enter a valid address.",
-    })
-    .optional(),
-  city: z
-    .string()
-    .min(2, {
-      message: "Please enter a valid city.",
-    })
-    .optional(),
-  state: z
-    .string()
-    .min(2, {
-      message: "Please enter a valid state.",
-    })
-    .optional(),
-  postalCode: z
-    .string()
-    .min(5, {
-      message: "Please enter a valid postal code.",
-    })
-    .optional(),
-  country: z
-    .string()
-    .min(2, {
-      message: "Please enter a valid country.",
-    })
-    .optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  postalCode: z.string().optional(),
+  country: z.string().optional(),
 });
 
 function CheckoutDetailsForm() {
