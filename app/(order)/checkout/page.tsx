@@ -15,8 +15,7 @@ export default async function CheckoutPage() {
     Accept: "application/json",
     "Content-Type": "application/json",
   };
-  let cart: Cart | undefined;
-  let order: Order | undefined;
+  let orderData: Cart | Order | undefined;
   try {
     const res = await fetch(
       `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
@@ -33,22 +32,20 @@ export default async function CheckoutPage() {
           headers,
         }
       );
-      console.log(cartRes, "cartRes");
+
       if (!cartRes.ok) {
         throw new Error("Could not fetch cart");
       }
-      cart = await cartRes.json();
-      console.log(cart, "cart");
+      orderData = await cartRes.json();
     } else {
-      order = data;
+      orderData = data;
     }
   } catch (e) {
     console.log(e);
     redirect("/cart");
   }
 
-  console.log(order, "order");
-  console.log(cart, "cart");
+  console.log(orderData, "orderData");
 
   return (
     <section className="border border-1 rounded">
@@ -60,7 +57,7 @@ export default async function CheckoutPage() {
             <CheckoutDetailsForm />
           </div>
           <div className="col-span-2">
-            <OrderProductList order={order ? order.items : cart?.items} />
+            <OrderProductList order={orderData as Order | Cart} />
 
             <div className="mb-5">
               <div className="flex items-center justify-between">

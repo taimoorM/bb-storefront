@@ -119,12 +119,11 @@ export interface Order {
 export interface OrderItem {
   id: string;
   sku: string | null;
-  name: string;
-  size: number;
-  images: Image[];
+  title: string;
+  subtitle: string;
+  image: string;
   quantity: number;
   productId: string;
-  sizeLabel: string;
   price: number;
 }
 
