@@ -27,6 +27,8 @@ import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
 import { use, useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useStore } from "@/contexts/store";
 
 const checkoutDetailFormSchema = z.object({
   name: z.string().optional(),
@@ -69,6 +71,7 @@ function CheckoutDetailsForm() {
   });
 
   const [checked, setChecked] = useState(false);
+  const { cart, session, headers } = useStore();
 
   const handleChecked = () => {
     setChecked(!checked);
@@ -92,8 +95,24 @@ function CheckoutDetailsForm() {
     }
   }, [checked, form]);
 
+  const checkoutMutation = useMutation({
+    mutationFn: (values: z.infer<typeof checkoutDetailFormSchema>) => {
+      return fetch("/api/storefront/checkout", {
+        headers,
+        method: "POST",
+        body: JSON.stringify({ sessionId: session?.id as string, values }),
+      });
+    },
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   function onSubmit(values: z.infer<typeof checkoutDetailFormSchema>) {
-    console.log(values);
+    checkoutMutation.mutate(values);
   }
   return (
     <Form {...form}>
