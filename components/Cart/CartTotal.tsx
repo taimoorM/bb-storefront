@@ -72,7 +72,7 @@ export default function CartTotal() {
       )}
 
       <button
-        onClick={() => checkoutMutation.mutate(session?.id as string)}
+        onClick={() => router.push("/checkout")}
         className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
       >
         {checkoutMutation.isLoading ? (

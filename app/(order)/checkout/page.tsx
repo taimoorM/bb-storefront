@@ -1,7 +1,8 @@
 import CheckoutDetailsForm from "@/components/Checkout/CheckoutDetailsForm";
+import CheckoutTotals from "@/components/Checkout/CheckoutTotals";
 import OrderProductList from "@/components/Checkout/OrderProductList";
 import Price from "@/components/Price";
-import { Cart, Order, OrderItem } from "@/types/types";
+import { Cart, CartItem, Order, OrderItem } from "@/types/types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -15,7 +16,8 @@ export default async function CheckoutPage() {
     Accept: "application/json",
     "Content-Type": "application/json",
   };
-  let orderData;
+  let order: Order | undefined;
+  let cart: Cart | undefined;
   try {
     const res = await fetch(
       `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
@@ -23,7 +25,6 @@ export default async function CheckoutPage() {
         headers,
       }
     );
-
     if (!res.ok) {
       if (res.status === 404) {
         const cartRes = await fetch(
@@ -36,17 +37,20 @@ export default async function CheckoutPage() {
         if (!cartRes.ok) {
           throw new Error("Could not fetch cart");
         }
-        orderData = (await cartRes.json()) as Cart;
+        cart = await cartRes.json();
       } else {
         throw new Error(`Unexpected server response: ${res.statusText}`);
       }
     } else {
-      orderData = (await res.json()) as Order;
+      order = await res.json();
     }
   } catch (e) {
     console.log(e);
     redirect("/cart");
   }
+
+  const items = cart ? cart.items : order?.items;
+  const subTotal = cart ? cart.subTotal : order?.totals.subtotal;
 
   return (
     <section className="border border-1 rounded">
@@ -58,36 +62,12 @@ export default async function CheckoutPage() {
             <CheckoutDetailsForm />
           </div>
           <div className="col-span-2">
-            <OrderProductList data={orderData as Order | Cart} />
+            <OrderProductList items={items as OrderItem[] | CartItem[]} />
 
-            {/* <div className="mb-5">
-              <div className="flex items-center justify-between">
-                <p>Subtotal</p>
-
-                <Price
-                  className="text-right text-base text-black dark:text-white"
-                  amount={orderData?.totals ? orderData.totals.subtotal : 0}
-                  currencyCode={order.currency}
-                />
-              </div>
-              <div className="mb-2 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
-                <p className="text-sm font-light">Tax</p>
-                <Price
-                  className="text-right text-black dark:text-white text-sm font-light"
-                  amount={data.order.totals.taxAmount}
-                  currencyCode={data.order.currency}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="font-semibold">Total</p>
-
-                <Price
-                  className="text-right text-base text-black dark:text-white font-semibold"
-                  amount={data.order.totals.total}
-                  currencyCode={data.order.currency}
-                />
-              </div>
-            </div> */}
+            <CheckoutTotals
+              subTotal={subTotal as number}
+              totals={order ? order.totals : null}
+            />
             {/* <StripeElementsWrapper
               order={data.order}
               clientSecret={data.clientSecret}

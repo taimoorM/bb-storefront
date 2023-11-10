@@ -6,14 +6,14 @@ import { useApp } from "@/contexts/app";
 import { useStore } from "@/contexts/store";
 
 interface OrderProductListProps {
-  data: Order | Cart;
+  items: CartItem[] | OrderItem[];
 }
 
-function OrderProductList({ data }: OrderProductListProps) {
+function OrderProductList({ items }: OrderProductListProps) {
   const { selectedStore } = useStore();
   return (
     <ul className="mb-5 space-y-3">
-      {data.items.map((item: OrderItem | CartItem) => (
+      {items.map((item: OrderItem | CartItem) => (
         <li key={item.id} className="flex items-center">
           <div className="relative h-20 w-20 rounded-xl border shadow-sm">
             <Image
