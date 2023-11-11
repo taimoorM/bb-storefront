@@ -107,6 +107,7 @@ export const StoreProvider: React.FC<{
     }
     return useMutation({
       mutationFn: async () => {
+        console.log("sessionId", sessionId);
         const res = await fetch(`/api/storefront/cart/`, {
           headers,
           method: "PATCH",
