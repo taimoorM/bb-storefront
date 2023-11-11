@@ -97,7 +97,6 @@ export interface CartItem {
   image: string;
   quantity: number;
   price: number;
-  availableQuantity: number;
 }
 
 export interface Order {

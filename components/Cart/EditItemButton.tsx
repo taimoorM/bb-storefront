@@ -23,8 +23,6 @@ export default function EditItemQuantityButton({
 }) {
   const { session, cart, useUpdateCart, headers, inventoryMap } = useStore();
 
-  const quantity = item.availableQuantity || 0;
-
   const AddOrSubtractItemFromCart = useUpdateCart(
     session?.id as string,
     item.id,
@@ -45,7 +43,7 @@ export default function EditItemQuantityButton({
         if (!item.quantity) return;
         AddOrSubtractItemFromCart.mutate();
       }}
-      disabled={isLoading || (type === "add" && item.quantity >= quantity)}
+      disabled={isLoading}
       className={clsx(
         "ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80",
         {
