@@ -11,6 +11,9 @@ export default async function CheckoutPage() {
   const token = cookieStore.get("session");
   const publicKey = cookieStore.get("bb-access-token");
 
+  console.log(token);
+  console.log(publicKey);
+
   const headers = {
     "x-public-key": publicKey?.value || "",
     Accept: "application/json",
@@ -25,6 +28,7 @@ export default async function CheckoutPage() {
         headers,
       }
     );
+
     if (!res.ok) {
       if (res.status === 404) {
         const cartRes = await fetch(

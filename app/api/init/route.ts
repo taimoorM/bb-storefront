@@ -11,6 +11,8 @@ export async function GET(req: NextRequest) {
   try {
     const accessToken = cookieStore.get(`bb-access-token`);
 
+    console.log("toekn!!!!", accessToken);
+
     const query = supabase
       .from("Customer")
       .select("id, businessName, subdomain, logo, publicKey, stripeId");
@@ -49,7 +51,7 @@ export async function GET(req: NextRequest) {
       throw storeError;
     }
 
-    if (!accessToken) {
+    if (!accessToken?.value) {
       cookies().set({
         name: `bb-access-token`,
         value: data.publicKey,
