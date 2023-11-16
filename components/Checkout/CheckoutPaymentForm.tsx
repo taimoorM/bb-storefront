@@ -68,7 +68,7 @@ function CheckoutPaymentForm({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://jhoom.localhost:4000/checkout/success",
+        return_url: "/checkout/success",
       },
     });
 

@@ -1,8 +1,10 @@
 import CheckoutDetailsForm from "@/components/Checkout/CheckoutDetailsForm";
 import CheckoutTotals from "@/components/Checkout/CheckoutTotals";
+import CheckoutWrapper from "@/components/Checkout/CheckoutWrapper";
 import OrderProductList from "@/components/Checkout/OrderProductList";
 import Price from "@/components/Price";
 import { Cart, CartItem, Order, OrderItem } from "@/types/types";
+import { Check } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -21,6 +23,12 @@ export default async function CheckoutPage() {
   };
   let order: Order | undefined;
   let cart: Cart | undefined;
+  let data: {
+    order: Order;
+    clientSecret: string;
+    stripeId: string;
+  } | null = null;
+
   try {
     const res = await fetch(
       `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
@@ -46,45 +54,13 @@ export default async function CheckoutPage() {
         throw new Error(`Unexpected server response: ${res.statusText}`);
       }
     } else {
-      const data = await res.json();
-      order = data.order;
+      data = await res.json();
+      order = data?.order;
     }
   } catch (e) {
     console.log(e);
     redirect("/cart");
   }
 
-  console.log(order);
-  console.log(cart);
-
-  const items = cart ? cart.items : order?.items;
-  console.log("ITEMS", items);
-  const subTotal = cart ? cart.subTotal : order?.totals?.subtotal;
-
-  return (
-    <section className="border border-1 rounded">
-      <div className="p-4 lg:p-6">
-        <h2 className="md:text-2xl lg:text-3xl pb-5 border-b">Checkout</h2>
-
-        <div className="grid grid-cols-5 py-4 gap-5">
-          <div className="col-span-3">
-            {order ? <div>order details</div> : <CheckoutDetailsForm />}
-          </div>
-          <div className="col-span-2">
-            <OrderProductList items={items as OrderItem[] | CartItem[]} />
-
-            <CheckoutTotals
-              subTotal={subTotal as number}
-              totals={order ? order.totals : null}
-            />
-            {/* <StripeElementsWrapper
-              order={data.order}
-              clientSecret={data.clientSecret}
-              stripeAccountId={data.stripeId}
-            /> */}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <CheckoutWrapper data={data} order={order} cart={cart} />;
 }

@@ -22,7 +22,7 @@ export default async function CheckoutSuccessPage({
   });
   return (
     <div className="flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold mb-4">Thank you for your order!</h1>
+      <h2 className="text-2xl font-bold mb-4">Thank you for your order!</h2>
       <p className="text-lg">
         We appreciate your business! If you have any questions, please contact
         us.{" "}

@@ -114,6 +114,8 @@ export interface Order {
   sessionId?: string;
   expiresAt: string;
   status: string;
+  email: string;
+  invoiceId: string;
 }
 
 export interface OrderItem {
