@@ -46,15 +46,20 @@ export default async function CheckoutPage() {
         throw new Error(`Unexpected server response: ${res.statusText}`);
       }
     } else {
-      order = await res.json();
+      const data = await res.json();
+      order = data.order;
     }
   } catch (e) {
     console.log(e);
     redirect("/cart");
   }
 
+  console.log(order);
+  console.log(cart);
+
   const items = cart ? cart.items : order?.items;
-  const subTotal = cart ? cart.subTotal : order?.totals.subtotal;
+  console.log("ITEMS", items);
+  const subTotal = cart ? cart.subTotal : order?.totals?.subtotal;
 
   return (
     <section className="border border-1 rounded">
@@ -63,7 +68,7 @@ export default async function CheckoutPage() {
 
         <div className="grid grid-cols-5 py-4 gap-5">
           <div className="col-span-3">
-            <CheckoutDetailsForm />
+            {order ? <div>order details</div> : <CheckoutDetailsForm />}
           </div>
           <div className="col-span-2">
             <OrderProductList items={items as OrderItem[] | CartItem[]} />

@@ -114,6 +114,7 @@ function CheckoutDetailsForm() {
   function onSubmit(values: z.infer<typeof checkoutDetailFormSchema>) {
     checkoutMutation.mutate(values);
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -136,7 +137,6 @@ function CheckoutDetailsForm() {
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-
                       <FormMessage />
                     </FormItem>
                   )}
