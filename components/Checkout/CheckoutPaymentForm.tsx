@@ -100,11 +100,11 @@ function CheckoutPaymentForm({
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <LinkAuthenticationElement
+      {/* <LinkAuthenticationElement
         id="link-authentication-element"
         onChange={(e) => setEmail(e.value)}
         className="mb-2"
-      />
+      /> */}
       <PaymentElement id="payment-element" />
       <button
         disabled={isLoading || !stripe || !elements}

@@ -39,14 +39,48 @@ function CheckoutWrapper({
         <div className="grid grid-cols-5 py-4 gap-5">
           <div className="col-span-3">
             {currentOrderData ? (
-              <div className="border border-1 rounded-xl p-4">
-                <h4 className="text-lg font-bold mb-3">Billing Details</h4>
-                <Label>Email</Label>
-                <p>{currentOrderData.order.email}</p>
-                <Label>Phone</Label>
-                <p>{currentOrderData.order.billing.phone}</p>
-                <Label>Address</Label>
-                <address></address>
+              <div className="space-y-2">
+                <div className="border border-1 rounded-xl p-4">
+                  <h4 className="text-lg font-bold mb-3">Billing Details</h4>
+                  <Label>Email</Label>
+                  <p>{currentOrderData.order.email}</p>
+                  <Label>Phone</Label>
+                  <p>{currentOrderData.order.billing.phone}</p>
+                  <Label>Address</Label>
+                  <address>
+                    {currentOrderData.order.billing.address.line1}
+                    {currentOrderData.order.billing.address.line2 &&
+                      currentOrderData.order.billing.address.line2}
+                    <br />
+                    {currentOrderData.order.billing.address.city},{" "}
+                    {currentOrderData.order.billing.address.state}{" "}
+                    {currentOrderData.order.billing.address.postalCode}
+                  </address>
+                </div>
+
+                <div className="border border-1 rounded-xl p-4">
+                  <h4 className="text-lg font-bold mb-3">Shipping Details</h4>
+                  {currentOrderData.order.shipping.name ? (
+                    <div>
+                      <Label>Name</Label>
+                      <p>{currentOrderData.order.shipping.name}</p>
+                      <Label>Phone</Label>
+                      <p>{currentOrderData.order.shipping.phone}</p>
+                      <Label>Address</Label>
+                      <address>
+                        {currentOrderData.order.shipping.address.line1}
+                        {currentOrderData.order.shipping.address.line2 &&
+                          currentOrderData.order.shipping.address.line2}
+                        <br />
+                        {currentOrderData.order.shipping.address.city},{" "}
+                        {currentOrderData.order.shipping.address.state}{" "}
+                        {currentOrderData.order.shipping.address.postalCode}
+                      </address>
+                    </div>
+                  ) : (
+                    <p>No shipping details provided.</p>
+                  )}
+                </div>
               </div>
             ) : (
               <CheckoutDetailsForm setOrderData={setCurrentOrderData} />
