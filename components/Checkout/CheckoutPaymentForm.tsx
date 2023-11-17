@@ -8,6 +8,8 @@ import {
 import { FormEvent, useEffect, useState } from "react";
 import { Toast } from "../ui/toast";
 import { useStore } from "@/contexts/store";
+import { usePathname } from "next/navigation";
+import { useApp } from "@/contexts/app";
 
 function CheckoutPaymentForm({
   orderId,
@@ -16,11 +18,15 @@ function CheckoutPaymentForm({
   orderId: string;
   stripeAccountId: string;
 }) {
+  const path = usePathname();
+  console.log(path);
   const stripe = useStripe();
   const elements = useElements();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { metadata } = useApp();
 
   useEffect(() => {
     if (!stripe) {
@@ -68,7 +74,7 @@ function CheckoutPaymentForm({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "/checkout/success",
+        return_url: `http://${metadata?.subdomain}.localhost:4000/checkout/success`,
       },
     });
 
