@@ -40,9 +40,13 @@ function CheckoutWrapper({
           <div className="col-span-3">
             {currentOrderData ? (
               <div className="border border-1 rounded-xl p-4">
-                <h4 className="text-lg font-bold mb-3">Order Details</h4>
+                <h4 className="text-lg font-bold mb-3">Billing Details</h4>
                 <Label>Email</Label>
                 <p>{currentOrderData.order.email}</p>
+                <Label>Phone</Label>
+                <p>{currentOrderData.order.billing.phone}</p>
+                <Label>Address</Label>
+                <address></address>
               </div>
             ) : (
               <CheckoutDetailsForm setOrderData={setCurrentOrderData} />

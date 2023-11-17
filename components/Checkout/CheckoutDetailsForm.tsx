@@ -39,13 +39,16 @@ const checkoutDetailFormSchema = z.object({
     message: "Email is required.",
   }),
   phone: z.string().optional(),
-  address: z.string().optional(),
+  line1: z.string().optional(),
+  line2: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
   postalCode: z.string().optional(),
   country: z.string().optional(),
   shippingName: z.string().optional(),
-  shippingAddress: z.string().optional(),
+  shippingPhone: z.string().optional(),
+  shippingLine1: z.string().optional(),
+  shippingLine2: z.string().optional(),
   shippingCity: z.string().optional(),
   shippingState: z.string().optional(),
   shippingPostalCode: z.string().optional(),
@@ -63,13 +66,16 @@ function CheckoutDetailsForm({
       name: "",
       email: "",
       phone: "",
-      address: "",
+      line1: "",
+      line2: "",
       city: "",
       state: "",
       postalCode: "",
       country: "",
       shippingName: "",
-      shippingAddress: "",
+      shippingPhone: "",
+      shippingLine1: "",
+      shippingLine2: "",
       shippingCity: "",
       shippingState: "",
       shippingPostalCode: "",
@@ -87,14 +93,18 @@ function CheckoutDetailsForm({
   useEffect(() => {
     if (checked) {
       form.setValue("shippingName", form.getValues("name"));
-      form.setValue("shippingAddress", form.getValues("address"));
+      form.setValue("shippingPhone", form.getValues("phone"));
+      form.setValue("line1", form.getValues("shippingLine1"));
+      form.setValue("line2", form.getValues("shippingLine2"));
       form.setValue("shippingCity", form.getValues("city"));
       form.setValue("shippingState", form.getValues("state"));
       form.setValue("shippingPostalCode", form.getValues("postalCode"));
       form.setValue("shippingCountry", form.getValues("country"));
     } else {
       form.setValue("shippingName", "");
-      form.setValue("shippingAddress", "");
+      form.setValue("shippingPhone", "");
+      form.setValue("shippingLine1", "");
+      form.setValue("shippingLine2", "");
       form.setValue("shippingCity", "");
       form.setValue("shippingState", "");
       form.setValue("shippingPostalCode", "");
@@ -179,19 +189,33 @@ function CheckoutDetailsForm({
               </div>
 
               <div className="flex gap-4 w-full">
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="space-y-2">
+                  <FormLabel>Address</FormLabel>
+                  <FormField
+                    control={form.control}
+                    name="line1"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} placeholder="123 Street Ave" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="line2"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} placeholder="Unit/PO Box" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <FormField
                   control={form.control}
                   name="city"
@@ -251,8 +275,8 @@ function CheckoutDetailsForm({
             </div>
 
             <Separator className="my-6" />
-            <Label className="text-lg mb-4">Shipping Information</Label>
-            <div>
+            <h4 className="text-lg font-semibold mb-2">Shipping Information</h4>
+            <div className="mb-4">
               <Checkbox checked={checked} onCheckedChange={handleChecked} />
               <label
                 htmlFor="terms"
@@ -262,26 +286,13 @@ function CheckoutDetailsForm({
               </label>
             </div>
             <div className="space-y-3">
-              <FormField
-                control={form.control}
-                name="shippingName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={checked} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <div className="flex gap-4">
                 <FormField
                   control={form.control}
-                  name="shippingAddress"
+                  name="shippingName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
                         <Input {...field} disabled={checked} />
                       </FormControl>
@@ -289,6 +300,56 @@ function CheckoutDetailsForm({
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="shippingPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone</FormLabel>
+                      <FormControl>
+                        <Input {...field} disabled={checked} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex gap-4">
+                <div className="space-y-2">
+                  <FormLabel>Address</FormLabel>
+                  <FormField
+                    control={form.control}
+                    name="shippingLine1"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            disabled={checked}
+                            placeholder="Address"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="shippingLine1"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            disabled={checked}
+                            placeholder="Unit/PO Box"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <FormField
                   control={form.control}
                   name="shippingCity"
