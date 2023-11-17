@@ -89,17 +89,17 @@ function CheckoutDetailsForm({
   const handleChecked = () => {
     setChecked(!checked);
   };
-
+  const formValues = form.watch();
   useEffect(() => {
     if (checked) {
-      form.setValue("shippingName", form.getValues("name"));
-      form.setValue("shippingPhone", form.getValues("phone"));
-      form.setValue("line1", form.getValues("shippingLine1"));
-      form.setValue("line2", form.getValues("shippingLine2"));
-      form.setValue("shippingCity", form.getValues("city"));
-      form.setValue("shippingState", form.getValues("state"));
-      form.setValue("shippingPostalCode", form.getValues("postalCode"));
-      form.setValue("shippingCountry", form.getValues("country"));
+      form.setValue("shippingName", formValues.name);
+      form.setValue("shippingPhone", formValues.phone);
+      form.setValue("shippingLine1", formValues.line1);
+      form.setValue("shippingLine2", formValues.line2);
+      form.setValue("shippingCity", formValues.city);
+      form.setValue("shippingState", formValues.state);
+      form.setValue("shippingPostalCode", formValues.postalCode);
+      form.setValue("shippingCountry", formValues.country);
     } else {
       form.setValue("shippingName", "");
       form.setValue("shippingPhone", "");
@@ -110,7 +110,7 @@ function CheckoutDetailsForm({
       form.setValue("shippingPostalCode", "");
       form.setValue("shippingCountry", "");
     }
-  }, [checked, form]);
+  }, [checked, form, formValues]);
 
   const checkoutMutation = useMutation({
     mutationFn: (values: z.infer<typeof checkoutDetailFormSchema>) => {
@@ -335,7 +335,7 @@ function CheckoutDetailsForm({
                   />
                   <FormField
                     control={form.control}
-                    name="shippingLine1"
+                    name="shippingLine2"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
