@@ -45,7 +45,7 @@ function CheckoutWrapper({
                 <p>{currentOrderData.order.email}</p>
               </div>
             ) : (
-              <CheckoutDetailsForm />
+              <CheckoutDetailsForm setOrderData={setCurrentOrderData} />
             )}
           </div>
           <div className="col-span-2">

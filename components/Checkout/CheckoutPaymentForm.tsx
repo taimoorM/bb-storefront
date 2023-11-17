@@ -10,6 +10,7 @@ import { Toast } from "../ui/toast";
 import { useStore } from "@/contexts/store";
 import { usePathname } from "next/navigation";
 import { useApp } from "@/contexts/app";
+import Spinner from "../Loaders/Spinner";
 
 function CheckoutPaymentForm({
   orderId,
@@ -109,9 +110,10 @@ function CheckoutPaymentForm({
         disabled={isLoading || !stripe || !elements}
         id="submit"
         className="`flex w-full items-center justify-center rounded shadow bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 mt-3"
+        aria-disabled={isLoading || !stripe || !elements}
       >
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+          {isLoading && <Spinner className="mr-2" />}Pay now
         </span>
       </button>
       {/* Show any error or success messages */}

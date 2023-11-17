@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -29,6 +29,9 @@ import { Checkbox } from "../ui/checkbox";
 import { use, useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useStore } from "@/contexts/store";
+import Link from "next/link";
+import LoadingDots from "../LoadingDots";
+import Spinner from "../Loaders/Spinner";
 
 const checkoutDetailFormSchema = z.object({
   name: z.string().optional(),
@@ -49,7 +52,11 @@ const checkoutDetailFormSchema = z.object({
   shippingCountry: z.string().optional(),
 });
 
-function CheckoutDetailsForm() {
+function CheckoutDetailsForm({
+  setOrderData,
+}: {
+  setOrderData: (data: any) => void;
+}) {
   const form = useForm<z.infer<typeof checkoutDetailFormSchema>>({
     resolver: zodResolver(checkoutDetailFormSchema),
     defaultValues: {
@@ -103,8 +110,10 @@ function CheckoutDetailsForm() {
         body: JSON.stringify({ sessionId: session?.id as string, values }),
       });
     },
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: async (data) => {
+      const jsonData = await data.json();
+      console.log(jsonData);
+      setOrderData(jsonData);
     },
     onError: (error) => {
       console.log(error);
@@ -338,10 +347,18 @@ function CheckoutDetailsForm() {
             </div>
           </CardContent>
           <CardFooter className="gap-2">
-            <Button type="submit">Proceed to payment</Button>
-            <Button type="submit" className="bg-blue-600">
-              Cancel Checkout
+            <Button type="submit" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting && <Spinner className="mr-2" />}{" "}
+              Proceed to payment
             </Button>
+            <Link
+              href="/"
+              className={`${buttonVariants({
+                variant: "outline",
+              })}`}
+            >
+              Continue Shopping
+            </Link>
           </CardFooter>
         </Card>
       </form>

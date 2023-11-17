@@ -6,8 +6,7 @@ import clsx from "clsx";
 
 import LoadingDots from "../LoadingDots";
 import { CartItem } from "@/types/types";
-import { useUpdateCart } from "@/utils/fetch-queries";
-import { useApp } from "@/contexts/app";
+
 import { useStore } from "@/contexts/store";
 
 export default function EditItemQuantityButton({
