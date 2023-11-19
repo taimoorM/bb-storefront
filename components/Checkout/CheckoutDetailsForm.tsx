@@ -113,28 +113,6 @@ function CheckoutDetailsForm({
   const handleChecked = () => {
     setChecked(!checked);
   };
-  const formValues = form.watch();
-  useEffect(() => {
-    if (checked) {
-      form.setValue("shippingName", formValues.name);
-      form.setValue("shippingPhone", formValues.phone);
-      form.setValue("shippingLine1", formValues.line1);
-      form.setValue("shippingLine2", formValues.line2);
-      form.setValue("shippingCity", formValues.city);
-      form.setValue("shippingState", formValues.state);
-      form.setValue("shippingPostalCode", formValues.postalCode);
-      form.setValue("shippingCountry", formValues.country);
-    } else {
-      form.setValue("shippingName", "");
-      form.setValue("shippingPhone", "");
-      form.setValue("shippingLine1", "");
-      form.setValue("shippingLine2", "");
-      form.setValue("shippingCity", "");
-      form.setValue("shippingState", "");
-      form.setValue("shippingPostalCode", "");
-      form.setValue("shippingCountry", "");
-    }
-  }, [checked, form, formValues]);
 
   const checkoutMutation = useMutation({
     mutationFn: (values: z.infer<typeof checkoutDetailFormSchema>) => {
@@ -385,7 +363,7 @@ function CheckoutDetailsForm({
                     <div className="flex gap-4">
                       <FormField
                         control={form.control}
-                        name="shippingName"
+                        name={checked ? "name" : "shippingName"}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Name</FormLabel>
@@ -398,7 +376,7 @@ function CheckoutDetailsForm({
                       />
                       <FormField
                         control={form.control}
-                        name="shippingPhone"
+                        name={checked ? "phone" : "shippingPhone"}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Phone</FormLabel>
@@ -415,7 +393,7 @@ function CheckoutDetailsForm({
                         <FormLabel>Address</FormLabel>
                         <FormField
                           control={form.control}
-                          name="shippingLine1"
+                          name={checked ? "line1" : "shippingLine1"}
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
@@ -431,7 +409,7 @@ function CheckoutDetailsForm({
                         />
                         <FormField
                           control={form.control}
-                          name="shippingLine2"
+                          name={checked ? "line2" : "shippingLine2"}
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
@@ -448,7 +426,7 @@ function CheckoutDetailsForm({
                       </div>
                       <FormField
                         control={form.control}
-                        name="shippingCity"
+                        name={checked ? "city" : "shippingCity"}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>City</FormLabel>
@@ -461,7 +439,7 @@ function CheckoutDetailsForm({
                       />
                       <FormField
                         control={form.control}
-                        name="shippingState"
+                        name={checked ? "state" : "shippingState"}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>State/Province</FormLabel>
@@ -476,7 +454,7 @@ function CheckoutDetailsForm({
                     <div className="flex gap-4">
                       <FormField
                         control={form.control}
-                        name="shippingPostalCode"
+                        name={checked ? "postalCode" : "shippingPostalCode"}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Postal Code</FormLabel>
@@ -489,7 +467,7 @@ function CheckoutDetailsForm({
                       />
                       <FormField
                         control={form.control}
-                        name="shippingCountry"
+                        name={checked ? "country" : "shippingCountry"}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Country</FormLabel>
