@@ -149,226 +149,46 @@ function CheckoutDetailsForm({
                 </CardDescription>
               </CardHeader>
             ))}
-          <CardContent className="space-y-4">
-            <div>
-              {initialData && editMode !== "billing" ? (
-                <div className="border border-1 rounded-xl p-4 relative">
-                  <div
-                    className="absolute top-4 right-4 text-xs font-medium p-1 bg-slate-100 rounded-lg text-blue-600 cursor-pointer"
-                    role="button"
-                    onClick={() => setEditMode("billing")}
-                  >
-                    Update
-                  </div>
-                  <h4 className="text-lg font-bold mb-3">Billing Details</h4>
-                  <Label>Email</Label>
-                  <p>{initialData.email}</p>
-                  <Label>Phone</Label>
-                  <p>{initialData.billing.phone}</p>
-                  <Label>Address</Label>
-                  <address>
-                    {initialData.billing.address.line1}
-                    {initialData.billing.address.line2 &&
-                      initialData.billing.address.line2}
-                    <br />
-                    {initialData.billing.address.city},{" "}
-                    {initialData.billing.address.state}{" "}
-                    {initialData.billing.address.postalCode}
-                  </address>
-                  a
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="flex gap-4 w-full">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="email" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="phone" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex gap-4 w-full">
-                    <div className="space-y-2">
-                      <FormLabel>Address</FormLabel>
-                      <FormField
-                        control={form.control}
-                        name="line1"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input {...field} placeholder="123 Street Ave" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="line2"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input {...field} placeholder="Unit/PO Box" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <FormField
-                      control={form.control}
-                      name="city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>City</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="state"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Province/State</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex gap-4">
-                    <FormField
-                      control={form.control}
-                      name="postalCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Postal Code</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="country"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Country</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {!initialData && <Separator className="my-6" />}
-            <div>
-              {initialData && editMode !== "shipping" ? (
-                <div className="border border-1 rounded-xl p-4 relative">
-                  <div
-                    className="absolute top-4 right-4 text-xs font-medium p-1 bg-slate-100 rounded-lg text-blue-600 cursor-pointer"
-                    role="button"
-                    onClick={() => setEditMode("shipping")}
-                  >
-                    Update
-                  </div>
-                  <h4 className="text-lg font-bold mb-3">Shipping Details</h4>
-                  {initialData.shipping.name ? (
-                    <div>
-                      <Label>Name</Label>
-                      <p>{initialData.shipping.name}</p>
-                      <Label>Phone</Label>
-                      <p>{initialData.shipping.phone}</p>
-                      <Label>Address</Label>
-                      <address>
-                        {initialData.shipping.address.line1}
-                        {initialData.shipping.address.line2 &&
-                          initialData.shipping.address.line2}
-                        <br />
-                        {initialData.shipping.address.city},{" "}
-                        {initialData.shipping.address.state}{" "}
-                        {initialData.shipping.address.postalCode}
-                      </address>
-                    </div>
-                  ) : (
-                    <p>No shipping details provided.</p>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <h4 className="text-lg font-semibold mb-2">
-                    Shipping Information
-                  </h4>
-                  <div className="mb-4">
-                    <Checkbox
-                      checked={checked}
-                      onCheckedChange={handleChecked}
-                    />
-                    <label
-                      htmlFor="terms"
-                      className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          <CardContent className="space-y-4 pt-4">
+            {editMode !== "shipping" && (
+              <div>
+                {initialData && editMode !== "billing" ? (
+                  <div className="border border-1 rounded-xl p-4 relative">
+                    <div
+                      className="absolute top-4 right-4 text-xs font-medium p-1 bg-slate-100 rounded-lg text-blue-600 cursor-pointer"
+                      role="button"
+                      onClick={() => setEditMode("billing")}
                     >
-                      Use same address for shipping
-                    </label>
+                      Update
+                    </div>
+                    <h4 className="text-lg font-bold mb-3">Billing Details</h4>
+                    <Label>Email</Label>
+                    <p>{initialData.email}</p>
+                    <Label>Phone</Label>
+                    <p>{initialData.billing.phone}</p>
+                    <Label>Address</Label>
+                    <address>
+                      {initialData.billing.address.line1}
+                      {initialData.billing.address.line2 &&
+                        initialData.billing.address.line2}
+                      <br />
+                      {initialData.billing.address.city},{" "}
+                      {initialData.billing.address.state}{" "}
+                      {initialData.billing.address.postalCode}
+                    </address>
+                    a
                   </div>
+                ) : (
                   <div className="space-y-3">
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 w-full">
                       <FormField
                         control={form.control}
-                        name={checked ? "name" : "shippingName"}
+                        name="name"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Name</FormLabel>
                             <FormControl>
-                              <Input {...field} disabled={checked} />
+                              <Input {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -376,31 +196,44 @@ function CheckoutDetailsForm({
                       />
                       <FormField
                         control={form.control}
-                        name={checked ? "phone" : "shippingPhone"}
+                        name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Phone</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
-                              <Input {...field} disabled={checked} />
+                              <Input {...field} type="email" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Phone Number</FormLabel>
+                            <FormControl>
+                              <Input {...field} type="phone" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                     </div>
-                    <div className="flex gap-4">
+
+                    <div className="flex gap-4 w-full">
                       <div className="space-y-2">
                         <FormLabel>Address</FormLabel>
                         <FormField
                           control={form.control}
-                          name={checked ? "line1" : "shippingLine1"}
+                          name="line1"
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
                                 <Input
                                   {...field}
-                                  disabled={checked}
-                                  placeholder="Address"
+                                  placeholder="123 Street Ave"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -409,15 +242,11 @@ function CheckoutDetailsForm({
                         />
                         <FormField
                           control={form.control}
-                          name={checked ? "line2" : "shippingLine2"}
+                          name="line2"
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                  disabled={checked}
-                                  placeholder="Unit/PO Box"
-                                />
+                                <Input {...field} placeholder="Unit/PO Box" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -426,12 +255,12 @@ function CheckoutDetailsForm({
                       </div>
                       <FormField
                         control={form.control}
-                        name={checked ? "city" : "shippingCity"}
+                        name="city"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>City</FormLabel>
                             <FormControl>
-                              <Input {...field} disabled={checked} />
+                              <Input {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -439,27 +268,28 @@ function CheckoutDetailsForm({
                       />
                       <FormField
                         control={form.control}
-                        name={checked ? "state" : "shippingState"}
+                        name="state"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>State/Province</FormLabel>
+                            <FormLabel>Province/State</FormLabel>
                             <FormControl>
-                              <Input {...field} disabled={checked} />
+                              <Input {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                     </div>
+
                     <div className="flex gap-4">
                       <FormField
                         control={form.control}
-                        name={checked ? "postalCode" : "shippingPostalCode"}
+                        name="postalCode"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Postal Code</FormLabel>
                             <FormControl>
-                              <Input {...field} disabled={checked} />
+                              <Input {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -467,12 +297,12 @@ function CheckoutDetailsForm({
                       />
                       <FormField
                         control={form.control}
-                        name={checked ? "country" : "shippingCountry"}
+                        name="country"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Country</FormLabel>
                             <FormControl>
-                              <Input {...field} disabled={checked} />
+                              <Input {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -480,9 +310,186 @@ function CheckoutDetailsForm({
                       />
                     </div>
                   </div>
-                </>
-              )}
-            </div>
+                )}
+              </div>
+            )}
+
+            {!initialData && <Separator className="my-6" />}
+            {editMode !== "billing" && (
+              <div>
+                {initialData && editMode !== "shipping" ? (
+                  <div className="border border-1 rounded-xl p-4 relative">
+                    <div
+                      className="absolute top-4 right-4 text-xs font-medium p-1 bg-slate-100 rounded-lg text-blue-600 cursor-pointer"
+                      role="button"
+                      onClick={() => setEditMode("shipping")}
+                    >
+                      Update
+                    </div>
+                    <h4 className="text-lg font-bold mb-3">Shipping Details</h4>
+                    {initialData.shipping.name ? (
+                      <div>
+                        <Label>Name</Label>
+                        <p>{initialData.shipping.name}</p>
+                        <Label>Phone</Label>
+                        <p>{initialData.shipping.phone}</p>
+                        <Label>Address</Label>
+                        <address>
+                          {initialData.shipping.address.line1}
+                          {initialData.shipping.address.line2 &&
+                            initialData.shipping.address.line2}
+                          <br />
+                          {initialData.shipping.address.city},{" "}
+                          {initialData.shipping.address.state}{" "}
+                          {initialData.shipping.address.postalCode}
+                        </address>
+                      </div>
+                    ) : (
+                      <p>No shipping details provided.</p>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <h4 className="text-lg font-semibold mb-2">
+                      Shipping Information
+                    </h4>
+                    <div className="mb-4">
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={handleChecked}
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Use same address for shipping
+                      </label>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex gap-4">
+                        <FormField
+                          control={form.control}
+                          name={checked ? "name" : "shippingName"}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name</FormLabel>
+                              <FormControl>
+                                <Input {...field} disabled={checked} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={checked ? "phone" : "shippingPhone"}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Phone</FormLabel>
+                              <FormControl>
+                                <Input {...field} disabled={checked} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="flex gap-4">
+                        <div className="space-y-2">
+                          <FormLabel>Address</FormLabel>
+                          <FormField
+                            control={form.control}
+                            name={checked ? "line1" : "shippingLine1"}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    disabled={checked}
+                                    placeholder="Address"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={checked ? "line2" : "shippingLine2"}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    disabled={checked}
+                                    placeholder="Unit/PO Box"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name={checked ? "city" : "shippingCity"}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>City</FormLabel>
+                              <FormControl>
+                                <Input {...field} disabled={checked} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={checked ? "state" : "shippingState"}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>State/Province</FormLabel>
+                              <FormControl>
+                                <Input {...field} disabled={checked} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="flex gap-4">
+                        <FormField
+                          control={form.control}
+                          name={checked ? "postalCode" : "shippingPostalCode"}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Postal Code</FormLabel>
+                              <FormControl>
+                                <Input {...field} disabled={checked} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={checked ? "country" : "shippingCountry"}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Country</FormLabel>
+                              <FormControl>
+                                <Input {...field} disabled={checked} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </CardContent>
           <CardFooter className="gap-2">
             {(editMode || !initialData) && (
@@ -490,6 +497,9 @@ function CheckoutDetailsForm({
                 {form.formState.isSubmitting && <Spinner className="mr-2" />}
                 {initialData && editMode ? "Update" : "Continue"}
               </Button>
+            )}
+            {editMode && (
+              <Button onClick={() => setEditMode(null)}>Cancel</Button>
             )}
             <Link
               href="/"
