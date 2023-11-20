@@ -63,6 +63,7 @@ function CheckoutDetailsForm({
   setOrderData: (data: any) => void;
   initialData: Order | null;
 }) {
+  console.log(initialData);
   const form = useForm<z.infer<typeof checkoutDetailFormSchema>>({
     resolver: zodResolver(checkoutDetailFormSchema),
     defaultValues: initialData
@@ -118,14 +119,19 @@ function CheckoutDetailsForm({
     mutationFn: (values: z.infer<typeof checkoutDetailFormSchema>) => {
       return fetch("/api/storefront/checkout", {
         headers,
-        method: "POST",
+        method: editMode ? "PUT" : "POST",
         body: JSON.stringify({ sessionId: session?.id as string, values }),
       });
     },
     onSuccess: async (data) => {
       const jsonData = await data.json();
       console.log(jsonData);
-      setOrderData(jsonData);
+      if (initialData) {
+        setEditMode(null);
+        setOrderData((prev: Order) => ({ ...prev, order: jsonData }));
+      } else {
+        setOrderData(jsonData);
+      }
     },
     onError: (error) => {
       console.log(error);
@@ -135,6 +141,8 @@ function CheckoutDetailsForm({
   function onSubmit(values: z.infer<typeof checkoutDetailFormSchema>) {
     checkoutMutation.mutate(values);
   }
+
+  const isLoading = checkoutMutation.isLoading;
 
   return (
     <Form {...form}>
@@ -166,17 +174,21 @@ function CheckoutDetailsForm({
                     <p>{initialData.email}</p>
                     <Label>Phone</Label>
                     <p>{initialData.billing.phone}</p>
-                    <Label>Address</Label>
-                    <address>
-                      {initialData.billing.address.line1}
-                      {initialData.billing.address.line2 &&
-                        initialData.billing.address.line2}
-                      <br />
-                      {initialData.billing.address.city},{" "}
-                      {initialData.billing.address.state}{" "}
-                      {initialData.billing.address.postalCode}
-                    </address>
-                    a
+
+                    {initialData.billing.address.line1 && (
+                      <>
+                        <Label>Address</Label>
+                        <address>
+                          {initialData.billing.address.line1}
+                          {initialData.billing.address.line2 &&
+                            initialData.billing.address.line2}
+                          <br />
+                          {initialData.billing.address.city},{" "}
+                          {initialData.billing.address.state}{" "}
+                          {initialData.billing.address.postalCode}
+                        </address>
+                      </>
+                    )}
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -188,7 +200,7 @@ function CheckoutDetailsForm({
                           <FormItem>
                             <FormLabel>Name</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input {...field} disabled={isLoading} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -201,7 +213,11 @@ function CheckoutDetailsForm({
                           <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                              <Input {...field} type="email" />
+                              <Input
+                                {...field}
+                                type="email"
+                                disabled={isLoading}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -214,7 +230,11 @@ function CheckoutDetailsForm({
                           <FormItem>
                             <FormLabel>Phone Number</FormLabel>
                             <FormControl>
-                              <Input {...field} type="phone" />
+                              <Input
+                                {...field}
+                                type="phone"
+                                disabled={isLoading}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -234,6 +254,7 @@ function CheckoutDetailsForm({
                                 <Input
                                   {...field}
                                   placeholder="123 Street Ave"
+                                  disabled={isLoading}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -246,7 +267,11 @@ function CheckoutDetailsForm({
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input {...field} placeholder="Unit/PO Box" />
+                                <Input
+                                  {...field}
+                                  placeholder="Unit/PO Box"
+                                  disabled={isLoading}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -260,7 +285,7 @@ function CheckoutDetailsForm({
                           <FormItem>
                             <FormLabel>City</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input {...field} disabled={isLoading} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -273,7 +298,7 @@ function CheckoutDetailsForm({
                           <FormItem>
                             <FormLabel>Province/State</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input {...field} disabled={isLoading} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -289,7 +314,7 @@ function CheckoutDetailsForm({
                           <FormItem>
                             <FormLabel>Postal Code</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input {...field} disabled={isLoading} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -302,7 +327,7 @@ function CheckoutDetailsForm({
                           <FormItem>
                             <FormLabel>Country</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input {...field} disabled={isLoading} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -369,12 +394,20 @@ function CheckoutDetailsForm({
                       <div className="flex gap-4">
                         <FormField
                           control={form.control}
-                          name={checked ? "name" : "shippingName"}
+                          name={"shippingName"}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Name</FormLabel>
                               <FormControl>
-                                <Input {...field} disabled={checked} />
+                                <Input
+                                  {...field}
+                                  disabled={checked || isLoading}
+                                  value={
+                                    checked
+                                      ? form.getValues("name")
+                                      : field.value
+                                  }
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -382,12 +415,20 @@ function CheckoutDetailsForm({
                         />
                         <FormField
                           control={form.control}
-                          name={checked ? "phone" : "shippingPhone"}
+                          name={"shippingPhone"}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Phone</FormLabel>
                               <FormControl>
-                                <Input {...field} disabled={checked} />
+                                <Input
+                                  {...field}
+                                  disabled={checked || isLoading}
+                                  value={
+                                    checked
+                                      ? form.getValues("phone")
+                                      : field.value
+                                  }
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -399,13 +440,18 @@ function CheckoutDetailsForm({
                           <FormLabel>Address</FormLabel>
                           <FormField
                             control={form.control}
-                            name={checked ? "line1" : "shippingLine1"}
+                            name={"shippingLine1"}
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
                                   <Input
                                     {...field}
-                                    disabled={checked}
+                                    disabled={checked || isLoading}
+                                    value={
+                                      checked
+                                        ? form.getValues("line1")
+                                        : field.value
+                                    }
                                     placeholder="Address"
                                   />
                                 </FormControl>
@@ -415,13 +461,18 @@ function CheckoutDetailsForm({
                           />
                           <FormField
                             control={form.control}
-                            name={checked ? "line2" : "shippingLine2"}
+                            name={"shippingLine2"}
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
                                   <Input
                                     {...field}
-                                    disabled={checked}
+                                    disabled={checked || isLoading}
+                                    value={
+                                      checked
+                                        ? form.getValues("line2")
+                                        : field.value
+                                    }
                                     placeholder="Unit/PO Box"
                                   />
                                 </FormControl>
@@ -432,12 +483,20 @@ function CheckoutDetailsForm({
                         </div>
                         <FormField
                           control={form.control}
-                          name={checked ? "city" : "shippingCity"}
+                          name={"shippingCity"}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>City</FormLabel>
                               <FormControl>
-                                <Input {...field} disabled={checked} />
+                                <Input
+                                  {...field}
+                                  disabled={checked || isLoading}
+                                  value={
+                                    checked
+                                      ? form.getValues("city")
+                                      : field.value
+                                  }
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -445,12 +504,20 @@ function CheckoutDetailsForm({
                         />
                         <FormField
                           control={form.control}
-                          name={checked ? "state" : "shippingState"}
+                          name={"shippingState"}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>State/Province</FormLabel>
                               <FormControl>
-                                <Input {...field} disabled={checked} />
+                                <Input
+                                  {...field}
+                                  disabled={checked || isLoading}
+                                  value={
+                                    checked
+                                      ? form.getValues("state")
+                                      : field.value
+                                  }
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -460,12 +527,20 @@ function CheckoutDetailsForm({
                       <div className="flex gap-4">
                         <FormField
                           control={form.control}
-                          name={checked ? "postalCode" : "shippingPostalCode"}
+                          name={"shippingPostalCode"}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Postal Code</FormLabel>
                               <FormControl>
-                                <Input {...field} disabled={checked} />
+                                <Input
+                                  {...field}
+                                  disabled={checked || isLoading}
+                                  value={
+                                    checked
+                                      ? form.getValues("postalCode")
+                                      : field.value
+                                  }
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -473,12 +548,20 @@ function CheckoutDetailsForm({
                         />
                         <FormField
                           control={form.control}
-                          name={checked ? "country" : "shippingCountry"}
+                          name={"shippingCountry"}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Country</FormLabel>
                               <FormControl>
-                                <Input {...field} disabled={checked} />
+                                <Input
+                                  {...field}
+                                  disabled={checked || isLoading}
+                                  value={
+                                    checked
+                                      ? form.getValues("country")
+                                      : field.value
+                                  }
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -493,8 +576,8 @@ function CheckoutDetailsForm({
           </CardContent>
           <CardFooter className="gap-2">
             {(editMode || !initialData) && (
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting && <Spinner className="mr-2" />}
+              <Button type="submit" disabled={checkoutMutation.isLoading}>
+                {checkoutMutation.isLoading && <Spinner className="mr-2" />}
                 {initialData && editMode ? "Update" : "Continue"}
               </Button>
             )}
