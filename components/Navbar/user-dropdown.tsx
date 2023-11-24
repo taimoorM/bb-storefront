@@ -1,8 +1,8 @@
+import { PopoverContent } from "@radix-ui/react-popover";
 import { Popover, PopoverTrigger } from "../ui/popover";
 import { LiaUser } from "react-icons/Lia";
 
 function UserDropdown() {
-  const user = null;
   return (
     <Popover>
       <PopoverTrigger>
@@ -10,6 +10,7 @@ function UserDropdown() {
           <LiaUser className="h-4 transition-all ease-in-out hover:scale-110 " />
         </div>
       </PopoverTrigger>
+      <PopoverContent></PopoverContent>
     </Popover>
   );
 }
