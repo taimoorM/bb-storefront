@@ -20,7 +20,7 @@ export function AddToCart({
 }) {
   const { metadata } = useApp();
   const { session, cart, useUpdateCart } = useStore();
-  const [isPending, startTransition] = useTransition();
+  console.log("session", session);
 
   const cartItem = cart?.items.find((i) => i.id === item.id);
   const quantity = cartItem?.quantity || 0;

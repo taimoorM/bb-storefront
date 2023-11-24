@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     console.log("toekn!!!!", accessToken);
 
     const query = supabase
-      .from("Customer")
+      .from("Business")
       .select("id, businessName, subdomain, logo, publicKey, stripeId");
 
     if (accessToken?.value) {
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
     const { data: stores, error: storeError } = await supabase
       .from("Store")
       .select("id, name, address, phone, currency")
-      .eq("customerId", data.id);
+      .eq("businessId", data.id);
 
     console.log(stores);
 
