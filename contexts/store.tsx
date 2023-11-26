@@ -145,13 +145,6 @@ export const StoreProvider: React.FC<{
     }
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
-      const inventoryMap: InventoryMap = {};
-
-      for (let key in data.inventory.items) {
-        for (let item of data.inventory.items[key]) {
-          inventoryMap[item.id] = item;
-        }
-      }
 
       setSession(sessionData.session);
       setCart(sessionData.cart);
@@ -159,7 +152,6 @@ export const StoreProvider: React.FC<{
       setCategories(categories);
       setBrands(brands);
       setInventory(data.inventory);
-      setInventoryMap(inventoryMap);
     }
   }, [storefrontData, isError, error, toast]);
 

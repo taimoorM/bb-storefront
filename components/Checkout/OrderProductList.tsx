@@ -11,6 +11,7 @@ interface OrderProductListProps {
 
 function OrderProductList({ items }: OrderProductListProps) {
   const { selectedStore } = useStore();
+
   return (
     <ul className="mb-5 space-y-3">
       {items.map((item: OrderItem | CartItem) => (

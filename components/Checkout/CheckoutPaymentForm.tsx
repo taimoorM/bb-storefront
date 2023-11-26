@@ -8,6 +8,9 @@ import {
 import { FormEvent, useEffect, useState } from "react";
 import { Toast } from "../ui/toast";
 import { useStore } from "@/contexts/store";
+import { usePathname } from "next/navigation";
+import { useApp } from "@/contexts/app";
+import Spinner from "../Loaders/Spinner";
 
 function CheckoutPaymentForm({
   orderId,
@@ -16,11 +19,15 @@ function CheckoutPaymentForm({
   orderId: string;
   stripeAccountId: string;
 }) {
+  const path = usePathname();
+  console.log(path);
   const stripe = useStripe();
   const elements = useElements();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { metadata } = useApp();
 
   useEffect(() => {
     if (!stripe) {
@@ -68,7 +75,7 @@ function CheckoutPaymentForm({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://jhoom.localhost:4000/checkout/success",
+        return_url: `http://${metadata?.subdomain}.localhost:4000/checkout/success`,
       },
     });
 
@@ -93,19 +100,20 @@ function CheckoutPaymentForm({
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <LinkAuthenticationElement
+      {/* <LinkAuthenticationElement
         id="link-authentication-element"
         onChange={(e) => setEmail(e.value)}
         className="mb-2"
-      />
+      /> */}
       <PaymentElement id="payment-element" />
       <button
         disabled={isLoading || !stripe || !elements}
         id="submit"
         className="`flex w-full items-center justify-center rounded shadow bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 mt-3"
+        aria-disabled={isLoading || !stripe || !elements}
       >
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+          {isLoading && <Spinner className="mr-2" />}Pay now
         </span>
       </button>
       {/* Show any error or success messages */}

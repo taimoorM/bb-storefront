@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import OpenCart from "../Cart/OpenCart";
 import Cart from "../Cart";
 import { usePathname } from "next/navigation";
+import UserDropdown from "./user-dropdown";
 
 export default function Navbar() {
   const { metadata } = useApp();
@@ -89,9 +90,12 @@ export default function Navbar() {
 
           <div className="flex justify-end md:w-1/3">
             {pathname !== "/cart" ? (
-              <Suspense fallback={<OpenCart />}>
-                <Cart />
-              </Suspense>
+              <div className="flex gap-2">
+                <UserDropdown />
+                <Suspense fallback={<OpenCart />}>
+                  <Cart />
+                </Suspense>
+              </div>
             ) : (
               <Link href="/">Back to Shop</Link>
             )}

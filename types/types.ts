@@ -106,13 +106,24 @@ export interface Order {
   storeId: string;
   items: OrderItem[];
   paymentIntentId: string;
-  address: Address;
+  billing: {
+    name: string;
+    phone: string;
+    address: Address;
+  };
+  shipping: {
+    name: string;
+    phone: string;
+    address: Address;
+  };
   currency: string;
   totals: Totals;
   user?: string | null;
   sessionId?: string;
   expiresAt: string;
   status: string;
+  email: string;
+  invoiceId: string;
 }
 
 export interface OrderItem {
@@ -127,9 +138,12 @@ export interface OrderItem {
 }
 
 export interface Address {
+  line1: string;
+  line2: string;
+  city: string;
   state: string;
-  country: string;
   postalCode: string;
+  country: string;
 }
 
 export interface Totals {
