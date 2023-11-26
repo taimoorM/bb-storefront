@@ -8,7 +8,7 @@ export default function StorefrontLayout({
   return (
     <>
       <Navbar />
-      <main className="max-w-[1280px] mx-auto w-[95%]">{children}</main>
+      <main className="max-w-[1280px] mx-auto w-[95%] py-8">{children}</main>
     </>
   );
 }

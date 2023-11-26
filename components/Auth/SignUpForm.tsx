@@ -16,10 +16,12 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -66,7 +68,10 @@ export default function SignUpForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="max-w-[500px] mx-auto"
+      >
         <Card>
           <CardHeader>
             <CardTitle>Create an account</CardTitle>
@@ -140,7 +145,7 @@ export default function SignUpForm() {
                 </FormItem>
               )}
             />
-            <div className="border border-1 rounded-lg space-y-2">
+            <div className="border border-1 rounded-lg space-y-2 p-2">
               <div className="flex flex-col md:flex-row gap-3">
                 <FormField
                   name="address.line1"
@@ -207,6 +212,9 @@ export default function SignUpForm() {
               </div>
             </div>
           </CardContent>
+          <CardFooter>
+            <Button>Sign up</Button>
+          </CardFooter>
         </Card>
       </form>
     </Form>
