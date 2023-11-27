@@ -24,6 +24,9 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { useStore } from "@/contexts/store";
+import { useRouter } from "next/navigation";
+import Spinner from "../Loaders/Spinner";
+import { useToast } from "../ui/use-toast";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -33,29 +36,33 @@ const signUpFormSchema = z.object({
   lastName: z.string({ invalid_type_error, required_error }).min(1).max(50),
   email: z.string({ invalid_type_error, required_error }).email(),
   password: z.string({ invalid_type_error, required_error }).min(8).max(50),
-  phone: z.string().min(10).max(10).optional(),
+  phone: z.string().max(10).optional(),
   address: z
     .object({
-      line1: z.string().min(2).optional(),
-      line2: z.string().min(2).optional(),
-      city: z.string().min(2).optional(),
-      state: z.string().min(2).max(50).optional(),
-      postalCode: z.string().min(5).max(50).optional(),
+      line1: z.string().optional(),
+      line2: z.string().optional(),
+      city: z.string().optional(),
+      state: z.string().max(50).optional(),
+      postalCode: z.string().max(50).optional(),
     })
     .optional(),
 });
 
 export default function SignUpForm() {
-  const { session } = useStore();
+  const { session, headers } = useStore();
+  console.log("session", session);
+
+  const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      phone: "",
+      firstName: "Test",
+      lastName: "User",
+      email: "tmdd89@gmail.com",
+      password: "testtest",
+      phone: "9054554585",
       address: {
         line1: "",
         line2: "",
@@ -69,6 +76,7 @@ export default function SignUpForm() {
   const mutation = useMutation({
     mutationFn: (values: z.infer<typeof signUpFormSchema>) => {
       return fetch("/api/storefront/customers", {
+        headers,
         method: "POST",
         body: JSON.stringify({
           data: values,
@@ -76,11 +84,20 @@ export default function SignUpForm() {
         }),
       });
     },
-    onSuccess(data) {},
+    onSuccess(data) {
+      console.log("data", data);
+      // router.push("/login");
+    },
+    onError(error: Error) {
+      toast({
+        title: "Error",
+        description: error.message,
+      });
+    },
   });
 
   function onSubmit(values: z.infer<typeof signUpFormSchema>) {
-    console.log(values);
+    mutation.mutate(values);
   }
 
   return (
@@ -104,7 +121,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>First name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input disabled={mutation.isLoading} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -116,7 +133,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Last name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input disabled={mutation.isLoading} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -130,7 +147,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input disabled={mutation.isLoading} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -142,7 +159,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input disabled={mutation.isLoading} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -156,7 +173,7 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input disabled={mutation.isLoading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -170,7 +187,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>Address line 1</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input disabled={mutation.isLoading} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -182,7 +199,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>Address line 2</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input disabled={mutation.isLoading} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -196,7 +213,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>City</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input disabled={mutation.isLoading} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -208,7 +225,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>State</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input disabled={mutation.isLoading} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -220,7 +237,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>Postal code</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input disabled={mutation.isLoading} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -230,7 +247,10 @@ export default function SignUpForm() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Sign up</Button>
+            <Button>
+              {" "}
+              {mutation.isLoading && <Spinner className="mr-2" />} Sign up
+            </Button>
           </CardFooter>
         </Card>
       </form>
