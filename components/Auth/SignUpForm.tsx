@@ -22,6 +22,8 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { useStore } from "@/contexts/store";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -44,6 +46,8 @@ const signUpFormSchema = z.object({
 });
 
 export default function SignUpForm() {
+  const { session } = useStore();
+
   const form = useForm<z.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
@@ -60,6 +64,19 @@ export default function SignUpForm() {
         postalCode: "",
       },
     },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values: z.infer<typeof signUpFormSchema>) => {
+      return fetch("/api/storefront/customers", {
+        method: "POST",
+        body: JSON.stringify({
+          data: values,
+          token: session?.token,
+        }),
+      });
+    },
+    onSuccess(data) {},
   });
 
   function onSubmit(values: z.infer<typeof signUpFormSchema>) {
