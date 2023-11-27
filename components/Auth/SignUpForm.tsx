@@ -248,7 +248,6 @@ export default function SignUpForm() {
           </CardContent>
           <CardFooter>
             <Button>
-              {" "}
               {mutation.isLoading && <Spinner className="mr-2" />} Sign up
             </Button>
           </CardFooter>
