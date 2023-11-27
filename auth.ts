@@ -18,14 +18,22 @@ export const {
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
-        const cookieStore = cookies();
-        const token = cookieStore.get("session");
 
-        const res = await fetch(`/api/storefront/customers?token=${token}`);
+        const publicKey = cookies().get("bb-access-token");
+
+        const res = await fetch(
+          `/api/storefront/customers?email=${credentials.email}&password=${credentials.password}`,
+          {
+            headers: {
+              "x-public-key": publicKey?.value || "",
+              Accept: "application/json",
+            },
+          }
+        );
         const customer = await res.json();
 
         if (
