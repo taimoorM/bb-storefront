@@ -21,9 +21,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         const publicKey = cookies().get("bb-access-token");
+        console.log("publicKey", publicKey);
 
         const res = await fetch(
-          `/api/storefront/customers?email=${credentials.email}&password=${credentials.password}`,
+          `http://localhost:3000/api/storefront/customers?email=${credentials.email}&password=${credentials.password}`,
           {
             headers: {
               "x-public-key": publicKey?.value || "",
@@ -33,10 +34,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
         const customer = await res.json();
 
-        if (
-          !customer ||
-          !(await compare(credentials.password as string, customer.password))
-        ) {
+        if (!customer) {
           return null;
         }
 

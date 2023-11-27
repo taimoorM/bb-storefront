@@ -31,7 +31,6 @@ import Spinner from "../Loaders/Spinner";
 import { useToast } from "../ui/use-toast";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import Error from "next/error";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -57,6 +56,7 @@ export default function LoginForm() {
       await signIn("credentials", {
         email: data.email,
         password: data.password,
+        redirect: false,
       });
     } catch (error: any) {
       setError(error.message);
@@ -76,7 +76,7 @@ export default function LoginForm() {
           </CardHeader>
           <CardContent>
             <FormField
-              name="lastName"
+              name="email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
@@ -88,6 +88,7 @@ export default function LoginForm() {
                           Object.entries(form.formState.errors).length > 0)
                       }
                       {...field}
+                      type="email"
                     />
                   </FormControl>
                   <FormMessage />
@@ -107,6 +108,7 @@ export default function LoginForm() {
                           Object.entries(form.formState.errors).length > 0)
                       }
                       {...field}
+                      type="password"
                     />
                   </FormControl>
                   <FormMessage />
