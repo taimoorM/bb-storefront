@@ -5,12 +5,21 @@ import { fetchSession } from "@/utils/fetch-queries";
 import { useStore } from "@/contexts/store";
 
 export default function LogoutButton() {
-  const { selectedStore, headers } = useStore();
+  const { selectedStore, headers, setCart, setSession, setCustomer } =
+    useStore();
   const handleSignOut = async () => {
-    await signOut({ redirect: false });
-    deleteCookie("session");
-    const data = await fetchSession(selectedStore.id, headers);
-    console.log("data", data);
+    try {
+      await signOut({ redirect: false });
+      await deleteCookie("session");
+      const data = await fetchSession(selectedStore.id, headers);
+      setSession(data.session);
+      setCart(data.cart);
+      setCustomer(data.customer);
+
+      console.log("data", data);
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <Button onClick={handleSignOut} variant="ghost">

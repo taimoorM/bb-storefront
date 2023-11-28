@@ -14,7 +14,14 @@ import {
   Customer,
 } from "@/types/types";
 
-import { createContext, use, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  use,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useApp } from "./app";
 import {
   UseMutationResult,
@@ -35,6 +42,7 @@ interface StoreContextValue {
   cart: Cart | null;
   setCart: React.Dispatch<React.SetStateAction<Cart | null>>;
   customer: Customer | null;
+  setCustomer: React.Dispatch<React.SetStateAction<Customer | null>>;
   inventory: Inventory | null;
   selectedStore: Store;
   useUpdateCart: (
@@ -66,10 +74,12 @@ export const StoreProvider: React.FC<{
   const { metadata, stores } = useApp();
   const { toast } = useToast();
 
-  const headers = {
-    "x-public-key": (metadata?.publicKey as string) || "",
-    Accept: "application/json",
-  };
+  const headers = useMemo(() => {
+    return {
+      "x-public-key": (metadata?.publicKey as string) || "",
+      Accept: "application/json",
+    };
+  }, [metadata]);
 
   const {
     data: storefrontData,
@@ -182,6 +192,7 @@ export const StoreProvider: React.FC<{
         setCart,
         inventory,
         customer,
+        setCustomer,
         selectedStore: stores.find(
           (store) => store.id === props.selectedStore
         ) as Store,
