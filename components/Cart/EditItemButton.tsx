@@ -20,7 +20,7 @@ export default function EditItemQuantityButton({
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
 }) {
-  const { session, cart, useUpdateCart, headers, inventoryMap } = useStore();
+  const { session, useUpdateCart, headers } = useStore();
 
   const AddOrSubtractItemFromCart = useUpdateCart(
     session?.id as string,

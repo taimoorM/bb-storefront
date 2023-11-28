@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 import { Suspense } from "react";
 import { AppProvider } from "@/contexts/app";
 import { Toaster } from "@/components/ui/toaster";
-import Providers from "@/providers";
+import Providers, { NextAuthProvider } from "@/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +24,12 @@ export default async function RootLayout({
       <body>
         <Suspense fallback={<p>Loading...</p>}>
           <Providers>
-            <AppProvider>
-              {children}
-              <Toaster />
-            </AppProvider>
+            <NextAuthProvider>
+              <AppProvider>
+                {children}
+                <Toaster />
+              </AppProvider>
+            </NextAuthProvider>
           </Providers>
         </Suspense>
       </body>

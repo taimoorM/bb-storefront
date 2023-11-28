@@ -24,13 +24,16 @@ import {
 } from "@tanstack/react-query";
 import { fetchData, fetchInventory, fetchSession } from "@/utils/fetch-queries";
 import { useToast } from "@/components/ui/use-toast";
+import { deleteCookie } from "@/app/actions";
 
 interface StoreContextValue {
   categories: Category[];
   brands: Brand[];
   types: Type[];
   session: Session | null;
+  setSession: React.Dispatch<React.SetStateAction<Session | null>>;
   cart: Cart | null;
+  setCart: React.Dispatch<React.SetStateAction<Cart | null>>;
   customer: Customer | null;
   inventory: Inventory | null;
   selectedStore: Store;
@@ -44,7 +47,6 @@ interface StoreContextValue {
     "x-public-key": string;
     Accept: string;
   };
-  inventoryMap: InventoryMap;
 }
 
 export const StoreContext = createContext<StoreContextValue | null>(null);
@@ -60,7 +62,6 @@ export const StoreProvider: React.FC<{
   const [brands, setBrands] = useState<Brand[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
   const [inventory, setInventory] = useState<Inventory | null>(null);
-  const [inventoryMap, setInventoryMap] = useState<InventoryMap>({});
 
   const { metadata, stores } = useApp();
   const { toast } = useToast();
@@ -141,6 +142,7 @@ export const StoreProvider: React.FC<{
   useEffect(() => {
     if (isError) {
       console.log("error", error);
+
       toast({
         title: "Error",
         description: "Something went wrong, please try again",
@@ -148,7 +150,17 @@ export const StoreProvider: React.FC<{
     }
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
-
+      if (!sessionData) {
+        const handleSessionError = async () => {
+          await deleteCookie("session");
+          const data = await fetchSession(props.selectedStore, headers);
+          console.log("data", data);
+          setSession(data.session);
+          setCustomer(data.customer);
+          setCart(data.cart);
+        };
+        handleSessionError();
+      }
       setSession(sessionData.session);
       setCustomer(sessionData.customer);
       setCart(sessionData.cart);
@@ -157,7 +169,7 @@ export const StoreProvider: React.FC<{
       setBrands(brands);
       setInventory(data.inventory);
     }
-  }, [storefrontData, isError, error, toast]);
+  }, [storefrontData, isError, error, toast, headers, props.selectedStore]);
 
   return (
     <StoreContext.Provider
@@ -165,7 +177,9 @@ export const StoreProvider: React.FC<{
         categories,
         types,
         session,
+        setSession,
         cart,
+        setCart,
         inventory,
         customer,
         selectedStore: stores.find(
@@ -174,7 +188,6 @@ export const StoreProvider: React.FC<{
         brands,
         useUpdateCart,
         headers,
-        inventoryMap,
       }}
     >
       {isLoading ? <div>Loading...</div> : props.children}

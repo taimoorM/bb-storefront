@@ -1,3 +1,4 @@
+import { deleteCookie } from "@/app/actions";
 import { useMutation } from "@tanstack/react-query";
 import { getCookie, setCookie } from "cookies-next";
 
@@ -14,9 +15,9 @@ export const fetchInventory = async (storeId: string, headers: HeadersInit) => {
 };
 
 export const fetchSession = async (storeId: string, headers: HeadersInit) => {
-  const token = getCookie("session");
+  let token = getCookie("session");
 
-  const res = await fetch(`/api/storefront/session`, {
+  let res = await fetch(`/api/storefront/session`, {
     headers,
     method: "POST",
     body: JSON.stringify({ token, storeId }),
@@ -25,8 +26,8 @@ export const fetchSession = async (storeId: string, headers: HeadersInit) => {
   console.log("res", res);
 
   if (res.status === 400) {
-    localStorage.removeItem("bb-selected-store");
-    throw new Error("No session found");
+    await deleteCookie("session");
+    return null;
   }
   if (!token) {
     const data = await res.json();
