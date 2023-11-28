@@ -20,14 +20,11 @@ export function AddToCart({
 }) {
   const { metadata } = useApp();
   const { session, cart, useUpdateCart } = useStore();
-  console.log("session", session);
 
   const cartItem = cart?.items.find((i) => i.id === item.id);
   const quantity = cartItem?.quantity || 0;
 
   const title = !item.quantity ? "Out of stock" : name;
-
-  console.log("seesion", session);
 
   const updateCart = useUpdateCart(session?.id as string, item.id, "add", {
     "x-public-key": metadata?.publicKey || "",

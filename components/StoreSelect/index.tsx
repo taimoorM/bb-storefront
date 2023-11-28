@@ -33,7 +33,7 @@ export default function StoreSelect({
                 }}
               >
                 <h3> {store.name}</h3>
-                <p className="text-sm font-bold">{store.address.street}</p>
+                <p className="text-sm font-bold">{store.address.line1}</p>
                 <p className="text-sm">{store.address.city}</p>
               </button>
             </li>

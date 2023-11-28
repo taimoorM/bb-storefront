@@ -6,7 +6,6 @@ import { Suspense } from "react";
 import { AppProvider } from "@/contexts/app";
 import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/providers";
-import { AuthProvider } from "@/contexts/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +25,7 @@ export default async function RootLayout({
         <Suspense fallback={<p>Loading...</p>}>
           <Providers>
             <AppProvider>
-              <AuthProvider>{children}</AuthProvider>
+              {children}
               <Toaster />
             </AppProvider>
           </Providers>

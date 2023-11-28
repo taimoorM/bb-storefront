@@ -11,6 +11,7 @@ import {
   Type,
   InventoryMap,
   Store,
+  Customer,
 } from "@/types/types";
 
 import { createContext, use, useContext, useEffect, useState } from "react";
@@ -30,6 +31,7 @@ interface StoreContextValue {
   types: Type[];
   session: Session | null;
   cart: Cart | null;
+  customer: Customer | null;
   inventory: Inventory | null;
   selectedStore: Store;
   useUpdateCart: (
@@ -53,6 +55,7 @@ export const StoreProvider: React.FC<{
 }> = (props) => {
   const [session, setSession] = useState<Session | null>(null);
   const [cart, setCart] = useState<Cart | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
@@ -147,6 +150,7 @@ export const StoreProvider: React.FC<{
       const [types, categories, brands, sessionData, data] = storefrontData;
 
       setSession(sessionData.session);
+      setCustomer(sessionData.customer);
       setCart(sessionData.cart);
       setTypes(types);
       setCategories(categories);
@@ -163,6 +167,7 @@ export const StoreProvider: React.FC<{
         session,
         cart,
         inventory,
+        customer,
         selectedStore: stores.find(
           (store) => store.id === props.selectedStore
         ) as Store,

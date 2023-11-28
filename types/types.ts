@@ -68,9 +68,20 @@ export interface Type {
 export interface Store {
   id: string;
   name: string;
-  address: string;
+  address: Address;
   phone: string;
   currency: string;
+  tax: {
+    rate: number;
+    label: string;
+  };
+  hours: {
+    day: string;
+    open: string;
+    close: string;
+  }[];
+  hoursMatch: boolean;
+  inventory: Inventory;
 }
 
 export interface Session {
@@ -97,6 +108,16 @@ export interface CartItem {
   image: string;
   quantity: number;
   price: number;
+}
+
+export interface Customer {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: Address;
+  emailVerified: Date;
 }
 
 export interface Order {
@@ -143,7 +164,7 @@ export interface Address {
   city: string;
   state: string;
   postalCode: string;
-  country: string;
+  country?: string;
 }
 
 export interface Totals {

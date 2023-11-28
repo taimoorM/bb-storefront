@@ -1,8 +1,10 @@
 import { PopoverContent } from "@radix-ui/react-popover";
 import { Popover, PopoverTrigger } from "../ui/popover";
 import { LiaUser } from "react-icons/Lia";
+import { useStore } from "@/contexts/store";
 
 function UserDropdown() {
+  const { customer } = useStore();
   return (
     <Popover>
       <PopoverTrigger>
@@ -10,7 +12,20 @@ function UserDropdown() {
           <LiaUser className="h-4 transition-all ease-in-out hover:scale-110 " />
         </div>
       </PopoverTrigger>
-      <PopoverContent></PopoverContent>
+      <PopoverContent>
+        {customer ? (
+          <div className="flex flex-col gap-2 p-4">
+            <p className="text-sm font-bold">
+              {customer.firstName} {customer.lastName}
+            </p>
+            <p className="text-sm">{customer.email}</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2 p-4">
+            <p className="text-sm font-bold">Not logged in</p>
+          </div>
+        )}
+      </PopoverContent>
     </Popover>
   );
 }

@@ -14,7 +14,7 @@ interface App {
     subdomain: string;
     publicKey: string;
   };
-  stores: any[];
+  stores: Store[];
 }
 
 interface AppContextValue {
