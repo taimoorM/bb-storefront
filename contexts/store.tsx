@@ -96,6 +96,7 @@ export const StoreProvider: React.FC<{
         fetchSession(props.selectedStore, headers),
         fetchInventory(props.selectedStore, headers),
       ]),
+    staleTime: 1000 * 60,
   });
 
   const useUpdateCart = (

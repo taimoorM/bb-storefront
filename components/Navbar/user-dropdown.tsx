@@ -11,10 +11,13 @@ import { useStore } from "@/contexts/store";
 import LogoutButton from "../Auth/LogoutButton";
 import { LogOutIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 function UserDropdown() {
   const { customer } = useStore();
   const { data: session } = useSession();
+  console.log("session", session);
+  console.log("customer", customer);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -31,15 +34,20 @@ function UserDropdown() {
             <DropdownMenuItem>{customer.email}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <div className="flex gap-2">
-                <LogoutButton />
-              </div>
+              <LogoutButton />
             </DropdownMenuItem>
           </>
         ) : (
-          <div className="flex flex-col gap-2 p-4">
-            <p className="text-sm font-bold">Not logged in</p>
-          </div>
+          <>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Hello, Guest</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href="/login" className="w-full">
+                Login
+              </Link>
+            </DropdownMenuItem>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

@@ -59,7 +59,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
     };
 
     fetchStorefront();
-  }, []);
+  }, [router]);
 
   return (
     <AppContext.Provider
