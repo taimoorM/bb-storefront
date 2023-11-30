@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "../ui/form";
 
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Card,
@@ -30,7 +30,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "../Loaders/Spinner";
 import { useToast } from "../ui/use-toast";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -40,8 +40,11 @@ const loginFormSchema = z.object({
   password: z.string({ invalid_type_error, required_error }).min(8).max(50),
 });
 
-export default function LoginForm() {
+export default function LoginForm({ sessionToken }: { sessionToken: string }) {
   const [error, setError] = useState<string | null>(null);
+  const { data: authSession } = useSession();
+  const { setCustomer, headers, setSession } = useStore();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -58,6 +61,24 @@ export default function LoginForm() {
         password: data.password,
         redirect: false,
       });
+
+      const res = await fetch("/api/storefront/session", {
+        headers,
+        method: "PATCH",
+        body: JSON.stringify({
+          token: sessionToken,
+          customerId: authSession?.user?.id,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Could not update checkout session");
+      }
+
+      const { session, customer } = await res.json();
+      setCustomer(customer);
+      setSession(session);
+      router.push("/");
     } catch (error: any) {
       setError(error.message);
     }

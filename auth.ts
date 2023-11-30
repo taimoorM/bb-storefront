@@ -44,8 +44,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: customer.id,
           email: customer.email,
           name: customer.firstName,
+          image: customer.avatar,
         };
       },
     }),
   ],
+  callbacks: {
+    session: ({ session, token }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+        },
+      };
+    },
+    jwt: ({ token, user }) => {
+      if (user) {
+        const u = user as unknown as any;
+        return {
+          ...token,
+          id: u.id,
+        };
+      }
+      return token;
+    },
+  },
 });
