@@ -38,7 +38,7 @@ export const fetchSession = async (storeId: string, headers: HeadersInit) => {
       path: "/",
     });
   }
-  return res.json();
+  return await res.json();
 };
 
 export const useUpdateCart = (

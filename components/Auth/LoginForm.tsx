@@ -24,11 +24,10 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useMutation } from "@tanstack/react-query";
 import { useStore } from "@/contexts/store";
 import { useRouter } from "next/navigation";
 import Spinner from "../Loaders/Spinner";
-import { useToast } from "../ui/use-toast";
+
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 
@@ -45,6 +44,7 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
   const { data: authSession } = useSession();
   const { setCustomer, headers, setSession } = useStore();
   const router = useRouter();
+  console.log(sessionToken);
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -56,29 +56,29 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
 
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     try {
-      await signIn("credentials", {
+      signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
+      }).then(async (res) => {
+        console.log(res);
+        const response = await fetch("/api/storefront/session", {
+          headers,
+          method: "PATCH",
+          body: JSON.stringify({
+            token: sessionToken,
+            customerId: authSession?.user?.id,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Could not update checkout session");
+        }
+
+        const { session, customer } = await response.json();
+        setCustomer(customer);
+        setSession(session);
+        router.push("/");
       });
-
-      const res = await fetch("/api/storefront/session", {
-        headers,
-        method: "PATCH",
-        body: JSON.stringify({
-          token: sessionToken,
-          customerId: authSession?.user?.id,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Could not update checkout session");
-      }
-
-      const { session, customer } = await res.json();
-      setCustomer(customer);
-      setSession(session);
-      router.push("/");
     } catch (error: any) {
       setError(error.message);
     }
