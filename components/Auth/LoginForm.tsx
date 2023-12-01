@@ -30,6 +30,7 @@ import Spinner from "../Loaders/Spinner";
 
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
+import { deleteCookie, setCookie } from "@/app/actions";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -75,8 +76,15 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
         }
 
         const { session, customer } = await response.json();
-        setCustomer(customer);
+        await deleteCookie("session");
+        await setCookie("session", session.id, {
+          expires: new Date(session.expiresAt),
+          path: "/",
+        });
+
         setSession(session);
+        setCustomer(customer);
+
         router.push("/");
       });
     } catch (error: any) {
