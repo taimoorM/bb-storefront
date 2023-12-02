@@ -59,7 +59,11 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
 
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     try {
-      login(data.email, data.password).then(async (res) => {
+      signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      }).then(async (res) => {
         console.log(res);
 
         const response = await fetch("/api/storefront/session", {
@@ -76,6 +80,8 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
 
         const { session, customer }: { session: Session; customer: Customer } =
           await response.json();
+        console.log("customer", customer);
+
         await deleteCookie("session");
         await setCookie("session", session.token, {
           expires: new Date(session.expiresAt),
