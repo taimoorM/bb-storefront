@@ -30,7 +30,8 @@ import Spinner from "../Loaders/Spinner";
 
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { deleteCookie, setCookie } from "@/app/actions";
+import { deleteCookie, login, setCookie } from "@/app/actions";
+import { Customer, Session } from "@/types/types";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -42,9 +43,10 @@ const loginFormSchema = z.object({
 
 export default function LoginForm({ sessionToken }: { sessionToken: string }) {
   const [error, setError] = useState<string | null>(null);
-  const { data: authSession } = useSession();
+  const { data: authSession, update } = useSession();
   const { setCustomer, headers, setSession } = useStore();
   const router = useRouter();
+  console.log(authSession?.user?.id);
   console.log(sessionToken);
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -57,27 +59,25 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
 
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     try {
-      signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      }).then(async (res) => {
+      login(data.email, data.password).then(async (res) => {
         console.log(res);
+
         const response = await fetch("/api/storefront/session", {
           headers,
           method: "PATCH",
           body: JSON.stringify({
             token: sessionToken,
-            customerId: authSession?.user?.id,
+            email: data.email,
           }),
         });
         if (!response.ok) {
           throw new Error("Could not update checkout session");
         }
 
-        const { session, customer } = await response.json();
+        const { session, customer }: { session: Session; customer: Customer } =
+          await response.json();
         await deleteCookie("session");
-        await setCookie("session", session.id, {
+        await setCookie("session", session.token, {
           expires: new Date(session.expiresAt),
           path: "/",
         });

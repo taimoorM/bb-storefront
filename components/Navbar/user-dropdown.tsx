@@ -16,8 +16,7 @@ import Link from "next/link";
 function UserDropdown() {
   const { customer } = useStore();
   const { data: session } = useSession();
-  console.log("session", session);
-  console.log("customer", customer);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
