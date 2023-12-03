@@ -42,7 +42,7 @@ function UserDropdown() {
             <DropdownMenuSeparator />
             <DropdownMenuItem>Hello, Guest</DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href="/login" className="w-full">
+              <Link href="/login" className="w-full" role="button">
                 Login
               </Link>
             </DropdownMenuItem>

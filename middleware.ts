@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import getSubdomain from "./utils/get-subdomain";
+import { auth } from "./auth";
 
 export async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
 
   const subdomain = getSubdomain(host as string);
   const requestHeaders = new Headers(req.headers);
+
+  const isAuthPage =
+    req.nextUrl.pathname.startsWith("/login") ||
+    req.nextUrl.pathname.startsWith("/signup");
 
   if (req.cookies.get("bb-access-token")) {
     requestHeaders.set(
@@ -16,6 +21,14 @@ export async function middleware(req: NextRequest) {
 
   if (subdomain) {
     requestHeaders.set("bb-subdomain", subdomain);
+
+    if (isAuthPage) {
+      const session = await auth();
+      console.log("session", session);
+      if (session) {
+        return NextResponse.redirect(new URL("/", req.url));
+      }
+    }
 
     return NextResponse.next({
       request: {

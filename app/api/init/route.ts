@@ -11,13 +11,11 @@ export async function GET(req: NextRequest) {
   try {
     const accessToken = cookieStore.get(`bb-access-token`);
 
-    console.log("toekn!!!!", accessToken);
-
     const query = supabase
       .from("Business")
       .select("id, businessName, subdomain, logo, publicKey, stripeId");
 
-    if (accessToken?.value) {
+    if (accessToken) {
       query.eq("publicKey", accessToken.value);
     }
 
@@ -26,8 +24,6 @@ export async function GET(req: NextRequest) {
     if (error) {
       throw error;
     }
-
-    console.log(data);
 
     if (!data) {
       return NextResponse.json(
@@ -40,8 +36,6 @@ export async function GET(req: NextRequest) {
       .from("Store")
       .select("id, name, address, phone, currency")
       .eq("businessId", data.id);
-
-    console.log(stores);
 
     if (!stores || !stores.length) {
       return NextResponse.json("No stores found", { status: 400 });
