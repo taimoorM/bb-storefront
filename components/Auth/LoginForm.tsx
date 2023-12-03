@@ -66,32 +66,15 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
       }).then(async (res) => {
         console.log(res);
 
-        const response = await fetch("/api/storefront/session", {
-          headers,
-          method: "PATCH",
-          body: JSON.stringify({
-            token: sessionToken,
-            email: data.email,
-          }),
-        });
+        const response = await fetch("/api/login");
         if (!response.ok) {
           throw new Error("Could not update checkout session");
         }
 
-        const { session, customer }: { session: Session; customer: Customer } =
-          await response.json();
-        console.log("customer", customer);
+        // setSession(session);
+        // setCustomer(customer);
 
-        await deleteCookie("session");
-        await setCookie("session", session.token, {
-          expires: new Date(session.expiresAt),
-          path: "/",
-        });
-
-        setSession(session);
-        setCustomer(customer);
-
-        router.push("/");
+        // router.push("/");
       });
     } catch (error: any) {
       setError(error.message);
