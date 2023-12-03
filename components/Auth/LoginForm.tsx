@@ -71,10 +71,12 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
           throw new Error("Could not update checkout session");
         }
 
-        // setSession(session);
-        // setCustomer(customer);
+        const { session, customer } = await response.json();
 
-        // router.push("/");
+        setSession(session);
+        setCustomer(customer);
+
+        router.push("/");
       });
     } catch (error: any) {
       setError(error.message);

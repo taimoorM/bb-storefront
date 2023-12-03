@@ -1,9 +1,7 @@
 import { auth } from "@/auth";
 import { Customer, Session } from "@/types/types";
-import { NextApiRequest } from "next";
 
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
 
 export const GET = auth(async (req) => {
   try {
@@ -22,10 +20,10 @@ export const GET = auth(async (req) => {
           "x-public-key": publicKey?.value || "",
           Accept: "application/json",
         },
-        method: "POST",
+        method: "PATCH",
         body: JSON.stringify({
           customerId: req.auth.user.id,
-          token,
+          token: token?.value || "",
         }),
       }
     );
@@ -36,8 +34,8 @@ export const GET = auth(async (req) => {
     const { session, customer }: { session: Session; customer: Customer } =
       await response.json();
     console.log("customer", customer);
+    console.log("session", session);
 
-    cookies().delete("session");
     cookies().set("session", session.token, {
       expires: new Date(session.expiresAt),
       path: "/",
