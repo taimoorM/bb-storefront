@@ -94,9 +94,7 @@ export interface Session {
 export interface Cart {
   id: string;
   items: CartItem[];
-  sessionId?: string;
-  storeId: string;
-  user?: string;
+  outOfStock: string[];
   subTotal: number;
 }
 [];

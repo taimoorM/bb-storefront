@@ -24,7 +24,6 @@ export async function middleware(req: NextRequest) {
 
     if (isAuthPage) {
       const session = await auth();
-      console.log("session", session);
       if (session) {
         return NextResponse.redirect(new URL("/", req.url));
       }

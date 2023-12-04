@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { Customer, Session } from "@/types/types";
+import { Cart, Customer, Session } from "@/types/types";
 
 import { cookies } from "next/headers";
 
@@ -31,10 +31,12 @@ export const GET = auth(async (req) => {
       throw new Error("Could not create checkout session");
     }
 
-    const { session, customer }: { session: Session; customer: Customer } =
+    const {
+      session,
+      customer,
+      cart,
+    }: { session: Session; customer: Customer; cart: Cart } =
       await response.json();
-    console.log("customer", customer);
-    console.log("session", session);
 
     cookies().set("session", session.token, {
       expires: new Date(session.expiresAt),
@@ -44,6 +46,7 @@ export const GET = auth(async (req) => {
     return Response.json({
       session,
       customer,
+      cart,
     });
   } catch (error: any) {
     return new Response(error.message, { status: 500 });

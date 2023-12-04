@@ -44,7 +44,7 @@ const loginFormSchema = z.object({
 export default function LoginForm({ sessionToken }: { sessionToken: string }) {
   const [error, setError] = useState<string | null>(null);
   const { data: authSession, update } = useSession();
-  const { setCustomer, headers, setSession } = useStore();
+  const { setCustomer, setCart, setSession } = useStore();
   const router = useRouter();
   console.log(authSession?.user?.id);
   console.log(sessionToken);
@@ -71,10 +71,14 @@ export default function LoginForm({ sessionToken }: { sessionToken: string }) {
           throw new Error("Could not update checkout session");
         }
 
-        const { session, customer } = await response.json();
+        const { session, customer, cart } = await response.json();
+        console.log("session", session);
+        console.log("customer", customer);
+        console.log("cart", cart);
 
         setSession(session);
         setCustomer(customer);
+        setCart(cart);
 
         router.push("/");
       });

@@ -12,6 +12,7 @@ export default function LogoutButton() {
       await signOut({ redirect: false });
       await deleteCookie("session");
       const data = await fetchSession(selectedStore.id, headers);
+      console.log("data", data);
       setSession(data.session);
       setCart(data.cart);
       setCustomer(data.customer);

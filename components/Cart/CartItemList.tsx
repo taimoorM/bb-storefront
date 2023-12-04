@@ -15,7 +15,7 @@ export default function CartItemList({
 }: {
   closeCart?: () => void;
 }) {
-  const { cart, inventoryMap, selectedStore } = useStore();
+  const { cart, selectedStore } = useStore();
 
   console.log("cart", cart?.items);
 

@@ -34,8 +34,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
         const customer = await res.json();
 
-        console.log("customer", customer);
-
         if (!customer) {
           return null;
         }
