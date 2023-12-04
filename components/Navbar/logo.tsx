@@ -13,8 +13,7 @@ export default function Logo({
   size?: "sm" | undefined;
 }) {
   const { selectedStore } = useStore();
-  console.log("src", src);
-  console.log("selectedStore", selectedStore);
+
   return (
     <div
       className={clsx(

@@ -38,7 +38,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
       try {
         const response = await fetch("/api/init");
         const data = await response.json();
-        console.log("response", response);
 
         if (response.status === 404) {
           localStorage.removeItem("bb-selected-store");

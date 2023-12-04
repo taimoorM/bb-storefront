@@ -67,9 +67,6 @@ export default function LoginForm() {
         }
 
         const { session, customer, cart } = await response.json();
-        console.log("session", session);
-        console.log("customer", customer);
-        console.log("cart", cart);
 
         setSession(session);
         setCustomer(customer);

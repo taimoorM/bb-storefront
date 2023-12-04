@@ -17,8 +17,6 @@ export function ProductGrid() {
       {inventory.map((item, i) => {
         const primaryImage = item.images.find((image) => image.isPrimary)?.path;
 
-        console.log("primaryImage", primaryImage);
-
         const imagePath = primaryImage
           ? `${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}/${primaryImage}`
           : "http://localhost:4000/product-placeholder.webp";

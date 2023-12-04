@@ -29,16 +29,15 @@ export const fetchSession = async (storeId: string, headers: HeadersInit) => {
     await deleteCookie("session");
     return null;
   }
-  if (!token) {
-    const data = await res.json();
-    console.log("data", data);
 
+  const data = await res.json();
+  if (!token) {
     setCookie("session", data.session.token, {
       expires: new Date(data.session.expiresAt),
       path: "/",
     });
   }
-  return res.json();
+  return data;
 };
 
 export const useUpdateCart = (
