@@ -5,15 +5,18 @@ import * as z from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "../ui/form";
 
-import { set, useForm } from "react-hook-form";
+import { useStore } from "@/contexts/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import Spinner from "../Loaders/Spinner";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -23,15 +26,9 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useStore } from "@/contexts/store";
-import { useRouter } from "next/navigation";
-import Spinner from "../Loaders/Spinner";
 
-import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { deleteCookie, login, setCookie } from "@/app/actions";
-import { Customer, Session } from "@/types/types";
+import { useState } from "react";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -41,19 +38,17 @@ const loginFormSchema = z.object({
   password: z.string({ invalid_type_error, required_error }).min(8).max(50),
 });
 
-export default function LoginForm({ sessionToken }: { sessionToken: string }) {
+export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const { data: authSession, update } = useSession();
   const { setCustomer, setCart, setSession } = useStore();
   const router = useRouter();
-  console.log(authSession?.user?.id);
-  console.log(sessionToken);
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "tmdd89@gmail.com",
+      password: "testtest",
     },
   });
 
