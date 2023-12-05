@@ -26,7 +26,7 @@ import {
 import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useStore } from "@/contexts/store";
 import Link from "next/link";
@@ -64,10 +64,8 @@ function CheckoutDetailsForm({
   initialData: Order | null;
 }) {
   const { session, headers, customer } = useStore();
-  const [defaultValuesSet, setDefaultValuesSet] = useState(false);
-  console.log("customer", customer);
-  console.log("initialData", initialData);
-  const generateDefaultValues = () => {
+
+  const generateDefaultValues = useMemo(() => {
     let defaultValues = {
       name: "",
       email: "",
@@ -138,36 +136,9 @@ function CheckoutDetailsForm({
     }
 
     return defaultValues;
-  };
+  }, [customer, initialData]);
 
-  const updateOnClick = (type: "billing" | "shipping") => {
-    setEditMode(type);
-    if (defaultValuesSet) return;
-    if (type === "billing") {
-      form.setValue("name", defaultValues.name);
-      form.setValue("email", defaultValues.email);
-      form.setValue("phone", defaultValues.phone);
-      form.setValue("line1", defaultValues.line1);
-      form.setValue("line2", defaultValues.line2);
-      form.setValue("city", defaultValues.city);
-      form.setValue("state", defaultValues.state);
-      form.setValue("postalCode", defaultValues.postalCode);
-      form.setValue("country", defaultValues.country);
-    } else {
-      form.setValue("shippingName", defaultValues.shippingName);
-      form.setValue("shippingPhone", defaultValues.shippingPhone);
-      form.setValue("shippingLine1", defaultValues.shippingLine1);
-      form.setValue("shippingLine2", defaultValues.shippingLine2);
-      form.setValue("shippingCity", defaultValues.shippingCity);
-      form.setValue("shippingState", defaultValues.shippingState);
-      form.setValue("shippingPostalCode", defaultValues.shippingPostalCode);
-      form.setValue("shippingCountry", defaultValues.shippingCountry);
-    }
-
-    setDefaultValuesSet(true);
-  };
-
-  const defaultValues = generateDefaultValues();
+  const defaultValues = generateDefaultValues;
   console.log("defaultValues", defaultValues);
   const form = useForm<z.infer<typeof checkoutDetailFormSchema>>({
     resolver: zodResolver(checkoutDetailFormSchema),
@@ -225,8 +196,17 @@ function CheckoutDetailsForm({
           },
   });
 
+  useEffect(() => {
+    if (!customer && !initialData) return;
+    form.reset(defaultValues);
+  }, [customer, initialData]);
+
   const [checked, setChecked] = useState(false);
   const [editMode, setEditMode] = useState<"billing" | "shipping" | null>(null);
+
+  const updateOnClick = (type: "billing" | "shipping") => {
+    setEditMode(type);
+  };
 
   const handleChecked = () => {
     setChecked(!checked);
