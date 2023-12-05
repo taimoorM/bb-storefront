@@ -19,17 +19,19 @@ export function AddToCart({
   className?: string;
 }) {
   const { metadata } = useApp();
-  const { session, cart, useUpdateCart } = useStore();
+  const { session, cart, useUpdateCart, headers } = useStore();
 
   const cartItem = cart?.items.find((i) => i.id === item.id);
   const quantity = cartItem?.quantity || 0;
 
   const title = !item.quantity ? "Out of stock" : name;
 
-  const updateCart = useUpdateCart(session?.id as string, item.id, "add", {
-    "x-public-key": metadata?.publicKey || "",
-    Accept: "application/json",
-  });
+  const updateCart = useUpdateCart(
+    session?.id as string,
+    item.id,
+    "add",
+    headers
+  );
 
   return (
     <button

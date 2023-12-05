@@ -3,7 +3,7 @@ import { Cart, CartItem, Order, OrderItem } from "@/types/types";
 import CheckoutDetailsForm from "./CheckoutDetailsForm";
 import CheckoutTotals from "./CheckoutTotals";
 import OrderProductList from "./OrderProductList";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import StripeElementsWrapper from "./StripeElementsWrapper";
 import { Session } from "next-auth/types";
@@ -17,24 +17,38 @@ interface OrderData {
 
 function CheckoutWrapper({
   data,
-  order,
+
   cart,
   session,
 }: {
   data: OrderData | null;
-  order: Order | undefined;
+
   cart: Cart | undefined;
   session: Session | null;
 }) {
-  const items = cart ? cart.items : order?.items;
+  const { cart: storeCart, setCart } = useStore();
 
-  const subTotal = cart ? cart.subTotal : order?.totals?.subtotal;
+  useEffect(() => {
+    if (!cart) return;
+    setCart(cart);
+  }, [cart, setCart]);
 
   const [currentOrderData, setCurrentOrderData] = useState<OrderData | null>(
     data
   );
 
-  const [editMode, setEditMode] = useState<"billing" | "shipping" | null>(null);
+  useEffect(() => {
+    if (!storeCart) return;
+    setCurrentOrderData(null);
+  }, [storeCart]);
+
+  const items = currentOrderData
+    ? currentOrderData.order.items
+    : storeCart?.items;
+
+  const subTotal = currentOrderData
+    ? currentOrderData.order.totals?.subtotal
+    : storeCart?.subTotal;
 
   const currentOrder = currentOrderData ? currentOrderData.order : null;
   return (
