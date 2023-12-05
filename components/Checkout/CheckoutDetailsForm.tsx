@@ -65,6 +65,8 @@ function CheckoutDetailsForm({
   initialData: Order | null;
   customer: Customer | null;
 }) {
+  console.log("customer", customer);
+  console.log("initialData", initialData);
   const generateDefaultValues = () => {
     let defaultValues = {
       name: "",
@@ -98,14 +100,18 @@ function CheckoutDetailsForm({
         state: customer.address.state,
         postalCode: customer.address.postalCode,
         country: customer.address.country || "",
-        shippingName: customer.shipping.name,
-        shippingPhone: customer.shipping.phone,
-        shippingLine1: customer.shipping.address.line1,
-        shippingLine2: customer.shipping.address.line2,
-        shippingCity: customer.shipping.address.city,
-        shippingState: customer.shipping.address.state,
-        shippingPostalCode: customer.shipping.address.postalCode,
-        shippingCountry: customer.shipping.address.country || "",
+        shippingName: customer.shipping ? customer.shipping.name : "",
+        shippingPhone: customer.shipping ? customer.shipping.phone : "",
+        shippingLine1: customer.shipping ? customer.shipping.address.line1 : "",
+        shippingLine2: customer.shipping ? customer.shipping.address.line2 : "",
+        shippingCity: customer.shipping ? customer.shipping.address.city : "",
+        shippingState: customer.shipping ? customer.shipping.address.state : "",
+        shippingPostalCode: customer.shipping
+          ? customer.shipping.address.postalCode
+          : "",
+        shippingCountry: customer.shipping
+          ? customer.shipping.address.country || ""
+          : "",
       };
     }
 
@@ -133,10 +139,36 @@ function CheckoutDetailsForm({
 
     return defaultValues;
   };
-  console.log(initialData);
+
+  const updateOnClick = (type: "billing" | "shipping") => {
+    if (type === "billing") {
+      form.setValue("name", defaultValues.name);
+      form.setValue("email", defaultValues.email);
+      form.setValue("phone", defaultValues.phone);
+      form.setValue("line1", defaultValues.line1);
+      form.setValue("line2", defaultValues.line2);
+      form.setValue("city", defaultValues.city);
+      form.setValue("state", defaultValues.state);
+      form.setValue("postalCode", defaultValues.postalCode);
+      form.setValue("country", defaultValues.country);
+    } else {
+      form.setValue("shippingName", defaultValues.shippingName);
+      form.setValue("shippingPhone", defaultValues.shippingPhone);
+      form.setValue("shippingLine1", defaultValues.shippingLine1);
+      form.setValue("shippingLine2", defaultValues.shippingLine2);
+      form.setValue("shippingCity", defaultValues.shippingCity);
+      form.setValue("shippingState", defaultValues.shippingState);
+      form.setValue("shippingPostalCode", defaultValues.shippingPostalCode);
+      form.setValue("shippingCountry", defaultValues.shippingCountry);
+    }
+    setEditMode(type);
+  };
+
+  const defaultValues = generateDefaultValues();
+  console.log("defaultValues", defaultValues);
   const form = useForm<z.infer<typeof checkoutDetailFormSchema>>({
     resolver: zodResolver(checkoutDetailFormSchema),
-    defaultValues: generateDefaultValues(),
+    defaultValues,
   });
 
   const [checked, setChecked] = useState(false);
@@ -181,6 +213,7 @@ function CheckoutDetailsForm({
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card>
           {!initialData ||
+            !customer ||
             (editMode === "billing" && (
               <CardHeader>
                 <CardTitle>Billing Details</CardTitle>
@@ -191,33 +224,31 @@ function CheckoutDetailsForm({
             ))}
           <CardContent className="space-y-4 pt-4">
             {editMode !== "shipping" && (
-              <div>
-                {initialData && editMode !== "billing" ? (
+              <>
+                {(initialData || customer) && editMode !== "billing" ? (
                   <div className="border border-1 rounded-xl p-4 relative">
                     <div
                       className="absolute top-4 right-4 text-xs font-medium p-1 bg-slate-100 rounded-lg text-blue-600 cursor-pointer"
                       role="button"
-                      onClick={() => setEditMode("billing")}
+                      onClick={() => updateOnClick("billing")}
                     >
                       Update
                     </div>
                     <h4 className="text-lg font-bold mb-3">Billing Details</h4>
                     <Label>Email</Label>
-                    <p>{initialData.email}</p>
+                    <p>{defaultValues.email}</p>
                     <Label>Phone</Label>
-                    <p>{initialData.billing.phone}</p>
+                    <p>{defaultValues.phone}</p>
 
-                    {initialData.billing.address.line1 && (
+                    {defaultValues.line1 && (
                       <>
                         <Label>Address</Label>
                         <address>
-                          {initialData.billing.address.line1}
-                          {initialData.billing.address.line2 &&
-                            initialData.billing.address.line2}
+                          {defaultValues.line1}
+                          {defaultValues.line2 && defaultValues.line2}
                           <br />
-                          {initialData.billing.address.city},{" "}
-                          {initialData.billing.address.state}{" "}
-                          {initialData.billing.address.postalCode}
+                          {defaultValues.city}, {defaultValues.state}{" "}
+                          {defaultValues.postalCode}
                         </address>
                       </>
                     )}
@@ -368,37 +399,37 @@ function CheckoutDetailsForm({
                     </div>
                   </div>
                 )}
-              </div>
+              </>
             )}
 
             {!initialData && <Separator className="my-6" />}
             {editMode !== "billing" && (
-              <div>
-                {initialData && editMode !== "shipping" ? (
+              <>
+                {(initialData || customer) && editMode !== "shipping" ? (
                   <div className="border border-1 rounded-xl p-4 relative">
                     <div
                       className="absolute top-4 right-4 text-xs font-medium p-1 bg-slate-100 rounded-lg text-blue-600 cursor-pointer"
                       role="button"
-                      onClick={() => setEditMode("shipping")}
+                      onClick={() => updateOnClick("shipping")}
                     >
                       Update
                     </div>
                     <h4 className="text-lg font-bold mb-3">Shipping Details</h4>
-                    {initialData.shipping.name ? (
+                    {defaultValues.shippingName ? (
                       <div>
                         <Label>Name</Label>
-                        <p>{initialData.shipping.name}</p>
+                        <p>{defaultValues.shippingName}</p>
                         <Label>Phone</Label>
-                        <p>{initialData.shipping.phone}</p>
+                        <p>{defaultValues.shippingPhone}</p>
                         <Label>Address</Label>
                         <address>
-                          {initialData.shipping.address.line1}
-                          {initialData.shipping.address.line2 &&
-                            initialData.shipping.address.line2}
+                          {defaultValues.shippingLine1}
+                          {defaultValues.shippingLine2 &&
+                            defaultValues.shippingLine2}
                           <br />
-                          {initialData.shipping.address.city},{" "}
-                          {initialData.shipping.address.state}{" "}
-                          {initialData.shipping.address.postalCode}
+                          {defaultValues.shippingCity},{" "}
+                          {defaultValues.shippingState}{" "}
+                          {defaultValues.shippingPostalCode}
                         </address>
                       </div>
                     ) : (
@@ -426,7 +457,7 @@ function CheckoutDetailsForm({
                       <div className="flex gap-4">
                         <FormField
                           control={form.control}
-                          name={"shippingName"}
+                          name="shippingName"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Name</FormLabel>
@@ -447,7 +478,7 @@ function CheckoutDetailsForm({
                         />
                         <FormField
                           control={form.control}
-                          name={"shippingPhone"}
+                          name="shippingPhone"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Phone</FormLabel>
@@ -472,7 +503,7 @@ function CheckoutDetailsForm({
                           <FormLabel>Address</FormLabel>
                           <FormField
                             control={form.control}
-                            name={"shippingLine1"}
+                            name="shippingLine1"
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
@@ -493,7 +524,7 @@ function CheckoutDetailsForm({
                           />
                           <FormField
                             control={form.control}
-                            name={"shippingLine2"}
+                            name="shippingLine2"
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
@@ -515,7 +546,7 @@ function CheckoutDetailsForm({
                         </div>
                         <FormField
                           control={form.control}
-                          name={"shippingCity"}
+                          name="shippingCity"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>City</FormLabel>
@@ -536,7 +567,7 @@ function CheckoutDetailsForm({
                         />
                         <FormField
                           control={form.control}
-                          name={"shippingState"}
+                          name="shippingState"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>State/Province</FormLabel>
@@ -559,7 +590,7 @@ function CheckoutDetailsForm({
                       <div className="flex gap-4">
                         <FormField
                           control={form.control}
-                          name={"shippingPostalCode"}
+                          name="shippingPostalCode"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Postal Code</FormLabel>
@@ -603,7 +634,7 @@ function CheckoutDetailsForm({
                     </div>
                   </>
                 )}
-              </div>
+              </>
             )}
           </CardContent>
           <CardFooter className="gap-2">
