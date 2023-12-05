@@ -26,8 +26,6 @@ function CheckoutWrapper({
   cart: Cart | undefined;
   session: Session | null;
 }) {
-  const { customer } = useStore();
-
   const items = cart ? cart.items : order?.items;
 
   const subTotal = cart ? cart.subTotal : order?.totals?.subtotal;
@@ -49,7 +47,6 @@ function CheckoutWrapper({
             <CheckoutDetailsForm
               setOrderData={setCurrentOrderData}
               initialData={currentOrder}
-              customer={session ? customer : null}
             />
           </div>
           <div className="col-span-2">

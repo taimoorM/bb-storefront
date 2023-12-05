@@ -59,12 +59,12 @@ const checkoutDetailFormSchema = z.object({
 function CheckoutDetailsForm({
   setOrderData,
   initialData,
-  customer,
 }: {
   setOrderData: (data: any) => void;
   initialData: Order | null;
-  customer: Customer | null;
 }) {
+  const { session, headers, customer } = useStore();
+  const [defaultValuesSet, setDefaultValuesSet] = useState(false);
   console.log("customer", customer);
   console.log("initialData", initialData);
   const generateDefaultValues = () => {
@@ -141,6 +141,8 @@ function CheckoutDetailsForm({
   };
 
   const updateOnClick = (type: "billing" | "shipping") => {
+    setEditMode(type);
+    if (defaultValuesSet) return;
     if (type === "billing") {
       form.setValue("name", defaultValues.name);
       form.setValue("email", defaultValues.email);
@@ -161,19 +163,70 @@ function CheckoutDetailsForm({
       form.setValue("shippingPostalCode", defaultValues.shippingPostalCode);
       form.setValue("shippingCountry", defaultValues.shippingCountry);
     }
-    setEditMode(type);
+
+    setDefaultValuesSet(true);
   };
 
   const defaultValues = generateDefaultValues();
   console.log("defaultValues", defaultValues);
   const form = useForm<z.infer<typeof checkoutDetailFormSchema>>({
     resolver: zodResolver(checkoutDetailFormSchema),
-    defaultValues,
+    defaultValues:
+      customer !== null
+        ? {
+            name: customer?.firstName,
+            email: customer?.email,
+            phone: customer?.phone,
+            line1: customer?.address.line1,
+            line2: customer?.address.line2,
+            city: customer?.address.city,
+            state: customer?.address.state,
+            postalCode: customer?.address.postalCode,
+            country: customer?.address.country || "",
+            shippingName: customer?.shipping ? customer?.shipping.name : "",
+            shippingPhone: customer?.shipping ? customer?.shipping.phone : "",
+            shippingLine1: customer?.shipping
+              ? customer?.shipping.address.line1
+              : "",
+            shippingLine2: customer?.shipping
+              ? customer?.shipping.address.line2
+              : "",
+            shippingCity: customer?.shipping
+              ? customer?.shipping.address.city
+              : "",
+            shippingState: customer?.shipping
+              ? customer?.shipping.address.state
+              : "",
+            shippingPostalCode: customer?.shipping
+              ? customer?.shipping.address.postalCode
+              : "",
+            shippingCountry: customer?.shipping
+              ? customer?.shipping.address.country || ""
+              : "",
+          }
+        : {
+            name: "",
+            email: "",
+            phone: "",
+            line1: "",
+            line2: "",
+            city: "",
+            state: "",
+            postalCode: "",
+            country: "",
+            shippingName: "",
+            shippingPhone: "",
+            shippingLine1: "",
+            shippingLine2: "",
+            shippingCity: "",
+            shippingState: "",
+            shippingPostalCode: "",
+            shippingCountry: "",
+          },
   });
 
   const [checked, setChecked] = useState(false);
   const [editMode, setEditMode] = useState<"billing" | "shipping" | null>(null);
-  const { cart, session, headers } = useStore();
 
   const handleChecked = () => {
     setChecked(!checked);
@@ -641,7 +694,7 @@ function CheckoutDetailsForm({
             {(editMode || !initialData) && (
               <Button type="submit" disabled={checkoutMutation.isLoading}>
                 {checkoutMutation.isLoading && <Spinner className="mr-2" />}
-                {initialData && editMode ? "Update" : "Continue"}
+                {initialData || editMode ? "Update" : "Continue"}
               </Button>
             )}
             {editMode && (
