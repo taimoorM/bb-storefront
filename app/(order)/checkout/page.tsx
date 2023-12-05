@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import CheckoutDetailsForm from "@/components/Checkout/CheckoutDetailsForm";
 import CheckoutTotals from "@/components/Checkout/CheckoutTotals";
 import CheckoutWrapper from "@/components/Checkout/CheckoutWrapper";
@@ -5,6 +6,7 @@ import OrderProductList from "@/components/Checkout/OrderProductList";
 import Price from "@/components/Price";
 import { Cart, CartItem, Order, OrderItem } from "@/types/types";
 import { Check } from "lucide-react";
+import { Session } from "next-auth/types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -28,8 +30,10 @@ export default async function CheckoutPage() {
     clientSecret: string;
     stripeId: string;
   } | null = null;
+  let session: Session | null = null;
 
   try {
+    session = await auth();
     const res = await fetch(
       `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
       {
@@ -62,5 +66,7 @@ export default async function CheckoutPage() {
     redirect("/cart");
   }
 
-  return <CheckoutWrapper data={data} order={order} cart={cart} />;
+  return (
+    <CheckoutWrapper data={data} order={order} cart={cart} session={session} />
+  );
 }

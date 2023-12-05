@@ -116,6 +116,11 @@ export interface Customer {
   phone: string;
   address: Address;
   emailVerified: Date;
+  shipping: {
+    name: string;
+    phone: string;
+    address: Address;
+  };
 }
 
 export interface Order {

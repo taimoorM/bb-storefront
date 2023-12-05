@@ -32,7 +32,7 @@ import { useStore } from "@/contexts/store";
 import Link from "next/link";
 import LoadingDots from "../LoadingDots";
 import Spinner from "../Loaders/Spinner";
-import { Order } from "@/types/types";
+import { Customer, Order } from "@/types/types";
 
 const checkoutDetailFormSchema = z.object({
   name: z.string().optional(),
@@ -59,52 +59,84 @@ const checkoutDetailFormSchema = z.object({
 function CheckoutDetailsForm({
   setOrderData,
   initialData,
+  customer,
 }: {
   setOrderData: (data: any) => void;
   initialData: Order | null;
+  customer: Customer | null;
 }) {
+  const generateDefaultValues = () => {
+    let defaultValues = {
+      name: "",
+      email: "",
+      phone: "",
+      line1: "",
+      line2: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+      shippingName: "",
+      shippingPhone: "",
+      shippingLine1: "",
+      shippingLine2: "",
+      shippingCity: "",
+      shippingState: "",
+      shippingPostalCode: "",
+      shippingCountry: "",
+    };
+
+    if (!customer && !initialData) return defaultValues;
+    if (customer && !initialData) {
+      defaultValues = {
+        name: customer.firstName,
+        email: customer.email,
+        phone: customer.phone,
+        line1: customer.address.line1,
+        line2: customer.address.line2,
+        city: customer.address.city,
+        state: customer.address.state,
+        postalCode: customer.address.postalCode,
+        country: customer.address.country || "",
+        shippingName: customer.shipping.name,
+        shippingPhone: customer.shipping.phone,
+        shippingLine1: customer.shipping.address.line1,
+        shippingLine2: customer.shipping.address.line2,
+        shippingCity: customer.shipping.address.city,
+        shippingState: customer.shipping.address.state,
+        shippingPostalCode: customer.shipping.address.postalCode,
+        shippingCountry: customer.shipping.address.country || "",
+      };
+    }
+
+    if (initialData) {
+      defaultValues = {
+        name: initialData.billing.name,
+        email: initialData.email,
+        phone: initialData.billing.phone,
+        line1: initialData.billing.address.line1,
+        line2: initialData.billing.address.line2,
+        city: initialData.billing.address.city,
+        state: initialData.billing.address.state,
+        postalCode: initialData.billing.address.postalCode,
+        country: initialData.billing.address.country || "",
+        shippingName: initialData.shipping.name,
+        shippingPhone: initialData.shipping.phone,
+        shippingLine1: initialData.shipping.address.line1,
+        shippingLine2: initialData.shipping.address.line2,
+        shippingCity: initialData.shipping.address.city,
+        shippingState: initialData.shipping.address.state,
+        shippingPostalCode: initialData.shipping.address.postalCode,
+        shippingCountry: initialData.shipping.address.country || "",
+      };
+    }
+
+    return defaultValues;
+  };
   console.log(initialData);
   const form = useForm<z.infer<typeof checkoutDetailFormSchema>>({
     resolver: zodResolver(checkoutDetailFormSchema),
-    defaultValues: initialData
-      ? {
-          name: initialData.billing.name,
-          email: initialData.email,
-          phone: initialData.billing.phone,
-          line1: initialData.billing.address.line1,
-          line2: initialData.billing.address.line2,
-          city: initialData.billing.address.city,
-          state: initialData.billing.address.state,
-          postalCode: initialData.billing.address.postalCode,
-          country: initialData.billing.address.country,
-          shippingName: initialData.shipping.name,
-          shippingPhone: initialData.shipping.phone,
-          shippingLine1: initialData.shipping.address.line1,
-          shippingLine2: initialData.shipping.address.line2,
-          shippingCity: initialData.shipping.address.city,
-          shippingState: initialData.shipping.address.state,
-          shippingPostalCode: initialData.shipping.address.postalCode,
-          shippingCountry: initialData.shipping.address.country,
-        }
-      : {
-          name: "",
-          email: "",
-          phone: "",
-          line1: "",
-          line2: "",
-          city: "",
-          state: "",
-          postalCode: "",
-          country: "",
-          shippingName: "",
-          shippingPhone: "",
-          shippingLine1: "",
-          shippingLine2: "",
-          shippingCity: "",
-          shippingState: "",
-          shippingPostalCode: "",
-          shippingCountry: "",
-        },
+    defaultValues: generateDefaultValues(),
   });
 
   const [checked, setChecked] = useState(false);

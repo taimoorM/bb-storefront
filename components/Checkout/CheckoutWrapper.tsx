@@ -6,6 +6,8 @@ import OrderProductList from "./OrderProductList";
 import { useState } from "react";
 import { Label } from "../ui/label";
 import StripeElementsWrapper from "./StripeElementsWrapper";
+import { Session } from "next-auth/types";
+import { useStore } from "@/contexts/store";
 
 interface OrderData {
   order: Order;
@@ -17,11 +19,15 @@ function CheckoutWrapper({
   data,
   order,
   cart,
+  session,
 }: {
   data: OrderData | null;
   order: Order | undefined;
   cart: Cart | undefined;
+  session: Session | null;
 }) {
+  const { customer } = useStore();
+
   const items = cart ? cart.items : order?.items;
 
   const subTotal = cart ? cart.subTotal : order?.totals?.subtotal;
@@ -43,6 +49,7 @@ function CheckoutWrapper({
             <CheckoutDetailsForm
               setOrderData={setCurrentOrderData}
               initialData={currentOrder}
+              customer={session ? customer : null}
             />
           </div>
           <div className="col-span-2">
