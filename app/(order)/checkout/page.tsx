@@ -38,6 +38,9 @@ export default async function CheckoutPage() {
       `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
       {
         headers,
+        next: {
+          tags: ["order"],
+        },
       }
     );
 
@@ -47,6 +50,9 @@ export default async function CheckoutPage() {
           `http:localhost:3000/api/storefront/cart?token=${token?.value}`,
           {
             headers,
+            next: {
+              tags: ["cart"],
+            },
           }
         );
 
@@ -66,7 +72,5 @@ export default async function CheckoutPage() {
     redirect("/cart");
   }
 
-  return (
-    <CheckoutWrapper data={data} order={order} cart={cart} session={session} />
-  );
+  return <CheckoutWrapper data={data} cart={cart} session={session} />;
 }

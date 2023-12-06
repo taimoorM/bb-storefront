@@ -17,12 +17,10 @@ interface OrderData {
 
 function CheckoutWrapper({
   data,
-
   cart,
   session,
 }: {
   data: OrderData | null;
-
   cart: Cart | undefined;
   session: Session | null;
 }) {
@@ -42,13 +40,11 @@ function CheckoutWrapper({
     setCurrentOrderData(null);
   }, [storeCart]);
 
-  const items = currentOrderData
-    ? currentOrderData.order.items
-    : storeCart?.items;
+  const items = data ? data.order.items : cart?.items;
 
-  const subTotal = currentOrderData
-    ? currentOrderData.order.totals?.subtotal
-    : storeCart?.subTotal;
+  console.log(items);
+
+  const subTotal = data ? data.order.totals?.subtotal : cart?.subTotal;
 
   const currentOrder = currentOrderData ? currentOrderData.order : null;
   return (
