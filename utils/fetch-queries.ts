@@ -14,6 +14,34 @@ export const fetchInventory = async (storeId: string, headers: HeadersInit) => {
   return res.json();
 };
 
+export const fetchOrder = async (token: string, headers: HeadersInit) => {
+  const res = await fetch(
+    `http:localhost:3000/api/storefront/checkout?token=${token}`,
+    {
+      headers,
+    }
+  );
+  console.log("res", res);
+  if (!res.ok) {
+    throw new Error("Could not fetch order");
+  }
+  return res.json();
+};
+
+export const fetchCart = async (token: string, headers: HeadersInit) => {
+  const res = await fetch(`/api/storefront/cart?token=${token}`, {
+    headers,
+  });
+
+  console.log("res", res);
+
+  if (!res.ok) {
+    throw new Error("Could not fetch cart");
+  }
+
+  return res.json();
+};
+
 export const fetchSession = async (storeId: string, headers: HeadersInit) => {
   let token = getCookie("session");
 

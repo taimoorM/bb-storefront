@@ -9,6 +9,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import { fetchOrder } from "@/utils/fetch-queries";
 
 export default async function CheckoutPage() {
   const cookieStore = cookies();
@@ -21,28 +22,14 @@ export default async function CheckoutPage() {
     "Content-Type": "application/json",
   };
 
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: ["order"],
-    queryFn: async () => {
-      fetch(
-        `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
-        {
-          headers,
-        }
-      );
-    },
-  });
-
-  let order: Order | undefined;
-  let cart: Cart | undefined;
-  let data: {
-    order: Order;
-    clientSecret: string;
-    stripeId: string;
-  } | null = null;
-  let session: Session | null = null;
+  // let order: Order | undefined;
+  // let cart: Cart | undefined;
+  // let data: {
+  //   order: Order;
+  //   clientSecret: string;
+  //   stripeId: string;
+  // } | null = null;
+  // let session: Session | null = null;
 
   // try {
   //   session = await auth();
@@ -82,5 +69,5 @@ export default async function CheckoutPage() {
   //   redirect("/cart");
   // }
 
-  return <CheckoutWrapper data={data} cart={cart} session={session} />;
+  return <CheckoutWrapper token={token?.value} headers={headers} />;
 }
