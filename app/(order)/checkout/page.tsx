@@ -22,52 +22,17 @@ export default async function CheckoutPage() {
     "Content-Type": "application/json",
   };
 
-  // let order: Order | undefined;
-  // let cart: Cart | undefined;
-  // let data: {
-  //   order: Order;
-  //   clientSecret: string;
-  //   stripeId: string;
-  // } | null = null;
-  // let session: Session | null = null;
+  const queryClient = new QueryClient();
 
-  // try {
-  //   session = await auth();
-  //   const res = await fetch(
-  //     `http:localhost:3000/api/storefront/checkout?token=${token?.value}`,
-  //     {
-  //       headers,
-  //       cache: "no-cache",
-  //     }
-  //   );
+  await queryClient.prefetchQuery({
+    queryKey: ["order"],
+    queryFn: async () => fetchOrder(token?.value as string, headers),
+    retry: false,
+  });
 
-  //   if (!res.ok) {
-  //     if (res.status === 404) {
-  //       const cartRes = await fetch(
-  //         `http:localhost:3000/api/storefront/cart?token=${token?.value}`,
-  //         {
-  //           headers,
-  //           next: {
-  //             tags: ["cart"],
-  //           },
-  //         }
-  //       );
-
-  //       if (!cartRes.ok) {
-  //         throw new Error("Could not fetch cart");
-  //       }
-  //       cart = await cartRes.json();
-  //     } else {
-  //       throw new Error(`Unexpected server response: ${res.statusText}`);
-  //     }
-  //   } else {
-  //     data = await res.json();
-  //     order = data?.order;
-  //   }
-  // } catch (e) {
-  //   console.log(e);
-  //   redirect("/cart");
-  // }
-
-  return <CheckoutWrapper token={token?.value} headers={headers} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CheckoutWrapper token={token?.value} headers={headers} />
+    </HydrationBoundary>
+  );
 }

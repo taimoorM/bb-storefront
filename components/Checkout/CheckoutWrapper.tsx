@@ -31,20 +31,7 @@ function CheckoutWrapper({
 
   const { data, error, isFetched } = useQuery<OrderData>({
     queryKey: ["order"],
-    queryFn: async () => {
-      const res = await fetch(
-        `http:localhost:3000/api/storefront/checkout?token=${token}`,
-        {
-          headers,
-        }
-      );
-      console.log("res", res);
-      if (!res.ok) {
-        throw new Error("Could not fetch order");
-      }
-      return res.json();
-    },
-
+    queryFn: async () => fetchOrder(token as string, headers),
     retry: false,
   });
 
