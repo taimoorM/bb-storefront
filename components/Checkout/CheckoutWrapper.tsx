@@ -40,7 +40,9 @@ function CheckoutWrapper({
     setCurrentOrderData(null);
   }, [storeCart]);
 
-  const items = data ? data.order.items : cart?.items;
+  const items = currentOrderData
+    ? currentOrderData.order.items
+    : storeCart?.items || cart?.items;
 
   console.log(items);
 

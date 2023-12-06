@@ -5,7 +5,7 @@ import { useApp } from "@/contexts/app";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
-import { revalidate_Path } from "@/app/actions";
+import { revalidate_tag } from "@/app/actions";
 
 export default function CartTotal() {
   const { cart, session, headers } = useStore();
@@ -31,6 +31,7 @@ export default function CartTotal() {
       });
     },
     onSuccess: async (data) => {
+      await revalidate_tag("cart");
       router.push(`/checkout`);
     },
     onError: (error) => {
