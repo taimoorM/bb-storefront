@@ -21,7 +21,7 @@ export const fetchOrder = async (token: string, headers: HeadersInit) => {
       headers,
     }
   );
-  console.log("res", res);
+
   if (!res.ok) {
     throw new Error("Could not fetch order");
   }
@@ -32,8 +32,6 @@ export const fetchCart = async (token: string, headers: HeadersInit) => {
   const res = await fetch(`/api/storefront/cart?token=${token}`, {
     headers,
   });
-
-  console.log("res", res);
 
   if (!res.ok) {
     throw new Error("Could not fetch cart");

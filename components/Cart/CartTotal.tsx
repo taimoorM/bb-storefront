@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { revalidate_tag } from "@/app/actions";
 
 export default function CartTotal() {
-  const { cart, session, headers } = useStore();
+  const { cart } = useStore();
   const { stores } = useApp();
   const router = useRouter();
   const queryClient = useQueryClient();
