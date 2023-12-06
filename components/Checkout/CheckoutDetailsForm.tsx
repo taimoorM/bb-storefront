@@ -239,7 +239,7 @@ function CheckoutDetailsForm({
     checkoutMutation.mutate(values);
   }
 
-  const isLoading = checkoutMutation.isLoading;
+  const isLoading = checkoutMutation.isPending;
 
   return (
     <Form {...form}>
@@ -672,8 +672,8 @@ function CheckoutDetailsForm({
           </CardContent>
           <CardFooter className="gap-2">
             {(editMode || !initialData) && (
-              <Button type="submit" disabled={checkoutMutation.isLoading}>
-                {checkoutMutation.isLoading && <Spinner className="mr-2" />}
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && <Spinner className="mr-2" />}
                 {initialData || editMode ? "Update" : "Continue"}
               </Button>
             )}

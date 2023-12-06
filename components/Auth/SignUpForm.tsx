@@ -121,7 +121,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>First name</FormLabel>
                     <FormControl>
-                      <Input disabled={mutation.isLoading} {...field} />
+                      <Input disabled={mutation.isPending} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,7 +133,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Last name</FormLabel>
                     <FormControl>
-                      <Input disabled={mutation.isLoading} {...field} />
+                      <Input disabled={mutation.isPending} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -147,7 +147,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input disabled={mutation.isLoading} {...field} />
+                      <Input disabled={mutation.isPending} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -159,7 +159,7 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input disabled={mutation.isLoading} {...field} />
+                      <Input disabled={mutation.isPending} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -173,7 +173,7 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input disabled={mutation.isLoading} {...field} />
+                    <Input disabled={mutation.isPending} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -187,7 +187,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>Address line 1</FormLabel>
                       <FormControl>
-                        <Input disabled={mutation.isLoading} {...field} />
+                        <Input disabled={mutation.isPending} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -199,7 +199,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>Address line 2</FormLabel>
                       <FormControl>
-                        <Input disabled={mutation.isLoading} {...field} />
+                        <Input disabled={mutation.isPending} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -213,7 +213,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>City</FormLabel>
                       <FormControl>
-                        <Input disabled={mutation.isLoading} {...field} />
+                        <Input disabled={mutation.isPending} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -225,7 +225,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>State</FormLabel>
                       <FormControl>
-                        <Input disabled={mutation.isLoading} {...field} />
+                        <Input disabled={mutation.isPending} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -237,7 +237,7 @@ export default function SignUpForm() {
                     <FormItem>
                       <FormLabel>Postal code</FormLabel>
                       <FormControl>
-                        <Input disabled={mutation.isLoading} {...field} />
+                        <Input disabled={mutation.isPending} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -248,7 +248,7 @@ export default function SignUpForm() {
           </CardContent>
           <CardFooter>
             <Button>
-              {mutation.isLoading && <Spinner className="mr-2" />} Sign up
+              {mutation.isPending && <Spinner className="mr-2" />} Sign up
             </Button>
           </CardFooter>
         </Card>

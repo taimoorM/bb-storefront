@@ -23,7 +23,7 @@
     "@supabase/supabase-js": "^2.31.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.9",
-    "@tanstack/react-query": "^4.32.6",
+    "@tanstack/react-query": "^5.12.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "20.4.2",
