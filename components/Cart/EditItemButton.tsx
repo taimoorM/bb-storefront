@@ -23,14 +23,14 @@ export default function EditItemQuantityButton({
   const { session, useUpdateCart, headers } = useStore();
 
   const AddOrSubtractItemFromCart = useUpdateCart(
-    session?.id as string,
+    session?.token as string,
     item.id,
     type,
     headers
   );
   useEffect(() => {
-    setIsLoading(AddOrSubtractItemFromCart.isLoading);
-  }, [AddOrSubtractItemFromCart.isLoading, setIsLoading]);
+    setIsLoading(AddOrSubtractItemFromCart.isPending);
+  }, [AddOrSubtractItemFromCart.isPending, setIsLoading]);
 
   return (
     <button

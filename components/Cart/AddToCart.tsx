@@ -27,7 +27,7 @@ export function AddToCart({
   const title = !item.quantity ? "Out of stock" : name;
 
   const updateCart = useUpdateCart(
-    session?.id as string,
+    session?.token as string,
     item.id,
     "add",
     headers
@@ -37,7 +37,7 @@ export function AddToCart({
     <button
       aria-label="Add item to cart"
       disabled={
-        updateCart.isLoading || !item.quantity || quantity >= item.quantity
+        updateCart.isPending || !item.quantity || quantity >= item.quantity
       }
       title={title}
       onClick={() => {
@@ -49,13 +49,13 @@ export function AddToCart({
         `flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90 relative ${className}`,
         {
           "cursor-not-allowed opacity-60 hover:opacity-60":
-            !item.quantity || updateCart.isLoading,
-          "cursor-not-allowed": updateCart.isLoading,
+            !item.quantity || updateCart.isPending,
+          "cursor-not-allowed": updateCart.isPending,
         }
       )}
     >
       <div className="absolute left-0 ml-4">
-        {!updateCart.isLoading ? (
+        {!updateCart.isPending ? (
           <AiOutlinePlus className="h-5" />
         ) : (
           <LoadingDots className="mb-3 bg-white" />

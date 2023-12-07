@@ -46,7 +46,7 @@ interface StoreContextValue {
   inventory: Inventory | null;
   selectedStore: Store;
   useUpdateCart: (
-    sessionId: string,
+    token: string,
     id: string,
     action: "add" | "subtract" | "remove",
     headers: HeadersInit
@@ -100,7 +100,7 @@ export const StoreProvider: React.FC<{
   });
 
   const useUpdateCart = (
-    sessionId: string,
+    token: string,
     id: string,
     action: "add" | "subtract" | "remove",
     headers: HeadersInit
@@ -122,13 +122,12 @@ export const StoreProvider: React.FC<{
     }
     return useMutation({
       mutationFn: async () => {
-        console.log("sessionId", sessionId);
         const res = await fetch(`/api/storefront/cart/`, {
           headers,
           method: "PATCH",
 
           body: JSON.stringify({
-            sessionId,
+            token,
             id,
             quantity,
           }),

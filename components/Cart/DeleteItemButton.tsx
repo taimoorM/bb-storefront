@@ -9,7 +9,7 @@ import { CartItem } from "@/types/types";
 export default function DeleteItemButton({ item }: { item: CartItem }) {
   const { session, cart, useUpdateCart, headers } = useStore();
   const removeItemFromCart = useUpdateCart(
-    session?.id as string,
+    session?.token as string,
     item.id,
     "remove",
     headers
@@ -23,15 +23,15 @@ export default function DeleteItemButton({ item }: { item: CartItem }) {
         if (!item.quantity) return;
         removeItemFromCart.mutate();
       }}
-      disabled={removeItemFromCart.isLoading}
+      disabled={removeItemFromCart.isPending}
       className={clsx(
         "ease flex h-[17px] w-[17px] items-center justify-center rounded-full bg-neutral-500 transition-all duration-200",
         {
-          "cursor-not-allowed px-0": removeItemFromCart.isLoading,
+          "cursor-not-allowed px-0": removeItemFromCart.isPending,
         }
       )}
     >
-      {removeItemFromCart.isLoading ? (
+      {removeItemFromCart.isPending ? (
         <LoadingDots className="bg-white" />
       ) : (
         <AiOutlineClose className="hover:text-accent-3 mx-[1px] h-4 w-4 text-white dark:text-black" />

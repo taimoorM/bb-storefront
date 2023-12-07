@@ -65,27 +65,3 @@ export const fetchSession = async (storeId: string, headers: HeadersInit) => {
   }
   return data;
 };
-
-export const useUpdateCart = (
-  sessionId: string,
-  item: {
-    id: string;
-    quantity: number;
-  },
-  headers: any
-) => {
-  return useMutation({
-    mutationKey: ["cart, id"],
-    mutationFn: async () => {
-      fetch(`/api/storefront/cart/`, {
-        method: "PATCH",
-        headers,
-        body: JSON.stringify({
-          sessionId,
-          inventoryItemId: item.id,
-          quantity: item.quantity,
-        }),
-      });
-    },
-  });
-};
