@@ -159,7 +159,11 @@ export default function SignUpForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input disabled={mutation.isPending} {...field} />
+                      <Input
+                        disabled={mutation.isPending}
+                        {...field}
+                        type="password"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -14,7 +14,7 @@ import {
 import { useStore } from "@/contexts/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import Spinner from "../Loaders/Spinner";
 import { Button } from "../ui/button";
 import {
@@ -52,7 +52,10 @@ export default function LoginForm() {
     },
   });
 
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
+    setLoading(true);
     try {
       signIn("credentials", {
         email: data.email,
@@ -75,6 +78,7 @@ export default function LoginForm() {
         router.push("/");
       });
     } catch (error: any) {
+      setLoading(false);
       setError(error.message);
     }
   };
@@ -97,15 +101,7 @@ export default function LoginForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={
-                        form.formState.isSubmitting ||
-                        (form.formState.isSubmitSuccessful &&
-                          Object.entries(form.formState.errors).length > 0)
-                      }
-                      {...field}
-                      type="email"
-                    />
+                    <Input disabled={loading} {...field} type="email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,15 +113,7 @@ export default function LoginForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={
-                        form.formState.isSubmitting ||
-                        (form.formState.isSubmitSuccessful &&
-                          Object.entries(form.formState.errors).length > 0)
-                      }
-                      {...field}
-                      type="password"
-                    />
+                    <Input disabled={loading} {...field} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -134,11 +122,7 @@ export default function LoginForm() {
           </CardContent>
           <CardFooter>
             <Button>
-              {form.formState.isSubmitting ||
-                (form.formState.isSubmitSuccessful &&
-                  Object.entries(form.formState.errors).length > 0 && (
-                    <Spinner className="mr-2" />
-                  ))}
+              {loading && <Spinner className="mr-2" />}
               Login
             </Button>
           </CardFooter>
