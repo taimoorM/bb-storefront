@@ -40,7 +40,7 @@ const loginFormSchema = z.object({
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
-  const { data: authSession, update } = useSession();
+
   const { setCustomer, setCart, setSession } = useStore();
   const router = useRouter();
 
@@ -57,26 +57,24 @@ export default function LoginForm() {
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     setLoading(true);
     try {
-      signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      }).then(async (res) => {
-        console.log(res);
-
-        const response = await fetch("/api/login");
-        if (!response.ok) {
-          throw new Error("Could not update checkout session");
-        }
-
-        const { session, customer, cart } = await response.json();
-
-        setSession(session);
-        setCustomer(customer);
-        setCart(cart);
-
-        router.push("/");
+      const response = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       });
+      if (!response.ok) {
+        throw new Error("Could not update checkout session");
+      }
+
+      const { session, customer, cart } = await response.json();
+
+      setSession(session);
+      setCustomer(customer);
+      setCart(cart);
+
+      router.push("/");
     } catch (error: any) {
       setLoading(false);
       setError(error.message);

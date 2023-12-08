@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { cookies } from "next/headers";
+import { supabase } from "./libs/supabase";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -14,20 +15,41 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           placeholder: "example@example.com",
         },
         password: { label: "Password", type: "password" },
+        subdomain: { type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
+        if (
+          !credentials?.email ||
+          !credentials.password ||
+          !credentials.subdomain
+        ) {
           return null;
         }
 
         const publicKey = cookies().get("bb-access-token");
-        console.log("publicKey", publicKey);
+
+        console.log(publicKey);
+        console.log(credentials.subdomain);
+
+        const { data: business, error } = await supabase
+          .from("Business")
+          .select("id, subdomain, secretKey, secretKeyId")
+          .eq("subdomain", credentials.subdomain)
+          .eq("publicKey", publicKey?.value || "")
+          .single();
+
+        if (error || !business) {
+          return null;
+        }
+
+        const { secretKey, secretKeyId } = business;
 
         const res = await fetch(
-          `http://localhost:3000/api/storefront/customers?email=${credentials.email}&password=${credentials.password}`,
+          `http://localhost:3000/api/storefront/sudo/customers?email=${credentials.email}&password=${credentials.password}`,
           {
             headers: {
-              "x-public-key": publicKey?.value || "",
+              "x-secret-key": secretKey,
+              "x-api-id": secretKeyId,
               Accept: "application/json",
             },
           }
