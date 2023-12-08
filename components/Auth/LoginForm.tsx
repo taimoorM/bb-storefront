@@ -38,7 +38,7 @@ const loginFormSchema = z.object({
   password: z.string({ invalid_type_error, required_error }).min(8).max(50),
 });
 
-export default function LoginForm() {
+export default function LoginForm({ subdomain }: { subdomain: string | null }) {
   const [error, setError] = useState<string | null>(null);
 
   const { setCustomer, setCart, setSession } = useStore();
@@ -57,22 +57,25 @@ export default function LoginForm() {
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
+      if (!subdomain) throw new Error("Subdomain not found");
+      signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        subdomain,
+        redirect: false,
+      }).then(async (res) => {
+        console.log(res);
+
+        const response = await fetch("/api/login");
+        if (!response.ok) {
+          throw new Error("Could not update checkout session");
+        }
+        const { session, customer, cart } = await response.json();
+
+        setSession(session);
+        setCustomer(customer);
+        setCart(cart);
       });
-      if (!response.ok) {
-        throw new Error("Could not update checkout session");
-      }
-
-      const { session, customer, cart } = await response.json();
-
-      setSession(session);
-      setCustomer(customer);
-      setCart(cart);
 
       router.push("/");
     } catch (error: any) {

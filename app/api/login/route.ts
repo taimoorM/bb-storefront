@@ -5,23 +5,18 @@ import { Cart, Customer, Session } from "@/types/types";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-export async function POST(req: NextRequest) {
+export const GET = auth(async (req) => {
   try {
-    const { email, password } = await req.json();
+    if (!req.auth) {
+      return new Response("Unauthorized", { status: 401 });
+    }
 
     const cookiesStore = cookies();
     const publicKey = cookiesStore.get("bb-access-token");
     const token = cookiesStore.get("session");
     const subdomain = req.headers.get("bb-subdomain")?.toLowerCase();
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      subdomain,
-      redirect: false,
-    });
-
-    console.log(res);
+    console.log(req.auth);
 
     // const response = await fetch(
     //   "http://localhost:3000/api/storefront/session",
@@ -62,4 +57,4 @@ export async function POST(req: NextRequest) {
     console.log(error);
     return new Response(error.message, { status: 500 });
   }
-}
+});
