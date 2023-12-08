@@ -33,7 +33,7 @@ export const GET = auth(async (req) => {
     const { secretKey, secretKeyId } = business;
 
     const response = await fetch(
-      "http://localhost:3000/api/storefront/session",
+      "http://localhost:3000/api/storefront/sudo/session",
       {
         headers: {
           "x-secret-key": secretKey,

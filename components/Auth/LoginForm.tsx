@@ -58,24 +58,22 @@ export default function LoginForm({ subdomain }: { subdomain: string | null }) {
     setLoading(true);
     try {
       if (!subdomain) throw new Error("Subdomain not found");
-      signIn("credentials", {
+      await signIn("credentials", {
         email: data.email,
         password: data.password,
         subdomain,
         redirect: false,
-      }).then(async (res) => {
-        console.log(res);
-
-        const response = await fetch("/api/login");
-        if (!response.ok) {
-          throw new Error("Could not update checkout session");
-        }
-        const { session, customer, cart } = await response.json();
-
-        setSession(session);
-        setCustomer(customer);
-        setCart(cart);
       });
+
+      const response = await fetch("/api/login");
+      if (!response.ok) {
+        throw new Error("Could not update checkout session");
+      }
+      const { session, customer, cart } = await response.json();
+
+      setSession(session);
+      setCustomer(customer);
+      setCart(cart);
 
       router.push("/");
     } catch (error: any) {
