@@ -125,7 +125,6 @@ export const StoreProvider: React.FC<{
         const res = await fetch(`/api/storefront/cart/`, {
           headers,
           method: "PATCH",
-
           body: JSON.stringify({
             token,
             id,
@@ -149,6 +148,21 @@ export const StoreProvider: React.FC<{
     });
   };
 
+  const setAppState = (newState: {
+    session: Session | null;
+    cart: Cart | null;
+    types: Type[];
+    categories: Category[];
+    brands: Brand[];
+    inventory: Inventory | null;
+  }) => {
+    setSession(newState.session);
+    setCart(newState.cart);
+    setTypes(newState.types);
+    setCategories(newState.categories);
+    setBrands(newState.brands);
+    setInventory(newState.inventory);
+  };
   useEffect(() => {
     if (isError) {
       console.log("error", error);
@@ -160,47 +174,68 @@ export const StoreProvider: React.FC<{
     }
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
-      if (!sessionData) {
+      console.log("sessionData", sessionData);
+      if (!sessionData || sessionData?.type === "NOT_FOUND") {
         const handleSessionError = async () => {
           await deleteCookie("session");
           const data = await fetchSession(props.selectedStore, headers);
           console.log("data", data);
           setSession(data.session);
-          setCustomer(data.customer);
+
           setCart(data.cart);
         };
         handleSessionError();
       }
-      setSession(sessionData.session);
-      setCustomer(sessionData.customer);
-      setCart(sessionData.cart);
-      setTypes(types);
-      setCategories(categories);
-      setBrands(brands);
-      setInventory(data.inventory);
+      setAppState({
+        session: sessionData?.session,
+        cart: sessionData?.cart,
+        types,
+        categories,
+        brands,
+        inventory: data?.inventory,
+      });
     }
   }, [storefrontData, isError, error, toast, headers, props.selectedStore]);
 
+  const memoizedValues = useMemo(() => {
+    return {
+      categories,
+      types,
+      session,
+      setSession,
+      cart,
+      setCart,
+      inventory,
+      customer,
+      setCustomer,
+      selectedStore: stores.find(
+        (store) => store.id === props.selectedStore
+      ) as Store,
+      brands,
+    };
+  }, [
+    categories,
+    types,
+    session,
+    setSession,
+    cart,
+    setCart,
+    inventory,
+    customer,
+    setCustomer,
+    stores,
+    props.selectedStore,
+    brands,
+  ]);
+
+  const values = {
+    ...memoizedValues,
+    useUpdateCart,
+    headers,
+  };
+
   return (
-    <StoreContext.Provider
-      value={{
-        categories,
-        types,
-        session,
-        setSession,
-        cart,
-        setCart,
-        inventory,
-        customer,
-        setCustomer,
-        selectedStore: stores.find(
-          (store) => store.id === props.selectedStore
-        ) as Store,
-        brands,
-        useUpdateCart,
-        headers,
-      }}
-    >
+    <StoreContext.Provider value={values}>
       {isLoading ? <div>Loading...</div> : props.children}
     </StoreContext.Provider>
   );

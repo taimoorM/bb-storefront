@@ -26,6 +26,8 @@ export function AddToCart({
 
   const title = !item.quantity ? "Out of stock" : name;
 
+  console.log(session?.token);
+
   const updateCart = useUpdateCart(
     session?.token as string,
     item.id,
