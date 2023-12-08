@@ -1,4 +1,5 @@
 import { auth, signIn } from "@/auth";
+import { supabase } from "@/libs/supabase";
 
 import { Cart, Customer, Session } from "@/types/types";
 
@@ -18,41 +19,55 @@ export const GET = auth(async (req) => {
 
     console.log(req.auth);
 
-    // const response = await fetch(
-    //   "http://localhost:3000/api/storefront/session",
-    //   {
-    //     headers: {
-    //       "x-public-key": publicKey?.value || "",
-    //       Accept: "application/json",
-    //     },
-    //     method: "PATCH",
-    //     body: JSON.stringify({
-    //       customerId: req.auth.user.id,
-    //       token: token?.value || "",
-    //     }),
-    //   }
-    // );
-    // if (!response.ok) {
-    //   throw new Error("Could not create checkout session");
-    // }
+    const { data: business, error } = await supabase
+      .from("Business")
+      .select("id, subdomain, secretKey, secretKeyId")
+      .eq("subdomain", subdomain)
+      .eq("publicKey", publicKey?.value || "")
+      .single();
 
-    // const {
-    //   session,
-    //   customer,
-    //   cart,
-    // }: { session: Session; customer: Customer; cart: Cart } =
-    //   await response.json();
+    if (error || !business) {
+      throw new Error("Could not find business");
+    }
 
-    // cookies().set("session", session.token, {
-    //   expires: new Date(session.expiresAt),
-    //   path: "/",
-    // });
+    const { secretKey, secretKeyId } = business;
 
-    // return Response.json({
-    //   session,
-    //   customer,
-    //   cart,
-    // });
+    const response = await fetch(
+      "http://localhost:3000/api/storefront/session",
+      {
+        headers: {
+          "x-secret-key": secretKey,
+          "x-api-id": secretKeyId,
+          Accept: "application/json",
+        },
+        method: "PATCH",
+        body: JSON.stringify({
+          customerId: req.auth.user.id,
+          token: token?.value || "",
+        }),
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Could not create checkout session");
+    }
+
+    const {
+      session,
+      customer,
+      cart,
+    }: { session: Session; customer: Customer; cart: Cart } =
+      await response.json();
+
+    cookies().set("session", session.token, {
+      expires: new Date(session.expiresAt),
+      path: "/",
+    });
+
+    return Response.json({
+      session,
+      customer,
+      cart,
+    });
   } catch (error: any) {
     console.log(error);
     return new Response(error.message, { status: 500 });
