@@ -58,14 +58,18 @@ export default function LoginForm({ subdomain }: { subdomain: string | null }) {
     setLoading(true);
     try {
       if (!subdomain) throw new Error("Subdomain not found");
-      await signIn("credentials", {
+      const res = await signIn("credentials", {
         email: data.email,
         password: data.password,
         subdomain,
         redirect: false,
       });
 
+      console.log(res);
+
       const response = await fetch("/api/login");
+
+      console.log(response);
       if (!response.ok) {
         throw new Error("Could not update checkout session");
       }
