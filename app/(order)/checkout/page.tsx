@@ -16,6 +16,8 @@ export default async function CheckoutPage() {
   const token = cookieStore.get("session");
   const publicKey = cookieStore.get("bb-access-token");
 
+  const session = await auth();
+
   const headers = {
     "x-public-key": publicKey?.value || "",
     Accept: "application/json",
@@ -32,7 +34,11 @@ export default async function CheckoutPage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <CheckoutWrapper token={token?.value} headers={headers} />
+      <CheckoutWrapper
+        token={token?.value}
+        headers={headers}
+        session={session}
+      />
     </HydrationBoundary>
   );
 }

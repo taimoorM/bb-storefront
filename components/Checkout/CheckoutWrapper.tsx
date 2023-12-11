@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCart, fetchOrder } from "@/utils/fetch-queries";
 import { useRouter } from "next/navigation";
 import Spinner from "../Loaders/Spinner";
+import CheckoutLogin from "./CheckoutLogin";
 
 interface OrderData {
   order: Order;
@@ -22,12 +23,14 @@ interface OrderData {
 function CheckoutWrapper({
   token,
   headers,
+  session,
 }: {
   token: string | undefined;
   headers: HeadersInit;
+  session: Session | null;
 }) {
-  const { cart: storeCart, setCart } = useStore();
   const router = useRouter();
+  const [isGuestCheckout, setIsGuestCheckout] = useState(false);
 
   const { data, error, isFetched } = useQuery<OrderData>({
     queryKey: ["order"],
@@ -56,44 +59,51 @@ function CheckoutWrapper({
   >(data);
 
   const items = data ? data.order.items : cart?.items;
-
-  console.log(items);
-
   const subTotal = data ? data.order.totals.subtotal : cart?.subTotal;
-
   const currentOrder = currentOrderData ? currentOrderData.order : null;
+
   return (
     <section className="border border-1 rounded">
       <div className="p-4 lg:p-6">
         <h2 className="md:text-2xl lg:text-3xl pb-5 border-b">Checkout</h2>
-
-        {!isFetched || (error && !cartIsFetched) ? (
-          <Spinner />
-        ) : (
-          <div className="grid grid-cols-5 py-4 gap-5">
-            <div className="col-span-3">
-              <CheckoutDetailsForm
-                setOrderData={setCurrentOrderData}
-                initialData={currentOrder}
-              />
-            </div>
-            <div className="col-span-2">
-              <OrderProductList items={items as OrderItem[] | CartItem[]} />
-
-              <CheckoutTotals
-                subTotal={subTotal as number}
-                totals={currentOrderData ? currentOrderData.order.totals : null}
-              />
-              {currentOrderData && (
-                <StripeElementsWrapper
-                  order={currentOrderData.order as Order}
-                  clientSecret={currentOrderData.clientSecret}
-                  stripeAccountId={currentOrderData.stripeId}
-                />
+        <div className="p-4">
+          {!isFetched || (error && !cartIsFetched) ? (
+            <Spinner />
+          ) : (
+            <>
+              {!session && !isGuestCheckout ? (
+                <CheckoutLogin setIsGuest={setIsGuestCheckout} />
+              ) : (
+                <div className="grid grid-cols-5 py-4 gap-5">
+                  <div className="col-span-3">
+                    <CheckoutDetailsForm
+                      setOrderData={setCurrentOrderData}
+                      initialData={currentOrder}
+                    />
+                    {currentOrderData && (
+                      <StripeElementsWrapper
+                        order={currentOrderData.order as Order}
+                        clientSecret={currentOrderData.clientSecret}
+                        stripeAccountId={currentOrderData.stripeId}
+                      />
+                    )}
+                  </div>
+                  <div className="col-span-2">
+                    <OrderProductList
+                      items={items as OrderItem[] | CartItem[]}
+                    />
+                    <CheckoutTotals
+                      subTotal={subTotal as number}
+                      totals={
+                        currentOrderData ? currentOrderData.order.totals : null
+                      }
+                    />
+                  </div>
+                </div>
               )}
-            </div>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </section>
   );

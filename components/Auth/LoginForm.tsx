@@ -29,6 +29,7 @@ import { Input } from "../ui/input";
 
 import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
+import { useApp } from "@/contexts/app";
 
 const invalid_type_error = "Invalid type provided for this field";
 const required_error = "This field cannot be blank";
@@ -38,9 +39,9 @@ const loginFormSchema = z.object({
   password: z.string({ invalid_type_error, required_error }).min(8).max(50),
 });
 
-export default function LoginForm({ subdomain }: { subdomain: string | null }) {
+export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
-
+  const { metadata } = useApp();
   const { setCustomer, setCart, setSession } = useStore();
   const router = useRouter();
 
@@ -57,11 +58,11 @@ export default function LoginForm({ subdomain }: { subdomain: string | null }) {
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     setLoading(true);
     try {
-      if (!subdomain) throw new Error("Subdomain not found");
+      if (!metadata?.subdomain) throw new Error("Subdomain not found");
       const res = await signIn("credentials", {
         email: data.email,
         password: data.password,
-        subdomain,
+        subdomain: metadata.subdomain,
         redirect: false,
       });
 
@@ -90,7 +91,7 @@ export default function LoginForm({ subdomain }: { subdomain: string | null }) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-[500px] mx-auto"
+        className="max-w-[500px] min-w-[360px] mx-auto"
       >
         <Card>
           <CardHeader>
