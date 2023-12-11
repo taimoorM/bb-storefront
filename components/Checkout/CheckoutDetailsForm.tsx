@@ -33,6 +33,7 @@ import Link from "next/link";
 import LoadingDots from "../LoadingDots";
 import Spinner from "../Loaders/Spinner";
 import { Customer, Order } from "@/types/types";
+import { useApp } from "@/contexts/app";
 
 const checkoutDetailFormSchema = z.object({
   name: z.string().optional(),
@@ -63,7 +64,8 @@ function CheckoutDetailsForm({
   setOrderData: (data: any) => void;
   initialData: Order | null;
 }) {
-  const { session, headers, customer } = useStore();
+  const { customer } = useApp();
+  const { session, headers } = useStore();
 
   const generateDefaultValues = useMemo(() => {
     let defaultValues = {

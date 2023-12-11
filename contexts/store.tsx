@@ -66,6 +66,7 @@ export const StoreContext = createContext<StoreContextValue | null>(null);
 export const StoreProvider: React.FC<{
   children: React.ReactNode;
   selectedStore: string;
+  token: string | null;
 }> = (props) => {
   const [session, setSession] = useState<Session | null>(null);
   const [cart, setCart] = useState<Cart | null>(null);
@@ -96,7 +97,7 @@ export const StoreProvider: React.FC<{
         fetchData("types", headers),
         fetchData("categories", headers),
         fetchData("brands", headers),
-        fetchSession(props.selectedStore, headers),
+        fetchSession(props.selectedStore, headers, props.token),
         fetchInventory(props.selectedStore, headers),
       ]),
     staleTime: 1000 * 60,
@@ -181,7 +182,7 @@ export const StoreProvider: React.FC<{
       if (!sessionData || sessionData?.type === "NOT_FOUND") {
         const handleSessionError = async () => {
           await deleteCookie("session");
-          const data = await fetchSession(props.selectedStore, headers);
+          const data = await fetchSession(props.selectedStore, headers, null);
           console.log("data", data);
           setSession(data.session);
 

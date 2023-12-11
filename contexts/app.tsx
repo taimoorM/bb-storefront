@@ -27,6 +27,8 @@ interface AppContextValue {
 }
 export const AppContext = createContext<AppContextValue | null>(null);
 
+let token: string | null;
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const [metadata, setMetadata] = useState<App["metadata"] | null>(null);
 
@@ -54,6 +56,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
         if (!response.ok) {
           throw new Error(data);
         }
+
+        token = data.token;
 
         setMetadata(data.metadata);
         setStores(data.stores);
@@ -88,7 +92,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
               }}
             />
           ) : (
-            <StoreProvider selectedStore={selectedStore}>
+            <StoreProvider selectedStore={selectedStore} token={token}>
               {props.children}
             </StoreProvider>
           )}

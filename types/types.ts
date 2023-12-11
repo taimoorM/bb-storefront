@@ -48,10 +48,8 @@ export interface InventoryMap {
 
 export interface Session {
   id: string;
-  createdAt: string;
   expiresAt: string;
   token: string;
-  customerId: string;
 }
 
 interface Image {

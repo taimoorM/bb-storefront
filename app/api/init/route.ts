@@ -76,12 +76,15 @@ export const GET = auth(async (req) => {
         .eq("customerId", req.auth.user.id)
         .single();
 
+      console.log("sessionData", sessionData);
+
       if (sessionData && !sessionError) {
         cookies().set({
           name: `session`,
           value: sessionData.token,
           path: "/",
           httpOnly: true,
+          expires: new Date(sessionData.expiresAt),
         });
       }
 
@@ -98,6 +101,7 @@ export const GET = auth(async (req) => {
         stores,
         metadata: data,
         customer: customerResponse,
+        token: sessionData ? sessionData.token : null,
       });
     }
     return NextResponse.json({ stores, metadata: data });

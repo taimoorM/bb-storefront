@@ -38,6 +38,8 @@ function CheckoutWrapper({
     retry: false,
   });
 
+  console.log(data);
+
   console.log(error);
 
   const {
@@ -56,7 +58,15 @@ function CheckoutWrapper({
 
   const [currentOrderData, setCurrentOrderData] = useState<
     OrderData | undefined
-  >(data);
+  >(undefined);
+
+  useEffect(() => {
+    if (data) {
+      setCurrentOrderData(data);
+    }
+  }, [data]);
+
+  console.log(currentOrderData);
 
   const items = data ? data.order.items : cart?.items;
   const subTotal = data ? data.order.totals.subtotal : cart?.subTotal;

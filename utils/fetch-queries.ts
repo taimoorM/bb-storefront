@@ -40,8 +40,12 @@ export const fetchCart = async (token: string, headers: HeadersInit) => {
   return res.json();
 };
 
-export const fetchSession = async (storeId: string, headers: HeadersInit) => {
-  let token = getCookie("session");
+export const fetchSession = async (
+  storeId: string,
+  headers: HeadersInit,
+  token: string | null
+) => {
+  console.log("token", token);
 
   let res = await fetch(`/api/storefront/session`, {
     headers,
@@ -57,6 +61,8 @@ export const fetchSession = async (storeId: string, headers: HeadersInit) => {
   }
 
   const data = await res.json();
+
+  console.log("data", data);
   if (!token) {
     setCookie("session", data.session.token, {
       expires: new Date(data.session.expiresAt),
