@@ -15,15 +15,21 @@ export const fetchInventory = async (storeId: string, headers: HeadersInit) => {
 };
 
 export const fetchOrder = async (token: string, headers: HeadersInit) => {
-  const res = await fetch(
-    `http:localhost:3000/api/storefront/checkout?token=${token}`,
-    {
-      headers,
-    }
-  );
+  const res = await fetch(`/api/storefront/checkout?token=${token}`, {
+    headers,
+  });
+
+  console.log("res", res);
 
   if (!res.ok) {
-    throw new Error("Could not fetch order");
+    switch (res.status) {
+      case 400:
+        throw new Error("Invalid token");
+      case 404:
+        throw new Error("Order not found");
+      default:
+        throw new Error("Could not fetch order");
+    }
   }
   return res.json();
 };

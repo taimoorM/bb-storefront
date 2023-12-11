@@ -31,6 +31,9 @@ function CheckoutWrapper({
 }) {
   const router = useRouter();
   const [isGuestCheckout, setIsGuestCheckout] = useState(false);
+  const [currentOrderData, setCurrentOrderData] = useState<
+    OrderData | undefined
+  >(undefined);
 
   const { data, error, isFetched } = useQuery<OrderData>({
     queryKey: ["order"],
@@ -38,9 +41,7 @@ function CheckoutWrapper({
     retry: false,
   });
 
-  console.log(data);
-
-  console.log(error);
+  console.log("ORDER ERROR", error);
 
   const {
     data: cart,
@@ -49,16 +50,12 @@ function CheckoutWrapper({
   } = useQuery<Cart>({
     queryKey: ["cart"],
     queryFn: async () => fetchCart(token as string, headers),
-    enabled: !!error,
+    enabled: !!data,
   });
 
   if (cartError) {
     router.push("/cart");
   }
-
-  const [currentOrderData, setCurrentOrderData] = useState<
-    OrderData | undefined
-  >(undefined);
 
   useEffect(() => {
     if (data) {
