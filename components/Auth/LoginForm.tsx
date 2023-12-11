@@ -41,8 +41,8 @@ const loginFormSchema = z.object({
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
-  const { metadata } = useApp();
-  const { setCustomer, setCart, setSession } = useStore();
+  const { metadata, setCustomer } = useApp();
+  const { setCart, setSession } = useStore();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({

@@ -12,9 +12,10 @@ import LogoutButton from "../Auth/LogoutButton";
 import { LogOutIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useApp } from "@/contexts/app";
 
 function UserDropdown() {
-  const { customer } = useStore();
+  const { customer } = useApp();
   const { data: session } = useSession();
 
   return (

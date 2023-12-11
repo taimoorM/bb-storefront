@@ -1,10 +1,12 @@
 "use client";
 import StoreSelect from "@/components/StoreSelect";
-import { Cart, Category, Session, Store, Type } from "@/types/types";
+import { Cart, Category, Customer, Session, Store, Type } from "@/types/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { StoreProvider } from "./store";
 import { deleteCookie } from "@/app/actions";
 import { useRouter } from "next/navigation";
+import Spinner from "@/components/Loaders/Spinner";
+import { set } from "react-hook-form";
 
 interface App {
   metadata: {
@@ -20,6 +22,8 @@ interface App {
 interface AppContextValue {
   metadata: App["metadata"] | null;
   stores: Store[];
+  customer: Customer | null;
+  setCustomer: React.Dispatch<React.SetStateAction<Customer | null>>;
 }
 export const AppContext = createContext<AppContextValue | null>(null);
 
@@ -28,6 +32,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
 
   const [stores, setStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<string | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
 
   const router = useRouter();
 
@@ -52,6 +57,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
 
         setMetadata(data.metadata);
         setStores(data.stores);
+        setCustomer(data.customer);
       } catch (e: any) {
         console.log(e);
       }
@@ -65,10 +71,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
       value={{
         metadata,
         stores,
+        customer,
+        setCustomer,
       }}
     >
       {!metadata ? (
-        <p>Loading...</p>
+        <Spinner />
       ) : (
         <>
           {!selectedStore ? (

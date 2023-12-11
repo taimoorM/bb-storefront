@@ -59,6 +59,46 @@ export const GET = auth(async (req) => {
     }
 
     if (req.auth && session) {
+      console.log("req.auth", req.auth);
+      const { data: customer, error: customerError } = await supabase
+        .from("Customer")
+        .select("id, email, firstName, lastName, phone, address")
+        .eq("id", req.auth.user.id)
+        .single();
+
+      if (customerError || !customer) {
+        throw customerError;
+      }
+
+      const { data: sessionData, error: sessionError } = await supabase
+        .from("CheckoutSession")
+        .select("id, expiresAt, token")
+        .eq("customerId", req.auth.user.id)
+        .single();
+
+      if (sessionData && !sessionError) {
+        cookies().set({
+          name: `session`,
+          value: sessionData.token,
+          path: "/",
+          httpOnly: true,
+        });
+      }
+
+      const customerResponse = {
+        id: customer.id,
+        email: customer.email,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        phone: customer.phone,
+        address: customer.address,
+      };
+
+      return NextResponse.json({
+        stores,
+        metadata: data,
+        customer: customerResponse,
+      });
     }
     return NextResponse.json({ stores, metadata: data });
   } catch (e: any) {

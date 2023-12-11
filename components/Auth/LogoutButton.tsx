@@ -3,10 +3,11 @@ import { Button } from "../ui/button";
 import { deleteCookie } from "@/app/actions";
 import { fetchSession } from "@/utils/fetch-queries";
 import { useStore } from "@/contexts/store";
+import { useApp } from "@/contexts/app";
 
 export default function LogoutButton() {
-  const { selectedStore, headers, setCart, setSession, setCustomer } =
-    useStore();
+  const { setCustomer } = useApp();
+  const { selectedStore, headers, setCart, setSession } = useStore();
   const handleSignOut = async () => {
     try {
       await signOut({ redirect: false });

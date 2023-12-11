@@ -37,6 +37,7 @@ import {
 } from "@/utils/fetch-queries";
 import { useToast } from "@/components/ui/use-toast";
 import { deleteCookie } from "@/app/actions";
+import Spinner from "@/components/Loaders/Spinner";
 
 interface StoreContextValue {
   categories: Category[];
@@ -46,8 +47,6 @@ interface StoreContextValue {
   setSession: React.Dispatch<React.SetStateAction<Session | null>>;
   cart: Cart | null;
   setCart: React.Dispatch<React.SetStateAction<Cart | null>>;
-  customer: Customer | null;
-  setCustomer: React.Dispatch<React.SetStateAction<Customer | null>>;
   inventory: Inventory | null;
   selectedStore: Store;
   useUpdateCart: (
@@ -70,7 +69,6 @@ export const StoreProvider: React.FC<{
 }> = (props) => {
   const [session, setSession] = useState<Session | null>(null);
   const [cart, setCart] = useState<Cart | null>(null);
-  const [customer, setCustomer] = useState<Customer | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
@@ -100,7 +98,6 @@ export const StoreProvider: React.FC<{
         fetchData("brands", headers),
         fetchSession(props.selectedStore, headers),
         fetchInventory(props.selectedStore, headers),
-        fetchCustomer(),
       ]),
     staleTime: 1000 * 60,
   });
@@ -179,9 +176,8 @@ export const StoreProvider: React.FC<{
       });
     }
     if (storefrontData) {
-      const [types, categories, brands, sessionData, data, customer] =
-        storefrontData;
-      console.log("customer", customer);
+      const [types, categories, brands, sessionData, data] = storefrontData;
+
       if (!sessionData || sessionData?.type === "NOT_FOUND") {
         const handleSessionError = async () => {
           await deleteCookie("session");
@@ -213,8 +209,7 @@ export const StoreProvider: React.FC<{
       cart,
       setCart,
       inventory,
-      customer,
-      setCustomer,
+
       selectedStore: stores.find(
         (store) => store.id === props.selectedStore
       ) as Store,
@@ -228,8 +223,7 @@ export const StoreProvider: React.FC<{
     cart,
     setCart,
     inventory,
-    customer,
-    setCustomer,
+
     stores,
     props.selectedStore,
     brands,
@@ -243,7 +237,7 @@ export const StoreProvider: React.FC<{
 
   return (
     <StoreContext.Provider value={values}>
-      {isLoading ? <div>Loading...</div> : props.children}
+      {isLoading ? <Spinner /> : props.children}
     </StoreContext.Provider>
   );
 };

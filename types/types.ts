@@ -86,7 +86,6 @@ export interface Store {
 
 export interface Session {
   id: string;
-  createdAt: string;
   expiresAt: string;
   token: string;
 }

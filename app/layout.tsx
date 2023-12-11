@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { AppProvider } from "@/contexts/app";
 import { Toaster } from "@/components/ui/toaster";
 import Providers, { NextAuthProvider } from "@/providers";
+import Spinner from "@/components/Loaders/Spinner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body>
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<Spinner />}>
           <Providers>
             <NextAuthProvider>
               <AppProvider>
