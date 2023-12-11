@@ -1,8 +1,9 @@
 import { supabase } from "@/libs/supabase";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { auth } from "@/auth";
 
-export async function GET(req: NextRequest) {
+export const GET = auth(async (req) => {
   console.log("GET /api/init");
 
   const subdomain = req.headers.get("bb-subdomain")?.toLowerCase();
@@ -10,10 +11,13 @@ export async function GET(req: NextRequest) {
 
   try {
     const accessToken = cookieStore.get(`bb-access-token`);
+    const session = cookieStore.get(`session`);
 
     const query = supabase
       .from("Business")
-      .select("id, businessName, subdomain, logo, publicKey, stripeId");
+      .select(
+        "id, businessName, subdomain, logo, publicKey, stripeId, secretKey, secretKeyId"
+      );
 
     if (accessToken) {
       query.eq("publicKey", accessToken.value);
@@ -53,6 +57,9 @@ export async function GET(req: NextRequest) {
         httpOnly: true,
       });
     }
+
+    if (req.auth && session) {
+    }
     return NextResponse.json({ stores, metadata: data });
   } catch (e: any) {
     console.log(e);
@@ -62,4 +69,4 @@ export async function GET(req: NextRequest) {
     }
     return NextResponse.json({ error: e }, { status: 500 });
   }
-}
+});

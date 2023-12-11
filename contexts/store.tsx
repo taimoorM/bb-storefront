@@ -29,7 +29,12 @@ import {
   useQueries,
   useQuery,
 } from "@tanstack/react-query";
-import { fetchData, fetchInventory, fetchSession } from "@/utils/fetch-queries";
+import {
+  fetchCustomer,
+  fetchData,
+  fetchInventory,
+  fetchSession,
+} from "@/utils/fetch-queries";
 import { useToast } from "@/components/ui/use-toast";
 import { deleteCookie } from "@/app/actions";
 
@@ -95,6 +100,7 @@ export const StoreProvider: React.FC<{
         fetchData("brands", headers),
         fetchSession(props.selectedStore, headers),
         fetchInventory(props.selectedStore, headers),
+        fetchCustomer(),
       ]),
     staleTime: 1000 * 60,
   });
@@ -173,8 +179,9 @@ export const StoreProvider: React.FC<{
       });
     }
     if (storefrontData) {
-      const [types, categories, brands, sessionData, data] = storefrontData;
-      console.log("sessionData", sessionData);
+      const [types, categories, brands, sessionData, data, customer] =
+        storefrontData;
+      console.log("customer", customer);
       if (!sessionData || sessionData?.type === "NOT_FOUND") {
         const handleSessionError = async () => {
           await deleteCookie("session");

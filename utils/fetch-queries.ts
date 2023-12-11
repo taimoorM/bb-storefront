@@ -65,3 +65,12 @@ export const fetchSession = async (storeId: string, headers: HeadersInit) => {
   }
   return data;
 };
+
+export const fetchCustomer = async () => {
+  const res = await fetch(`/api/customer`);
+
+  if (!res.ok) {
+    return null;
+  }
+  return res.json();
+};

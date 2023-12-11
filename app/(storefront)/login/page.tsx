@@ -6,5 +6,5 @@ export default function Page() {
   const headersList = headers();
   const subdomain = headersList.get("bb-subdomain");
 
-  return <LoginForm subdomain={subdomain} />;
+  return <LoginForm />;
 }

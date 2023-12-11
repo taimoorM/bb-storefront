@@ -1,10 +1,6 @@
-import { auth, signIn } from "@/auth";
+import { auth } from "@/auth";
 import { supabase } from "@/libs/supabase";
-
-import { Cart, Customer, Session } from "@/types/types";
-
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
 
 export const GET = auth(async (req) => {
   try {
@@ -31,43 +27,29 @@ export const GET = auth(async (req) => {
     const { secretKey, secretKeyId } = business;
 
     const response = await fetch(
-      "http://localhost:3000/api/storefront/sudo/session",
+      `http://localhost:3000/api/storefront/sudo/customers?id=${req.auth.user.id}`,
       {
         headers: {
           "x-secret-key": secretKey,
           "x-api-id": secretKeyId,
           Accept: "application/json",
         },
-        method: "PATCH",
-        body: JSON.stringify({
-          customerId: req.auth.user.id,
-          token: token?.value || "",
-        }),
       }
     );
+
+    console.log(response);
+
     if (!response.ok) {
-      throw new Error("Could not create checkout session");
+      throw new Error("Could not fetch customer");
     }
 
-    const {
-      session,
-      customer,
-      cart,
-    }: { session: Session; customer: Customer; cart: Cart } =
-      await response.json();
-
-    cookies().set("session", session.token, {
-      expires: new Date(session.expiresAt),
-      path: "/",
-    });
+    const customer = await response.json();
 
     return Response.json({
-      session,
       customer,
-      cart,
     });
-  } catch (error: any) {
-    console.log(error);
-    return new Response(error.message, { status: 500 });
+  } catch (e: any) {
+    console.log(e);
+    return new Response(e.message, { status: 500 });
   }
 });
