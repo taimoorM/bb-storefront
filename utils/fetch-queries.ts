@@ -52,13 +52,15 @@ export const fetchSession = async (
   token: string | null
 ) => {
   console.log("token", token);
+  let res = null;
+  if (token) {
+    res = await fetch(`/api/storefront/session?token=${token}`, {
+      headers,
+    });
+  }
 
-  const res = await fetch(`/api/storefront/session?token=${token}`, {
-    headers,
-  });
-
-  console.log("res", res);
-  if (!res.ok) {
+  if ((res && !res.ok) || !res) {
+    await deleteCookie("session");
     const newRes = await fetch(`/api/storefront/session`, {
       headers,
       method: "POST",
@@ -81,12 +83,6 @@ export const fetchSession = async (
 
   const data = await res.json();
 
-  if (!token) {
-    setCookie("session", data.session.token, {
-      expires: new Date(data.session.expiresAt),
-      path: "/",
-    });
-  }
   return data;
 };
 

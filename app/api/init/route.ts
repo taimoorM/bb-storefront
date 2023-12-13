@@ -58,6 +58,10 @@ export const GET = auth(async (req) => {
       });
     }
 
+    delete data.secretKey;
+    delete data.secretKeyId;
+    delete data.stripeId;
+
     return NextResponse.json({
       stores,
       metadata: data,
