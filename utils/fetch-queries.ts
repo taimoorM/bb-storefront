@@ -53,22 +53,34 @@ export const fetchSession = async (
 ) => {
   console.log("token", token);
 
-  let res = await fetch(`/api/storefront/session`, {
+  const res = await fetch(`/api/storefront/session?token=${token}`, {
     headers,
-    method: "POST",
-    body: JSON.stringify({ token, storeId }),
   });
 
   console.log("res", res);
+  if (!res.ok) {
+    const newRes = await fetch(`/api/storefront/session`, {
+      headers,
+      method: "POST",
+      body: JSON.stringify({ storeId }),
+    });
 
-  if (res.status === 400) {
-    await deleteCookie("session");
-    return null;
+    if (!newRes.ok) {
+      throw new Error("Could not fetch  new session");
+    }
+
+    const data = await newRes.json();
+
+    setCookie("session", data.session.token, {
+      expires: new Date(data.session.expiresAt),
+      path: "/",
+    });
+
+    return data;
   }
 
   const data = await res.json();
 
-  console.log("data", data);
   if (!token) {
     setCookie("session", data.session.token, {
       expires: new Date(data.session.expiresAt),

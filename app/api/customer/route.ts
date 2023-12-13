@@ -10,7 +10,6 @@ export const GET = auth(async (req) => {
 
     const cookiesStore = cookies();
     const publicKey = cookiesStore.get("bb-access-token");
-    const token = cookiesStore.get("session");
     const subdomain = req.headers.get("bb-subdomain")?.toLowerCase();
 
     const { data: business, error } = await supabase

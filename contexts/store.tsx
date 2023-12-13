@@ -45,6 +45,8 @@ interface StoreContextValue {
   types: Type[];
   session: Session | null;
   setSession: React.Dispatch<React.SetStateAction<Session | null>>;
+  customer: Customer | null;
+  setCustomer: React.Dispatch<React.SetStateAction<Customer | null>>;
   cart: Cart | null;
   setCart: React.Dispatch<React.SetStateAction<Cart | null>>;
   inventory: Inventory | null;
@@ -160,7 +162,7 @@ export const StoreProvider: React.FC<{
     categories: Category[];
     brands: Brand[];
     inventory: Inventory | null;
-    customer?: Customer;
+    customer?: Customer | null;
   }) => {
     setSession(newState.session);
     if (newState.customer) {
@@ -183,20 +185,17 @@ export const StoreProvider: React.FC<{
     }
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
+      let customer = null;
 
-      if (!sessionData || sessionData?.type === "NOT_FOUND") {
-        const handleSessionError = async () => {
-          await deleteCookie("session");
-          const data = await fetchSession(props.selectedStore, headers, null);
-          console.log("data", data);
-          setSession(data.session);
-          setCart(data.cart);
+      if (sessionData?.session?.customer) {
+        const handleFetchCustomer = async () => {
+          customer = await fetchCustomer();
         };
-        handleSessionError();
+        handleFetchCustomer();
       }
       setAppState({
         session: sessionData?.session,
-        customer: sessionData?.customer,
+        customer,
         cart: sessionData?.cart,
         types,
         categories,
@@ -215,7 +214,8 @@ export const StoreProvider: React.FC<{
       cart,
       setCart,
       inventory,
-
+      customer,
+      setCustomer,
       selectedStore: stores.find(
         (store) => store.id === props.selectedStore
       ) as Store,
@@ -225,11 +225,10 @@ export const StoreProvider: React.FC<{
     categories,
     types,
     session,
-    setSession,
     cart,
     setCart,
     inventory,
-
+    customer,
     stores,
     props.selectedStore,
     brands,

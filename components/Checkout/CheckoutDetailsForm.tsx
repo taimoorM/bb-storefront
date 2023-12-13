@@ -64,8 +64,7 @@ function CheckoutDetailsForm({
   setOrderData: (data: any) => void;
   initialData: Order | null;
 }) {
-  const { customer } = useApp();
-  const { session, headers } = useStore();
+  const { session, headers, customer } = useStore();
 
   const generateDefaultValues = useMemo(() => {
     let defaultValues = {
@@ -219,7 +218,7 @@ function CheckoutDetailsForm({
       return fetch("/api/storefront/checkout", {
         headers,
         method: editMode ? "PUT" : "POST",
-        body: JSON.stringify({ sessionId: session?.id as string, values }),
+        body: JSON.stringify({ token: session?.token as string, values }),
       });
     },
     onSuccess: async (data) => {

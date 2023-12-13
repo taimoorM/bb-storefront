@@ -82,9 +82,9 @@ export interface Store {
 }
 
 export interface Session {
-  id: string;
   expiresAt: string;
   token: string;
+  customer: string | null;
 }
 
 export interface Cart {
