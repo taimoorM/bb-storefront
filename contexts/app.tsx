@@ -22,8 +22,6 @@ interface App {
 interface AppContextValue {
   metadata: App["metadata"] | null;
   stores: Store[];
-  customer: Customer | null;
-  setCustomer: React.Dispatch<React.SetStateAction<Customer | null>>;
 }
 export const AppContext = createContext<AppContextValue | null>(null);
 
@@ -34,7 +32,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
 
   const [stores, setStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<string | null>(null);
-  const [customer, setCustomer] = useState<Customer | null>(null);
 
   const router = useRouter();
 
@@ -61,7 +58,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
 
         setMetadata(data.metadata);
         setStores(data.stores);
-        setCustomer(data.customer);
       } catch (e: any) {
         console.log(e);
       }
@@ -75,8 +71,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = (props) => {
       value={{
         metadata,
         stores,
-        customer,
-        setCustomer,
       }}
     >
       {!metadata ? (

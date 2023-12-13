@@ -11,6 +11,7 @@ export const GET = auth(async (req) => {
 
   try {
     const accessToken = cookieStore.get(`bb-access-token`);
+    const sessionToken = cookieStore.get(`session`);
 
     const query = supabase
       .from("Business")
@@ -57,7 +58,11 @@ export const GET = auth(async (req) => {
       });
     }
 
-    return NextResponse.json({ stores, metadata: data });
+    return NextResponse.json({
+      stores,
+      metadata: data,
+      token: sessionToken ? sessionToken.value : null,
+    });
   } catch (e: any) {
     console.log(e);
 

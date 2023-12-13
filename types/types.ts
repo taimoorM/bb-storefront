@@ -47,7 +47,6 @@ export interface InventoryMap {
 }
 
 export interface Session {
-  id: string;
   expiresAt: string;
   token: string;
 }

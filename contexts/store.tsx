@@ -74,6 +74,7 @@ export const StoreProvider: React.FC<{
   const [brands, setBrands] = useState<Brand[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
   const [inventory, setInventory] = useState<Inventory | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
 
   const { metadata, stores } = useApp();
   const { toast } = useToast();
@@ -159,8 +160,12 @@ export const StoreProvider: React.FC<{
     categories: Category[];
     brands: Brand[];
     inventory: Inventory | null;
+    customer?: Customer;
   }) => {
     setSession(newState.session);
+    if (newState.customer) {
+      setCustomer(newState.customer);
+    }
     setCart(newState.cart);
     setTypes(newState.types);
     setCategories(newState.categories);
@@ -185,13 +190,13 @@ export const StoreProvider: React.FC<{
           const data = await fetchSession(props.selectedStore, headers, null);
           console.log("data", data);
           setSession(data.session);
-
           setCart(data.cart);
         };
         handleSessionError();
       }
       setAppState({
         session: sessionData?.session,
+        customer: sessionData?.customer,
         cart: sessionData?.cart,
         types,
         categories,
