@@ -1,3 +1,4 @@
+import CustomError from "@/utils/custom-error";
 import getBusiness from "@/utils/get-business";
 import { cookies, headers } from "next/headers";
 import { NextRequest } from "next/server";
@@ -24,7 +25,12 @@ export async function POST(req: NextRequest) {
       }
     );
 
+    console.log("response", response);
+
     if (!response.ok) {
+      if (response.status === 400) {
+        throw new CustomError("This email is already registered.", 400);
+      }
       throw new Error("Could not create customer");
     }
 
@@ -32,6 +38,12 @@ export async function POST(req: NextRequest) {
     return Response.json(customer);
   } catch (e: any) {
     console.log(e);
+    if (e.status) {
+      return Response.json("Error signing up", {
+        status: e.status,
+        statusText: e.message,
+      });
+    }
     return Response.json({ error: e.message }, { status: 500 });
   }
 }
