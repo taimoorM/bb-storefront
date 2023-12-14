@@ -28,10 +28,16 @@ export async function POST(req: NextRequest) {
     console.log("response", response);
 
     if (!response.ok) {
-      if (response.status === 400) {
-        throw new CustomError("This email is already registered.", 400);
+      const error = await response.json();
+      console.log("error", error);
+      switch (error.code) {
+        case "CUSTOMER_EXISTS": {
+          throw new CustomError("Customer already exists", error.statusCode);
+        }
+        default: {
+          throw new CustomError("Could not create customer", error.statusCode);
+        }
       }
-      throw new Error("Could not create customer");
     }
 
     const customer = await response.json();
