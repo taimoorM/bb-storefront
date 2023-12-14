@@ -2,6 +2,7 @@ import { auth, signIn } from "@/auth";
 import { supabase } from "@/libs/supabase";
 
 import { Cart, Customer, Session } from "@/types/types";
+import getBusiness from "@/utils/get-business";
 
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
@@ -17,16 +18,7 @@ export const GET = auth(async (req) => {
     const token = cookiesStore.get("session");
     const subdomain = req.headers.get("bb-subdomain")?.toLowerCase();
 
-    const { data: business, error } = await supabase
-      .from("Business")
-      .select("id, subdomain, secretKey, secretKeyId")
-      .eq("subdomain", subdomain)
-      .eq("publicKey", publicKey?.value || "")
-      .single();
-
-    if (error || !business) {
-      throw new Error("Could not find business");
-    }
+    const business = await getBusiness(subdomain, publicKey?.value);
 
     const { secretKey, secretKeyId } = business;
 
@@ -42,9 +34,12 @@ export const GET = auth(async (req) => {
         body: JSON.stringify({
           customerId: req.auth.user.id,
           token: token?.value || "",
+          action: "connect",
         }),
       }
     );
+
+    console.log(response);
     if (!response.ok) {
       throw new Error("Could not create checkout session");
     }

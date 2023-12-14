@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function deleteCookie(name: string) {
@@ -30,4 +30,13 @@ export async function login(email: string, password: string) {
 
 export async function revalidate_tag(tag: string) {
   revalidateTag(tag);
+}
+
+export async function revalidate_path(path: string) {
+  revalidatePath(path);
+}
+
+export async function logout() {
+  "use server";
+  await signOut();
 }

@@ -6,17 +6,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LiaUser } from "react-icons/Lia";
 import { useStore } from "@/contexts/store";
-import LogoutButton from "../Auth/LogoutButton";
-import { LogOutIcon } from "lucide-react";
+import { LiaUser } from "react-icons/Lia";
+
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useApp } from "@/contexts/app";
+import { usePathname } from "next/navigation";
 
 function UserDropdown() {
   const { customer } = useStore();
   const { data: session } = useSession();
+
+  const pathname = usePathname();
+  console.log("pathname", pathname);
 
   return (
     <DropdownMenu>
@@ -34,7 +36,12 @@ function UserDropdown() {
             <DropdownMenuItem>{customer.email}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <LogoutButton />
+              <Link
+                href={`/logout?call_back_url=${pathname}`}
+                className="w-full"
+              >
+                Logout
+              </Link>
             </DropdownMenuItem>
           </>
         ) : (
@@ -43,7 +50,7 @@ function UserDropdown() {
             <DropdownMenuSeparator />
             <DropdownMenuItem>Hello, Guest</DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href="/login" className="w-full" role="button">
+              <Link href="/login" className="w-full">
                 Login
               </Link>
             </DropdownMenuItem>

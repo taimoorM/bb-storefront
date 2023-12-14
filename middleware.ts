@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import getSubdomain from "./utils/get-subdomain";
 import { auth } from "./auth";
+import logOutCustomer from "./utils/logout-customer";
 
 export async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
@@ -11,6 +12,8 @@ export async function middleware(req: NextRequest) {
   const isAuthPage =
     req.nextUrl.pathname.startsWith("/login") ||
     req.nextUrl.pathname.startsWith("/signup");
+
+  const isLogoutPage = req.nextUrl.pathname.startsWith("/logout");
 
   if (req.cookies.get("bb-access-token")) {
     requestHeaders.set(
@@ -26,6 +29,17 @@ export async function middleware(req: NextRequest) {
       const session = await auth();
       if (session) {
         return NextResponse.redirect(new URL("/", req.url));
+      }
+    }
+
+    if (isLogoutPage) {
+      const session = await auth();
+      if (session) {
+        logOutCustomer({
+          publicKey: req.cookies.get("bb-access-token")?.value as string,
+          token: req.cookies.get("session")?.value as string,
+          subdomain,
+        });
       }
     }
 

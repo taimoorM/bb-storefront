@@ -6,25 +6,8 @@ import { useStore } from "@/contexts/store";
 import { useApp } from "@/contexts/app";
 
 export default function LogoutButton() {
-  const { setCustomer } = useApp();
-  const { selectedStore, headers, setCart, setSession } = useStore();
-  const handleSignOut = async () => {
-    try {
-      await signOut({ redirect: false });
-      await deleteCookie("session");
-      const { session: newSession, cart } = await fetchSession(
-        selectedStore.id,
-        headers,
-        null
-      );
-
-      setSession(newSession);
-      setCart(cart);
-      setCustomer(null);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const { setCart, setSession, setCustomer } = useStore();
+  const handleSignOut = async () => {};
   return (
     <Button onClick={handleSignOut} variant="ghost">
       Logout
