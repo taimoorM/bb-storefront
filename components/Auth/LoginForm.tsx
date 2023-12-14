@@ -41,8 +41,8 @@ const loginFormSchema = z.object({
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
-  const { metadata, setCustomer } = useApp();
-  const { setCart, setSession } = useStore();
+  const { metadata } = useApp();
+  const { setCart, setSession, setCustomer } = useStore();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -59,14 +59,12 @@ export default function LoginForm() {
     setLoading(true);
     try {
       if (!metadata?.subdomain) throw new Error("Subdomain not found");
-      const res = await signIn("credentials", {
+      await signIn("credentials", {
         email: data.email,
         password: data.password,
         subdomain: metadata.subdomain,
         redirect: false,
       });
-
-      console.log(res);
 
       const response = await fetch("/api/login");
 

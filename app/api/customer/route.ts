@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { supabase } from "@/libs/supabase";
+import getBusiness from "@/utils/get-business";
 import { cookies } from "next/headers";
 
 export const GET = auth(async (req) => {
@@ -12,16 +13,7 @@ export const GET = auth(async (req) => {
     const publicKey = cookiesStore.get("bb-access-token");
     const subdomain = req.headers.get("bb-subdomain")?.toLowerCase();
 
-    const { data: business, error } = await supabase
-      .from("Business")
-      .select("id, subdomain, secretKey, secretKeyId")
-      .eq("subdomain", subdomain)
-      .eq("publicKey", publicKey?.value || "")
-      .single();
-
-    if (error || !business) {
-      throw new Error("Could not find business");
-    }
+    const business = await getBusiness(subdomain, publicKey?.value);
 
     const { secretKey, secretKeyId } = business;
 

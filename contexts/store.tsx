@@ -185,17 +185,10 @@ export const StoreProvider: React.FC<{
     }
     if (storefrontData) {
       const [types, categories, brands, sessionData, data] = storefrontData;
-      let customer = null;
 
-      if (sessionData?.session?.customer) {
-        const handleFetchCustomer = async () => {
-          customer = await fetchCustomer();
-        };
-        handleFetchCustomer();
-      }
       setAppState({
         session: sessionData?.session,
-        customer,
+        customer: sessionData?.customer,
         cart: sessionData?.cart,
         types,
         categories,

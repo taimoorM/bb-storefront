@@ -15,7 +15,7 @@ import Link from "next/link";
 import { useApp } from "@/contexts/app";
 
 function UserDropdown() {
-  const { customer } = useApp();
+  const { customer } = useStore();
   const { data: session } = useSession();
 
   return (

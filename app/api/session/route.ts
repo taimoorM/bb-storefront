@@ -68,11 +68,34 @@ export async function GET(req: NextRequest) {
     }
 
     const data = await response.json();
+
+    if (data.customer) {
+      const business = await getBusiness(subdomain, publicKey?.value);
+      const { secretKey, secretKeyId } = business;
+      const response = await fetch(
+        `http://localhost:3000/api/storefront/sudo/customers?id=${data.customer}`,
+        {
+          headers: {
+            "x-secret-key": secretKey,
+            "x-api-id": secretKeyId,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      const customer = await response.json();
+      return Response.json({
+        session: data.session,
+        cart: data.cart,
+        customer,
+      });
+    }
+
     console.log("data", data);
     return Response.json({
       session: data.session,
       cart: data.cart,
-      customer: data.customer,
+      customer: null,
     });
   } catch (e: any) {
     console.log(e);
