@@ -100,7 +100,7 @@ export const StoreProvider: React.FC<{
         fetchData("types", headers),
         fetchData("categories", headers),
         fetchData("brands", headers),
-        fetchSession(props.selectedStore, headers, props.token),
+        fetchSession(props.selectedStore, headers),
         fetchInventory(props.selectedStore, headers),
       ]),
     staleTime: 1000 * 60,

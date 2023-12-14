@@ -46,40 +46,8 @@ export const fetchCart = async (token: string, headers: HeadersInit) => {
   return res.json();
 };
 
-export const fetchSession = async (
-  storeId: string,
-  headers: HeadersInit,
-  token: string | null
-) => {
-  console.log("token", token);
-  let res = null;
-  if (token) {
-    res = await fetch(`/api/storefront/session?token=${token}`, {
-      headers,
-    });
-  }
-
-  if ((res && !res.ok) || !res) {
-    await deleteCookie("session");
-    const newRes = await fetch(`/api/storefront/session`, {
-      headers,
-      method: "POST",
-      body: JSON.stringify({ storeId }),
-    });
-
-    if (!newRes.ok) {
-      throw new Error("Could not fetch  new session");
-    }
-
-    const data = await newRes.json();
-
-    setCookie("session", data.session.token, {
-      expires: new Date(data.session.expiresAt),
-      path: "/",
-    });
-
-    return data;
-  }
+export const fetchSession = async (storeId: string, headers: HeadersInit) => {
+  const res = await fetch(`/api/session?storeId=${storeId}`);
 
   const data = await res.json();
 

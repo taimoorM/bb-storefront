@@ -13,37 +13,62 @@ export async function GET(req: NextRequest) {
 
     const cookiesStore = cookies();
     const publicKey = cookiesStore.get("bb-access-token");
+    const token = cookiesStore.get("session");
     const subdomain = req.headers.get("bb-subdomain")?.toLowerCase();
 
-    const { data: business, error } = await supabase
-      .from("Business")
-      .select("id, subdomain, secretKey, secretKeyId")
-      .eq("subdomain", subdomain)
-      .eq("publicKey", publicKey?.value || "")
-      .single();
+    const response = await fetch(
+      `http://localhost:3000/api/storefront/session?token=${token?.value}`,
+      {
+        headers: {
+          "x-public-key": publicKey?.value || "",
+          Accept: "application/json",
+        },
+      }
+    );
 
-    if (error || !business) {
-      throw new Error("Could not find business");
+    if (!response.ok || !token?.value) {
+      const { data: business, error } = await supabase
+        .from("Business")
+        .select("id, subdomain, secretKey, secretKeyId")
+        .eq("subdomain", subdomain)
+        .eq("publicKey", publicKey?.value || "")
+        .single();
+
+      if (error || !business) {
+        throw new Error("Could not find business");
+      }
+
+      const { secretKey, secretKeyId } = business;
+
+      const res = await fetch(
+        `http://localhost:3000/api/storefront/sudo/session`,
+        {
+          headers: {
+            "x-secret-key": secretKey,
+            "x-api-id": secretKeyId,
+            Accept: "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({ storeId }),
+        }
+      );
+
+      console.log("res", res);
+
+      if (!res.ok) {
+        throw new Error("Could not fetch  new session");
+      }
+
+      const data = await res.json();
+
+      return Response.json({
+        session: data.session,
+        cart: data.cart,
+      });
     }
 
-    const { secretKey, secretKeyId } = business;
-
-    const res = await fetch(`/api/storefront/session`, {
-      headers: {
-        "x-secret-key": secretKey,
-        "x-api-id": secretKeyId,
-        Accept: "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ storeId }),
-    });
-
-    if (!res.ok) {
-      throw new Error("Could not fetch  new session");
-    }
-
-    const data = await res.json();
-
+    const data = await response.json();
+    console.log("data", data);
     return Response.json({
       session: data.session,
       cart: data.cart,
