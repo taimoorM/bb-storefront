@@ -1,5 +1,6 @@
 import { supabase } from "@/libs/supabase";
-import { cookies } from "next/headers";
+import getBusiness from "@/utils/get-business";
+import { cookies, headers } from "next/headers";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -14,7 +15,10 @@ export async function GET(req: NextRequest) {
     const cookiesStore = cookies();
     const publicKey = cookiesStore.get("bb-access-token");
     const token = cookiesStore.get("session");
-    const subdomain = req.headers.get("bb-subdomain")?.toLowerCase();
+    const headersStore = headers();
+    const subdomain = headersStore.get("bb-subdomain")?.toLowerCase();
+
+    console.log("token", token?.value);
 
     const response = await fetch(
       `http://localhost:3000/api/storefront/session?token=${token?.value}`,
@@ -26,20 +30,9 @@ export async function GET(req: NextRequest) {
       }
     );
 
-    if (!response.ok || !token?.value) {
-      const { data: business, error } = await supabase
-        .from("Business")
-        .select("id, subdomain, secretKey, secretKeyId")
-        .eq("subdomain", subdomain)
-        .eq("publicKey", publicKey?.value || "")
-        .single();
-
-      if (error || !business) {
-        throw new Error("Could not find business");
-      }
-
+    if (!response.ok) {
+      const business = await getBusiness(subdomain, publicKey?.value);
       const { secretKey, secretKeyId } = business;
-
       const res = await fetch(
         `http://localhost:3000/api/storefront/sudo/session`,
         {
@@ -53,17 +46,24 @@ export async function GET(req: NextRequest) {
         }
       );
 
-      console.log("res", res);
-
       if (!res.ok) {
         throw new Error("Could not fetch  new session");
       }
 
       const data = await res.json();
 
+      cookies().set({
+        name: `session`,
+        value: data.session.token,
+        path: "/",
+        httpOnly: true,
+        expires: new Date(data.session.expiresAt),
+      });
+
       return Response.json({
         session: data.session,
         cart: data.cart,
+        customer: null,
       });
     }
 
@@ -72,6 +72,7 @@ export async function GET(req: NextRequest) {
     return Response.json({
       session: data.session,
       cart: data.cart,
+      customer: data.customer,
     });
   } catch (e: any) {
     console.log(e);

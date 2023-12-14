@@ -74,18 +74,22 @@ export default function SignUpForm() {
   });
 
   const mutation = useMutation({
-    mutationFn: (values: z.infer<typeof signUpFormSchema>) => {
-      return fetch("/api/storefront/customers", {
+    mutationFn: async (values: z.infer<typeof signUpFormSchema>) => {
+      const res = await fetch("/api/signup", {
         headers,
         method: "POST",
         body: JSON.stringify({
           data: values,
-          token: session?.token,
         }),
       });
+      return res.json();
     },
     onSuccess(data) {
       console.log("data", data);
+      toast({
+        title: "Success",
+        description: "You have successfully signed up",
+      });
       // router.push("/login");
     },
     onError(error: Error) {
