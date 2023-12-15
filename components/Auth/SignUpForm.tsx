@@ -50,7 +50,6 @@ const signUpFormSchema = z.object({
 
 export default function SignUpForm() {
   const { session, headers } = useStore();
-  console.log("session", session);
 
   const router = useRouter();
   const { toast } = useToast();

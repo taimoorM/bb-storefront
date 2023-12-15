@@ -13,49 +13,8 @@ export default async function Page({
 }) {
   const session = await auth();
   if (!session) redirect("/login");
-  console.log("session", session);
 
   const callBackUrl = searchParams.call_back_url as string;
-
-  const cookiesStore = cookies();
-
-  const publicKey = cookiesStore.get("bb-access-token");
-  const token = cookiesStore.get("session");
-  const headersList = headers();
-  const subdomain = headersList.get("bb-subdomain")?.toLowerCase();
-
-  if (!subdomain || !publicKey?.value) redirect("/");
-
-  const business = await getBusiness(subdomain, publicKey?.value);
-
-  const { secretKey, secretKeyId } = business;
-
-  const response = await fetch(
-    "http://localhost:3000/api/storefront/sudo/session",
-    {
-      headers: {
-        "x-secret-key": secretKey,
-        "x-api-id": secretKeyId,
-        Accept: "application/json",
-      },
-      method: "PATCH",
-      body: JSON.stringify({
-        customerId: session.user.id,
-        token: token?.value || "",
-        action: "disconnect",
-      }),
-    }
-  );
-
-  if (response.ok) {
-    await logout();
-    cookies().delete("session");
-    if (callBackUrl) {
-      redirect(callBackUrl);
-    } else {
-      redirect("/login");
-    }
-  }
 
   return (
     <div className="flex flex-col items-center justify-center">

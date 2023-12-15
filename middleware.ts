@@ -33,14 +33,21 @@ export async function middleware(req: NextRequest) {
     }
 
     if (isLogoutPage) {
+      console.log("logout");
+      const searchParams = req.nextUrl.searchParams;
+      const callbackUrl = searchParams.get("call_back_url");
+
       const session = await auth();
-      if (session) {
-        logOutCustomer({
-          publicKey: req.cookies.get("bb-access-token")?.value as string,
-          token: req.cookies.get("session")?.value as string,
-          subdomain,
-        });
-      }
+      if (!session) return NextResponse.redirect(new URL("/login", req.url));
+
+      // if (session) {
+      //   await logOutCustomer({
+      //     publicKey: req.cookies.get("bb-access-token")?.value as string,
+      //     token: req.cookies.get("session")?.value as string,
+      //     subdomain,
+      //     callbackUrl,
+      //   });
+      // }
     }
 
     return NextResponse.next({

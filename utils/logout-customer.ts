@@ -1,13 +1,11 @@
-import { cookies } from "next/headers";
+"use server";
 import getBusiness from "./get-business";
-import { signOut } from "@/auth";
-import { redirect } from "next/navigation";
 
 interface params {
   subdomain: string | undefined;
   publicKey: string | undefined;
   token: string;
-  callbackUrl?: string;
+  callbackUrl?: string | null;
 }
 
 export default async function logOutCustomer(params: params) {
@@ -16,14 +14,18 @@ export default async function logOutCustomer(params: params) {
 
   const { secretKey, secretKeyId } = business;
 
+  const requestHeaders = new Headers();
+  requestHeaders.set("x-secret-key", secretKey);
+  requestHeaders.set("x-api-id", secretKeyId);
+  requestHeaders.set("Accept", "application/json");
+  requestHeaders.set("x-middleware-subrequest", undefined);
+
+  // requestHeaders.set("user-agent", "Chrome");
+
   const response = await fetch(
     "http://localhost:3000/api/storefront/sudo/session",
     {
-      headers: {
-        "x-secret-key": secretKey,
-        "x-api-id": secretKeyId,
-        Accept: "application/json",
-      },
+      headers: requestHeaders,
       method: "PATCH",
       body: JSON.stringify({
         token,
@@ -32,15 +34,17 @@ export default async function logOutCustomer(params: params) {
     }
   );
 
-  if (response.ok) {
-    await signOut({
-      redirect: false,
-    });
-    cookies().delete("session");
-    if (callbackUrl) {
-      redirect(callbackUrl);
-    } else {
-      redirect("/login");
-    }
-  }
+  console.log(response);
+
+  // if (response.ok) {
+  //   await signOut({
+  //     redirect: false,
+  //   });
+  //   cookies().delete("session");
+  //   if (callbackUrl) {
+  //     redirect(callbackUrl);
+  //   } else {
+  //     redirect("/login");
+  //   }
+  // }
 }
