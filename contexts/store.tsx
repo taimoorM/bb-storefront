@@ -28,6 +28,7 @@ import {
   useMutation,
   useQueries,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 import {
   fetchCustomer,
@@ -108,6 +109,8 @@ export const StoreProvider: React.FC<{
     staleTime: 1000 * 60,
   });
 
+  const queryClient = useQueryClient();
+
   const useUpdateCart = (
     token: string,
     id: string,
@@ -116,6 +119,8 @@ export const StoreProvider: React.FC<{
   ) => {
     const cartItem = cart?.items.find((i) => i.id === id);
     let quantity = cartItem?.quantity || 0;
+    queryClient.invalidateQueries({ queryKey: ["order", "cart"] });
+
     switch (action) {
       case "add":
         quantity = quantity + 1;

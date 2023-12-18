@@ -55,7 +55,7 @@ function CheckoutWrapper({
     enabled: !!error,
   });
 
-  if (cartError) {
+  if (cartError || !cart?.items.length) {
     router.push("/cart");
   }
 
@@ -84,17 +84,19 @@ function CheckoutWrapper({
                 <CheckoutLogin setIsGuest={setIsGuestCheckout} />
               ) : (
                 <div className="grid  grid-cols-1 md:grid-cols-5 py-4 gap-5">
-                  <div className="md:col-span-3">
+                  <div className="md:col-span-3 flex flex-col gap-5">
                     <CheckoutDetailsForm
                       setOrderData={setCurrentOrderData}
                       initialData={currentOrder}
                     />
                     {currentOrderData && (
-                      <StripeElementsWrapper
-                        order={currentOrderData.order as Order}
-                        clientSecret={currentOrderData.clientSecret}
-                        stripeAccountId={currentOrderData.stripeId}
-                      />
+                      <div className="border border-1 rounded-lg p-4">
+                        <StripeElementsWrapper
+                          order={currentOrderData.order as Order}
+                          clientSecret={currentOrderData.clientSecret}
+                          stripeAccountId={currentOrderData.stripeId}
+                        />
+                      </div>
                     )}
                   </div>
                   <div className="md:col-span-2 order-first w-full border  border-1 rounded-lg p-4   md:border-none md:order-last">

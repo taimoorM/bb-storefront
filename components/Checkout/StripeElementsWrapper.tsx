@@ -1,4 +1,3 @@
-"use client";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutPaymentForm from "./CheckoutPaymentForm";
 import { loadStripe } from "@stripe/stripe-js";
@@ -15,7 +14,6 @@ export default function StripeElementsWrapper({
   order,
   stripeAccountId,
 }: StripeElementsWrapperProps) {
-  console.log("stripeAccountId", stripeAccountId);
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string,
     {

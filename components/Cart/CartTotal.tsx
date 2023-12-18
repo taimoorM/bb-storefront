@@ -24,8 +24,6 @@ export default function CartTotal() {
   }
 
   const handleProceedToCheckout = () => {
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
-
     router.push(`/checkout`);
   };
 

@@ -8,13 +8,18 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useStore } from "@/contexts/store";
+import { Order } from "@/types/types";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import Spinner from "../Loaders/Spinner";
 import {
   Card,
   CardContent,
@@ -23,17 +28,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Separator } from "../ui/separator";
-import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
-import { use, useEffect, useMemo, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { useStore } from "@/contexts/store";
-import Link from "next/link";
-import LoadingDots from "../LoadingDots";
-import Spinner from "../Loaders/Spinner";
-import { Customer, Order } from "@/types/types";
-import { useApp } from "@/contexts/app";
+import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
 
 const checkoutDetailFormSchema = z.object({
   name: z.string().optional(),
@@ -65,6 +62,8 @@ function CheckoutDetailsForm({
   initialData: Order | null;
 }) {
   const { session, headers, customer } = useStore();
+
+  console.log("initialData", initialData);
 
   const generateDefaultValues = useMemo(() => {
     let defaultValues = {
@@ -245,7 +244,7 @@ function CheckoutDetailsForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card>
+        <Card className="shadow-none">
           {!initialData ||
             !customer ||
             (editMode === "billing" && (

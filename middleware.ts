@@ -3,6 +3,7 @@ import getSubdomain from "./utils/get-subdomain";
 import { auth, signOut } from "./auth";
 import logOutCustomer from "./utils/logout-customer";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export async function middleware(req: NextRequest) {
   const host = req.headers.get("host");

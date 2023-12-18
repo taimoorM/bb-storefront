@@ -3,7 +3,8 @@ import { signOut } from "@/auth";
 import getBusiness from "./get-business";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { logout } from "@/app/actions";
+import { logout, revalidate_path } from "@/app/actions";
+import { revalidatePath } from "next/cache";
 
 interface params {
   subdomain: string | undefined;
