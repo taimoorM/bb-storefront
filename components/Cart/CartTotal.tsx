@@ -48,7 +48,7 @@ export default function CartTotal() {
           <p>Total</p>
           <Price
             className="text-right text-base text-black dark:text-white"
-            amount={cart?.subTotal || 0}
+            amount={cart?.subtotal || 0}
             currencyCode={currencyCode}
           />
         </div>

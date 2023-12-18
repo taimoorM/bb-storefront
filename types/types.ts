@@ -91,7 +91,7 @@ export interface Cart {
   id: string;
   items: CartItem[];
   outOfStock: string[];
-  subTotal: number;
+  subtotal: number;
 }
 [];
 

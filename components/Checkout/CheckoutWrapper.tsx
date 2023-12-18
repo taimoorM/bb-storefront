@@ -41,6 +41,8 @@ function CheckoutWrapper({
     retry: false,
   });
 
+  console.log("ORDER DATA", data);
+
   console.log("ORDER ERROR", error);
 
   const {
@@ -50,7 +52,7 @@ function CheckoutWrapper({
   } = useQuery<Cart>({
     queryKey: ["cart"],
     queryFn: async () => fetchCart(token as string, headers),
-    enabled: !!data,
+    enabled: !!error,
   });
 
   if (cartError) {
@@ -66,7 +68,7 @@ function CheckoutWrapper({
   console.log(currentOrderData);
 
   const items = data ? data.order.items : cart?.items;
-  const subTotal = data ? data.order.totals.subtotal : cart?.subTotal;
+  const subTotal = data ? data.order.totals.subtotal : cart?.subtotal;
   const currentOrder = currentOrderData ? currentOrderData.order : null;
 
   return (
@@ -81,8 +83,8 @@ function CheckoutWrapper({
               {!session && !isGuestCheckout ? (
                 <CheckoutLogin setIsGuest={setIsGuestCheckout} />
               ) : (
-                <div className="grid grid-cols-5 py-4 gap-5">
-                  <div className="col-span-3">
+                <div className="grid  grid-cols-1 md:grid-cols-5 py-4 gap-5">
+                  <div className="md:col-span-3">
                     <CheckoutDetailsForm
                       setOrderData={setCurrentOrderData}
                       initialData={currentOrder}
@@ -95,7 +97,7 @@ function CheckoutWrapper({
                       />
                     )}
                   </div>
-                  <div className="col-span-2">
+                  <div className="md:col-span-2 order-first w-full border  border-1 rounded-lg p-4   md:border-none md:order-last">
                     <OrderProductList
                       items={items as OrderItem[] | CartItem[]}
                     />

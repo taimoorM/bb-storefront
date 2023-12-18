@@ -35,7 +35,7 @@ function OrderProductList({ items }: OrderProductListProps) {
             <p className="text-slate-800 text-sm">{item.subtitle}</p>
           </div>
           <Price
-            className="ml-auto text-right"
+            className="ml-auto text-right font-light"
             amount={item.price * item.quantity}
             currencyCode={selectedStore?.currency}
           />

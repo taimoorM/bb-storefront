@@ -83,13 +83,6 @@ export const StoreProvider: React.FC<{
   const { toast } = useToast();
   const { data: authSession } = useSession();
 
-  useEffect(() => {
-    console.log("authSession", authSession);
-    if (!authSession) {
-      setCustomer(null);
-    }
-  }, [authSession]);
-
   const headers = useMemo(() => {
     return {
       "x-public-key": (metadata?.publicKey as string) || "",

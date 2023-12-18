@@ -197,10 +197,10 @@ function CheckoutDetailsForm({
           },
   });
 
-  useEffect(() => {
-    if (!customer && !initialData) return;
-    form.reset(defaultValues);
-  }, [customer, initialData]);
+  // useEffect(() => {
+  //   if (!customer && !initialData) return;
+  //   form.reset(defaultValues);
+  // }, [customer, initialData]);
 
   const [checked, setChecked] = useState(false);
   const [editMode, setEditMode] = useState<"billing" | "shipping" | null>(null);
