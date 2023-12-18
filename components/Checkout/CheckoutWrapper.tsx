@@ -52,7 +52,7 @@ function CheckoutWrapper({
   } = useQuery<Cart>({
     queryKey: ["cart"],
     queryFn: async () => fetchCart(token as string, headers),
-    enabled: !!error,
+    enabled: !error,
   });
 
   if (cartError || !cart?.items.length) {
