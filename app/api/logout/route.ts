@@ -1,6 +1,7 @@
-import { auth } from "@/auth";
-import getBusiness from "@/utils/get-business";
+import { auth, signOut } from "@/auth";
+import logOutCustomer from "@/utils/logout-customer";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export const GET = auth(async (req) => {
   console.log("logout");
@@ -9,32 +10,36 @@ export const GET = auth(async (req) => {
       return new Response("Unauthorized", { status: 401 });
     }
 
+    const searchParams = req.nextUrl.searchParams;
+    const redirect = searchParams.get("redirect");
     const cookiesStore = cookies();
     const publicKey = cookiesStore.get("bb-access-token");
     const token = cookiesStore.get("session");
     const subdomain = req.headers.get("bb-subdomain")?.toLowerCase();
 
-    const business = await getBusiness(subdomain, publicKey?.value);
+    console.log("token", subdomain);
 
-    const { secretKey, secretKeyId } = business;
+    const response = await logOutCustomer({
+      publicKey: publicKey?.value as string,
+      token: token?.value as string,
+      subdomain,
+    });
 
-    const response = await fetch(
-      "http://localhost:3000/api/storefront/sudo/session",
-      {
-        headers: {
-          "x-secret-key": secretKey,
-          "x-api-id": secretKeyId,
-          Accept: "application/json",
-        },
-        method: "PATCH",
-        body: JSON.stringify({
-          token,
-          action: "disconnect",
-        }),
-      }
-    );
+    console.log(req.url);
 
     console.log(response);
+
+    if (!response.ok) {
+      throw new Error("Could not log out customer");
+    }
+
+    await signOut({
+      redirect: false,
+    });
+
+    const url = new URL("/login", `http://${subdomain}.localhost:4000`);
+
+    return NextResponse.redirect(url);
   } catch (error: any) {
     console.log(error);
     return new Response(error.message, { status: 500 });

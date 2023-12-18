@@ -37,7 +37,7 @@ function UserDropdown() {
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link
-                href={`/logout?call_back_url=${pathname}`}
+                href={`/api/logout?redirect=${pathname}`}
                 className="w-full"
               >
                 Logout
