@@ -36,12 +36,9 @@ function UserDropdown() {
             <DropdownMenuItem>{customer.email}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link
-                href={`/api/logout?redirect=${pathname}`}
-                className="w-full"
-              >
+              <a href={`/logout?redirect=${pathname}`} className="w-full">
                 Logout
-              </Link>
+              </a>
             </DropdownMenuItem>
           </>
         ) : (

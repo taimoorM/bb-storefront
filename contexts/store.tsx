@@ -38,6 +38,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { deleteCookie } from "@/app/actions";
 import Spinner from "@/components/Loaders/Spinner";
+import { useSession } from "next-auth/react";
 
 interface StoreContextValue {
   categories: Category[];
@@ -80,6 +81,14 @@ export const StoreProvider: React.FC<{
 
   const { metadata, stores } = useApp();
   const { toast } = useToast();
+  const { data: authSession } = useSession();
+
+  useEffect(() => {
+    console.log("authSession", authSession);
+    if (!authSession) {
+      setCustomer(null);
+    }
+  }, [authSession]);
 
   const headers = useMemo(() => {
     return {

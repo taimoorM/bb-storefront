@@ -37,6 +37,7 @@ export async function revalidate_path(path: string) {
 }
 
 export async function logout() {
-  "use server";
-  await signOut();
+  await signOut({
+    redirect: false,
+  });
 }

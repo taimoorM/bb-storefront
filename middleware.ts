@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import getSubdomain from "./utils/get-subdomain";
-import { auth } from "./auth";
+import { auth, signOut } from "./auth";
 import logOutCustomer from "./utils/logout-customer";
+import { cookies } from "next/headers";
 
 export async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
@@ -13,7 +14,7 @@ export async function middleware(req: NextRequest) {
     req.nextUrl.pathname.startsWith("/login") ||
     req.nextUrl.pathname.startsWith("/signup");
 
-  const isLogoutPage = req.nextUrl.pathname.startsWith("/logout");
+  const isLogoutRoute = req.nextUrl.pathname.startsWith("/logout");
 
   if (req.cookies.get("bb-access-token")) {
     requestHeaders.set(
@@ -32,21 +33,20 @@ export async function middleware(req: NextRequest) {
       }
     }
 
-    if (isLogoutPage) {
+    if (isLogoutRoute) {
       console.log("logout");
       const searchParams = req.nextUrl.searchParams;
+      const redirect = searchParams.get("redirect");
 
       const session = await auth();
       if (!session) return NextResponse.redirect(new URL("/login", req.url));
 
-      // if (session) {
-      //   await logOutCustomer({
-      //     publicKey: req.cookies.get("bb-access-token")?.value as string,
-      //     token: req.cookies.get("session")?.value as string,
-      //     subdomain,
-      //     callbackUrl,
-      //   });
-      // }
+      return await logOutCustomer({
+        publicKey: req.cookies.get("bb-access-token")?.value as string,
+        token: req.cookies.get("session")?.value as string,
+        subdomain,
+        redirect,
+      });
     }
 
     return NextResponse.next({

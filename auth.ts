@@ -84,7 +84,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         },
       };
     },
-    jwt: ({ token, user }) => {
+    jwt: ({ token, user, trigger }) => {
       if (user) {
         const u = user as unknown as any;
         return {

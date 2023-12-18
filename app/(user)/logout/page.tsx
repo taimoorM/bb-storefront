@@ -14,7 +14,7 @@ export default async function Page({
   const session = await auth();
   if (!session) redirect("/login");
 
-  const callBackUrl = searchParams.call_back_url as string;
+  const redirectUrl = searchParams.redirect as string;
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -24,7 +24,7 @@ export default async function Page({
         try again.
       </p>
       <Link
-        href={callBackUrl ? `/logout?=${callBackUrl}` : "/logout"}
+        href={redirectUrl ? `/logout?=${redirectUrl}` : "/logout"}
         className="text-lg mb-6"
       >
         Logout
