@@ -32,6 +32,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { OrderData } from "./CheckoutWrapper";
+import { useToast } from "../ui/use-toast";
 
 const checkoutDetailFormSchema = z.object({
   name: z.string().optional(),
@@ -63,6 +64,8 @@ function CheckoutDetailsForm({
   initialData: Order | null;
 }) {
   const { session, headers, customer } = useStore();
+
+  const { toast } = useToast();
 
   console.log("initialData", initialData);
 
@@ -176,6 +179,7 @@ function CheckoutDetailsForm({
       });
     },
     onSuccess: async (data) => {
+      if (!data.ok) throw new Error("Something went wrong");
       const jsonData = await data.json();
       console.log(jsonData);
       if (initialData) {
@@ -186,7 +190,11 @@ function CheckoutDetailsForm({
       }
     },
     onError: (error) => {
-      console.log(error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
