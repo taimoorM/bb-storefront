@@ -1,3 +1,4 @@
+import CheckoutSuccess from "@/components/Checkout/CheckoutSuccess";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -9,6 +10,7 @@ export default async function CheckoutSuccessPage({
 }) {
   const cookieStore = cookies();
   const publicKey = cookieStore.get("bb-access-token");
+  const token = cookieStore.get("session");
   const paymentIntentId = searchParams.payment_intent as string;
 
   const res = await fetch(`http:localhost:3000/api/storefront/checkout`, {
@@ -20,17 +22,23 @@ export default async function CheckoutSuccessPage({
     },
     body: JSON.stringify({
       paymentIntentId,
+      token: token?.value,
     }),
   });
+
+  if (res.ok) {
+    return <CheckoutSuccess />;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center">
-      <h2 className="text-2xl font-bold mb-4">Thank you for your order!</h2>
+      <h2 className="text-2xl font-bold mb-4">Something went wrong!</h2>
       <p className="text-lg mb-6">
-        We appreciate your business! If you have any questions, please contact
-        us.
+        There was problem processing your order, please try again on contact us
+        if the problem persists.
       </p>
-      <Link href="/" className={buttonVariants()}>
-        Continue Shopping
+      <Link href="/cart" className={buttonVariants()}>
+        Go to Cart
       </Link>
     </div>
   );
