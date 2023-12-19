@@ -121,8 +121,6 @@ export interface Customer {
 
 export interface Order {
   id: string;
-  createdAt: string;
-  customerId: string;
   storeId: string;
   items: OrderItem[];
   paymentIntentId: string;
@@ -138,12 +136,9 @@ export interface Order {
   };
   currency: string;
   totals: Totals;
-  user?: string | null;
-  sessionId?: string;
   expiresAt: string;
   status: string;
   email: string;
-  invoiceId: string;
 }
 
 export interface OrderItem {

@@ -18,7 +18,7 @@ import { useStore } from "@/contexts/store";
 import { Order } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Spinner from "../Loaders/Spinner";
 import {
   Card,
@@ -31,6 +31,7 @@ import {
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { OrderData } from "./CheckoutWrapper";
 
 const checkoutDetailFormSchema = z.object({
   name: z.string().optional(),
@@ -65,7 +66,7 @@ function CheckoutDetailsForm({
 
   console.log("initialData", initialData);
 
-  const generateDefaultValues = useMemo(() => {
+  const defaultValues = useMemo(() => {
     let defaultValues = {
       name: "",
       email: "",
@@ -138,68 +139,22 @@ function CheckoutDetailsForm({
     return defaultValues;
   }, [customer, initialData]);
 
-  const defaultValues = generateDefaultValues;
-  console.log("defaultValues", defaultValues);
+  const prevDefaultValuesRef = useRef(defaultValues);
+
   const form = useForm<z.infer<typeof checkoutDetailFormSchema>>({
     resolver: zodResolver(checkoutDetailFormSchema),
-    defaultValues:
-      customer !== null
-        ? {
-            name: customer?.firstName,
-            email: customer?.email,
-            phone: customer?.phone,
-            line1: customer?.address.line1,
-            line2: customer?.address.line2,
-            city: customer?.address.city,
-            state: customer?.address.state,
-            postalCode: customer?.address.postalCode,
-            country: customer?.address.country || "",
-            shippingName: customer?.shipping ? customer?.shipping.name : "",
-            shippingPhone: customer?.shipping ? customer?.shipping.phone : "",
-            shippingLine1: customer?.shipping
-              ? customer?.shipping.address.line1
-              : "",
-            shippingLine2: customer?.shipping
-              ? customer?.shipping.address.line2
-              : "",
-            shippingCity: customer?.shipping
-              ? customer?.shipping.address.city
-              : "",
-            shippingState: customer?.shipping
-              ? customer?.shipping.address.state
-              : "",
-            shippingPostalCode: customer?.shipping
-              ? customer?.shipping.address.postalCode
-              : "",
-            shippingCountry: customer?.shipping
-              ? customer?.shipping.address.country || ""
-              : "",
-          }
-        : {
-            name: "",
-            email: "",
-            phone: "",
-            line1: "",
-            line2: "",
-            city: "",
-            state: "",
-            postalCode: "",
-            country: "",
-            shippingName: "",
-            shippingPhone: "",
-            shippingLine1: "",
-            shippingLine2: "",
-            shippingCity: "",
-            shippingState: "",
-            shippingPostalCode: "",
-            shippingCountry: "",
-          },
+    defaultValues: defaultValues,
   });
 
-  // useEffect(() => {
-  //   if (!customer && !initialData) return;
-  //   form.reset(defaultValues);
-  // }, [customer, initialData]);
+  useEffect(() => {
+    if (!customer && !initialData) return;
+
+    // Check if defaultValues has changed
+    if (prevDefaultValuesRef.current !== defaultValues) {
+      form.reset(defaultValues);
+      prevDefaultValuesRef.current = defaultValues; // Update the reference
+    }
+  }, [customer, initialData, defaultValues, form]);
 
   const [checked, setChecked] = useState(false);
   const [editMode, setEditMode] = useState<"billing" | "shipping" | null>(null);
@@ -225,7 +180,7 @@ function CheckoutDetailsForm({
       console.log(jsonData);
       if (initialData) {
         setEditMode(null);
-        setOrderData((prev: Order) => ({ ...prev, order: jsonData }));
+        setOrderData((prev: OrderData) => ({ ...prev, order: jsonData }));
       } else {
         setOrderData(jsonData);
       }

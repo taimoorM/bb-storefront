@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "../Loaders/Spinner";
 import CheckoutLogin from "./CheckoutLogin";
 
-interface OrderData {
+export interface OrderData {
   order: Order;
   clientSecret: string;
   stripeId: string;
@@ -55,7 +55,7 @@ function CheckoutWrapper({
     enabled: !error,
   });
 
-  if (cartError || !cart?.items.length) {
+  if ((cartIsFetched && cartError) || (cartIsFetched && !cart?.items.length)) {
     router.push("/cart");
   }
 
