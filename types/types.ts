@@ -138,7 +138,9 @@ export interface Order {
   totals: Totals;
   expiresAt: string;
   status: string;
-  email: string;
+  guest: {
+    email: string;
+  } | null;
 }
 
 export interface OrderItem {

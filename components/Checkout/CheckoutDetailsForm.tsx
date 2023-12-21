@@ -120,7 +120,7 @@ function CheckoutDetailsForm({
     if (initialData) {
       defaultValues = {
         name: initialData.billing.name,
-        email: initialData.email,
+        email: customer ? customer.email : (initialData.guest?.email as string),
         phone: initialData.billing.phone,
         line1: initialData.billing.address.line1,
         line2: initialData.billing.address.line2,
@@ -210,7 +210,7 @@ function CheckoutDetailsForm({
         <Card className="shadow-none">
           {!initialData ||
             !customer ||
-            (editMode === "billing" && (
+            (!editMode && (
               <CardHeader>
                 <CardTitle>Billing Details</CardTitle>
                 <CardDescription>
@@ -218,6 +218,14 @@ function CheckoutDetailsForm({
                 </CardDescription>
               </CardHeader>
             ))}
+          {editMode === "billing" && (
+            <CardHeader>
+              <CardTitle>Billing Details</CardTitle>
+              <CardDescription>
+                Update your billing information below
+              </CardDescription>
+            </CardHeader>
+          )}
           <CardContent className="space-y-4 pt-4">
             {editMode !== "shipping" && (
               <>
@@ -275,7 +283,7 @@ function CheckoutDetailsForm({
                               <Input
                                 {...field}
                                 type="email"
-                                disabled={isLoading}
+                                disabled={isLoading || !!customer}
                               />
                             </FormControl>
                             <FormMessage />
@@ -398,7 +406,7 @@ function CheckoutDetailsForm({
               </>
             )}
 
-            {!initialData && <Separator className="my-6" />}
+            {!editMode && <Separator className="my-6" />}
             {editMode !== "billing" && (
               <>
                 {(initialData || customer) && editMode !== "shipping" ? (

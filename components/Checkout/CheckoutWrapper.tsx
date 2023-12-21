@@ -80,7 +80,7 @@ function CheckoutWrapper({
             <Spinner />
           ) : (
             <>
-              {!session && !isGuestCheckout ? (
+              {!session && !isGuestCheckout && (!data || error) ? (
                 <CheckoutLogin setIsGuest={setIsGuestCheckout} />
               ) : (
                 <div className="grid  grid-cols-1 md:grid-cols-5 py-4 gap-5">
