@@ -58,6 +58,18 @@ export const GET = auth(async (req) => {
       });
     }
 
+    if (!sessionToken?.value) {
+      const res = await fetch(
+        "http://localhost:3000/api/storefront/sudo/session",
+        {
+          method: "POST",
+          headers: {
+            "bb-access-token": data.publicKey,
+          },
+        }
+      );
+    }
+
     delete data.secretKey;
     delete data.secretKeyId;
     delete data.stripeId;

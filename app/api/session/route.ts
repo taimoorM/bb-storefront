@@ -30,6 +30,8 @@ export async function GET(req: NextRequest) {
       }
     );
 
+    console.log("response", response);
+
     if (!response.ok) {
       const business = await getBusiness(subdomain, publicKey?.value);
       const { secretKey, secretKeyId } = business;
