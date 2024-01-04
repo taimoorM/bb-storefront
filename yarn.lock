@@ -2233,11 +2233,6 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-lucia@^2.7.6:
-  version "2.7.6"
-  resolved "https://registry.yarnpkg.com/lucia/-/lucia-2.7.6.tgz#7407b7b3d44021a0f5630df1322c833be90ae1b2"
-  integrity sha512-xyRkNtevf0DUM4nGC6F2nCFFNphZ1qqBrfWwAgPa9zkpQsVJ/hN32I8zAY+pm+ZKWPPS/C/Sqqmo2LreSCzg7w==
-
 lucide-react@^0.292.0:
   version "0.292.0"
   resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.292.0.tgz#c8a06b2ccd8a348a88669def3c0291c035de2884"

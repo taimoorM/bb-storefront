@@ -42,7 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const { secretKey, secretKeyId } = business;
 
         const res = await fetch(
-          `http://localhost:3000/api/storefront/sudo/customers?action=get`,
+          `http://localhost:3000/api/storefront/sudo/customers?action=authenticate`,
           {
             headers: {
               "x-secret-key": secretKey,
