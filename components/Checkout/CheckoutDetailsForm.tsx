@@ -179,7 +179,7 @@ function CheckoutDetailsForm({
       });
     },
     onSuccess: async (data) => {
-      if (!data.ok) throw new Error("Something went wrong");
+      if (!data.ok) throw new Error(data.statusText);
       const jsonData = await data.json();
       console.log(jsonData);
       if (initialData) {

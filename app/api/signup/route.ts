@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     const data = await req.json();
     const response = await fetch(
-      "http://localhost:3000/api/storefront/sudo/customers",
+      "http://localhost:3000/api/storefront/sudo/customers?action=create",
       {
         headers: {
           "x-secret-key": business.secretKey,

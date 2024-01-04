@@ -28,9 +28,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const publicKey = cookies().get("bb-access-token");
 
-        console.log(publicKey);
-        console.log(credentials.subdomain);
-
         const { data: business, error } = await supabase
           .from("Business")
           .select("id, subdomain, secretKey, secretKeyId")
@@ -45,13 +42,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const { secretKey, secretKeyId } = business;
 
         const res = await fetch(
-          `http://localhost:3000/api/storefront/sudo/customers?email=${credentials.email}&password=${credentials.password}`,
+          `http://localhost:3000/api/storefront/sudo/customers?action=get`,
           {
             headers: {
               "x-secret-key": secretKey,
               "x-api-id": secretKeyId,
               Accept: "application/json",
             },
+            method: "POST",
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
           }
         );
 
